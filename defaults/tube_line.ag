@@ -1,0 +1,10 @@
+// default values for vessel line
+
+ {
+  from = <-100, -100, -100>
+  to = <100, 100, 100>
+  
+  min_blood_pressure = -100
+  max_blood_pressure = 100
+  fixed_blood_pressure = 1
+ }

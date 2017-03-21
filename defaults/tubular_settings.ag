@@ -1,0 +1,19 @@
+// vascular system settings
+
+{
+ o2_production = 3e-22
+  
+ force_chain_attr_factor = 1e-16
+ force_length_keep_factor = 1e-16
+ force_rep_factor = 1e-16
+ force_angle_factor = 5e-16
+ force_atr1_factor = 5e-18
+ force_atr2_factor = 1e-18
+ lengthening_speed = 0.1
+ thickening_speed = 0.0001
+ density = 1
+ minimum_interphase_time = 1000
+ TAFtrigger = 0.2
+ minimum_blood_flow = 0.01
+ time_to_degradation = inf
+}

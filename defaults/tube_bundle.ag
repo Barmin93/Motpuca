@@ -1,0 +1,18 @@
+// default values for tube bundle
+
+ {
+  from = <-100, -100, -100>
+  to = <100, 100, 100>
+
+  extent_x = 50
+  spacing_y = 50
+  spacing_z = 50 
+  shift_y = 25
+  shift_z = 25
+  tube_length = 30
+  r = 3
+
+  min_blood_pressure = -100
+  max_blood_pressure = 100
+  fixed_blood_pressure = 1
+ }

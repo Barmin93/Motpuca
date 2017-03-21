@@ -1,0 +1,13 @@
+// barrier types:
+set KEEP_IN = 0
+set KEEP_OUT = 1
+
+// tissue types:
+set NORMAL = 0
+set TUMOR = 1
+
+// cell states:
+set ALIVE = 2
+set HYPOXIA = 3
+set APOPTOSIS = 4
+set NECROSIS = 5

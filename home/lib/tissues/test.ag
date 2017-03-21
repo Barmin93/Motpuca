@@ -1,0 +1,21 @@
+ {
+  // cells: 0
+  name = "test"
+  type = NORMAL
+  color = <0.5, 0.5, 0.5>
+  cell_r = 5
+  density = 1
+  cell_grow_speed = 0.01
+  minimum_interphase_time = 3600
+  time_to_apoptosis = inf
+  time_to_necrosis = 1800
+  time_in_necrosis = 1800
+  dead_r = 3
+  cell_shrink_speed = 0.01
+  minimum_mitosis_r = 4.9
+  force_rep_factor = 1e-016
+  force_atr1_factor = 5e-018
+  force_atr2_factor = 1e-018
+  max_pressure = 1e-016
+  o2_consumption = 7.5e-009
+ }

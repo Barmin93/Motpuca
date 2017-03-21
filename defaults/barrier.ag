@@ -1,0 +1,7 @@
+// default values for barrier
+
+ {
+  type = 0
+  from = <-100, -100, -100>
+  to = <100, 100, 100>
+ }

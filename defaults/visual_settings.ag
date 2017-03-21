@@ -1,0 +1,27 @@
+// visual settings
+
+{
+ window_height = 800
+ window_width = 1200
+
+ bkg_color = <0.18, 0.24, 0.30, 1>
+ axis_x_color = <0.75, 0, 0>
+ axis_y_color = <0, 0.75, 0>
+ axis_z_color = <0, 0, 0.75>
+ comp_box_color = <0.5, 0.5, 0.5>
+ selection_color = <0, 0.5, 1>
+
+ in_barrier_color = <1, 1, 0, 0.5>
+ out_barrier_color = <1, 0, 0, 0.5>
+ navigator_color = <1, 0.64, 0, 0.75>
+ boxes_color = <1, 1, 1, 0.25>
+ cell_alive_color = <0, 0, 1>
+ cell_hypoxia_color = <0, 1, 0>
+ cell_apoptosis_color = <0.5, 0.5, 0.5>
+ cell_necrosis_color = <0.2, 0.2, 0.2>
+ clip_plane_color = <1, 1, 1>
+ tube_color = <0.65, 0, 0>
+ 
+ light_dir = <0.5, 0.5, 1.0>
+}
+

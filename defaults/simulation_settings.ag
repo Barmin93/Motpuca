@@ -1,0 +1,26 @@
+// default simulation settings
+
+{
+ sim_phases = -1
+ 
+ dimensions = 3
+ time_step = 1
+ time = 0
+ stop_time = INF
+ comp_box_from = <0, 0, 0>
+ comp_box_to = <0, 0, 0>
+ box_size = 30
+ max_cells_per_box = 50
+ force_r_cut = 10
+ max_tube_chains = 1000
+ max_tube_merge = 20
+ diffusion_coeff_o2 = 4000 
+ diffusion_coeff_TAF = 1000
+ diffusion_coeff_Pericytes = 10
+ 
+ save_povray = 0
+ save_statistics = 0
+ save_ag = 100
+ 
+ graph_sampling = 10
+}

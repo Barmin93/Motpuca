@@ -1,0 +1,30 @@
+// default values for tissue
+
+ {
+  color = <0.5, 0.5, 0.5>
+  type = 0
+
+  cell_r = 5
+  cell_grow_speed = 0.01
+
+  dead_r = 3
+  cell_shrink_speed = 0.01
+
+  minimum_interphase_time = 3600
+  time_to_apoptosis = inf
+  time_to_necrosis = 200
+  time_in_necrosis = 200
+
+  minimum_mitosis_r = 4.9
+
+  force_rep_factor = 1e-16
+  force_atr1_factor = 5e-18
+  force_atr2_factor = 1e-18
+
+  max_pressure = 1e-16
+  
+  o2_consumption = 3e-9
+  o2_hypoxia = 0.01
+  
+  pericyte_production = 0.0001
+ }

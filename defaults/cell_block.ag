@@ -1,0 +1,8 @@
+// default values for cell block
+
+{
+  from = <-100, -100, -100>
+  to = <100, 100, 100>
+  conc_O2 = 0.5
+  conc_TAF = 0
+}
