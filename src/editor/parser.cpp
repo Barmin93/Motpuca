@@ -578,7 +578,7 @@ void ParseFile(char const *fname, bool store_filename)
         snprintf(GlobalSettings.output_dir, P_MAX_PATH, "%s%s%s/", GlobalSettings.user_dir, FOLDER_OUTPUT, fname);
         Slashify(GlobalSettings.output_dir, false);
 
-        mkdir(GlobalSettings.output_dir, 0777);
+        mkdir(GlobalSettings.output_dir);
 
         LOG2(llInfo, "Output directory set to: ", GlobalSettings.output_dir);
     }

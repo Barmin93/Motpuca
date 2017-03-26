@@ -32,6 +32,9 @@ extern char const *BarrierType_names[];
 enum DiffundingSubstances {dsO2, dsTAF, dsPericytes, dsLast};
 extern char const *DiffundingSubstances_names[];
 
+class anyTissueSettings;
+extern anyTissueSettings *FindTissueSettings(char const *name);
+
 
 #ifdef QT_CORE_LIB
 class anyEditableDialog: public QDialog

@@ -11,6 +11,7 @@
 #include "config.h"
 #include "log.h"
 #include "timers.h"
+#include "scene.h"
 
 /*
 
@@ -238,6 +239,13 @@ void GrowCell(anyCell *c)
         // clone cell...
         anyCell *nc = new anyCell;
         *nc = *c;
+
+        if(c->tissue->type == ttTumor
+           && rand() % 1000==23
+        ){
+            anyTissueSettings *ts = FindTissueSettings("melanoma1");
+            nc->tissue = ts;
+        }
 
         // move cells...
         c->pos  += d;

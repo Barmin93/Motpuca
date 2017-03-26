@@ -2265,7 +2265,7 @@ void SavePovRay(char const *povfname, bool save_ani)
         // animation file...
         snprintf(fname, P_MAX_PATH, "%spovray", GlobalSettings.output_dir);
 
-        mkdir(fname, 0777);
+        mkdir(fname);
 
         snprintf(fname, P_MAX_PATH, "%spovray/pov.ini", GlobalSettings.output_dir);
         f = fopen(fname, "w");
