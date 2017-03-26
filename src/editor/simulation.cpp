@@ -241,7 +241,7 @@ void GrowCell(anyCell *c)
         *nc = *c;
 
         if(c->tissue->type == ttTumor
-           && rand() % 1000==23
+           && rand() % 100==23
         ){
             anyTissueSettings *ts = FindTissueSettings("melanoma1");
             nc->tissue = ts;
