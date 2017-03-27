@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include <algorithm>
 
 #include "types.h"
 #include "parser.h"
@@ -12,6 +13,8 @@
 #include "log.h"
 #include "timers.h"
 #include "scene.h"
+
+
 
 /*
 
@@ -152,6 +155,7 @@ void GrowCell(anyCell *c)
   \param c -- pointer to cell
 */
 {
+    static bool mutation = true;
     anyTissueSettings *tissue = c->tissue;
 
     if (SimulationSettings.dimensions == 2)
@@ -241,10 +245,12 @@ void GrowCell(anyCell *c)
         *nc = *c;
 
         if(c->tissue->type == ttTumor
-           && rand() % 100==23
+           && mutation
+           && (rand() % std::max((5000 - (int)SimulationSettings.time_step), 2) == 1)
         ){
             anyTissueSettings *ts = FindTissueSettings("melanoma1");
             nc->tissue = ts;
+            mutation = false;
         }
 
         // move cells...
