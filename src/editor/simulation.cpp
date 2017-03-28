@@ -6,6 +6,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <algorithm>
+#include <iostream>
 
 #include "types.h"
 #include "parser.h"
@@ -244,10 +245,16 @@ void GrowCell(anyCell *c)
         anyCell *nc = new anyCell;
         *nc = *c;
 
+        double time_step = (double)SimulationSettings.step;
+        auto cos = (time_step*time_step*time_step* 100000) /216000000000 ;
+//        std::cout << time_step << std::endl;
+//        std::cout << cos << std::endl;
+
         if(c->tissue->type == ttTumor
            && mutation
-           && (rand() % std::max((5000 - (int)SimulationSettings.time_step), 2) == 1)
+           && (rand() % 100000 < cos)
         ){
+
             anyTissueSettings *ts = FindTissueSettings("melanoma1");
             nc->tissue = ts;
             mutation = false;
