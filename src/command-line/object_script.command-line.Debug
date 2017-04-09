@@ -1,0 +1,12 @@
+INPUT(
+./debug\main.o
+./debug\scene.o
+./debug\config.o
+./debug\vector.o
+./debug\log.o
+./debug\simulation.o
+./debug\timers.o
+./debug\statistics.o
+./debug\color.o
+./debug\parser.o
+);

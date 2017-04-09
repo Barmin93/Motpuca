@@ -1,0 +1,12 @@
+INPUT(
+./release\main.o
+./release\scene.o
+./release\config.o
+./release\vector.o
+./release\log.o
+./release\simulation.o
+./release\timers.o
+./release\statistics.o
+./release\color.o
+./release\parser.o
+);

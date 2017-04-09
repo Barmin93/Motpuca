@@ -12,57 +12,36 @@
 #include "../editor/model.h"
 
 
-#define PROG_DIR_WIN "/Motpuca"
-#define PROG_DIR_WIN_DBG "/Moje dokumenty/Projekty/Motpuca/svn"
-#define PROG_DIR_UNIX "/usr/local/Motpuca"
-#define PROG_DIR_UNIX_DBG "/#motpuca/trunk/src/editor-build-desktop"
+#define PROG_DIR_WIN "/Desktop/Motpuca"
+#define PROG_DIR_WIN_DBG "/Desktop/Motpuca"
 
-#define HOME_DIR_WIN "/Moje dokumenty/Motpuca"
-#define HOME_DIR_WIN_DBG "/Moje dokumenty/Projekty/Motpuca/svn/home"
-#define HOME_DIR_UNIX "/Motpuca"
-#define HOME_DIR_UNIX_DBG "/#motpuca/trunk/src/editor-build-desktop/home-motpuca"
+#define HOME_DIR_WIN "/Desktop/Motpuca"
+#define HOME_DIR_WIN_DBG "/Desktop/Motpuca"
 
 
-void setup_directories()
+void setup_directories(const char *directory)
 {
-#ifdef unix
-    strcpy(GlobalSettings.temp_dir, "/tmp/");
-    if (GlobalSettings.run_env != reProduction)
-    {
-        snprintf(GlobalSettings.app_dir, P_MAX_PATH, "%s%s", getenv("HOME"), PROG_DIR_UNIX_DBG);
-        snprintf(GlobalSettings.user_dir, P_MAX_PATH, "%s%s", getenv("HOME"), HOME_DIR_UNIX_DBG);
-    }
-    else
-    {
-        snprintf(GlobalSettings.app_dir, P_MAX_PATH, "%s", PROG_DIR_UNIX);
-        snprintf(GlobalSettings.user_dir, P_MAX_PATH, "%s%s", getenv("HOME"), HOME_DIR_UNIX);
-    }
-#else
+
     snprintf(GlobalSettings.temp_dir, P_MAX_PATH, "%s", getenv("TEMP"));
-    if (GlobalSettings.run_env != reProduction)
-    {
-        snprintf(GlobalSettings.app_dir, P_MAX_PATH, "%s%s", getenv("USERPROFILE"), PROG_DIR_WIN_DBG);
-        snprintf(GlobalSettings.user_dir, P_MAX_PATH, "%s%s", getenv("USERPROFILE"), HOME_DIR_WIN_DBG);
-    }
-    else
-    {
-        snprintf(GlobalSettings.app_dir, P_MAX_PATH, "%s%s", getenv("PROGRAMFILES"), PROG_DIR_WIN);
-        snprintf(GlobalSettings.user_dir, P_MAX_PATH, "%s%s", getenv("USERPROFILE"), HOME_DIR_WIN);
-    }
-#endif
+    snprintf(GlobalSettings.app_dir, P_MAX_PATH, "%s%s", getenv("USERPROFILE"), PROG_DIR_WIN);
+    snprintf(GlobalSettings.user_dir, P_MAX_PATH, "%s%s", getenv("USERPROFILE"), HOME_DIR_WIN);
+    snprintf(GlobalSettings.output_dir, P_MAX_PATH, "%s", directory);
 
     Slashify(GlobalSettings.app_dir, true);
     Slashify(GlobalSettings.user_dir, true);
     Slashify(GlobalSettings.temp_dir, true);
+    Slashify(GlobalSettings.output_dir, true);
 
     LOG2(llDebug, "Home dir: ", GlobalSettings.user_dir);
     LOG2(llDebug, "Prog dir: ", GlobalSettings.app_dir);
     LOG2(llDebug, "Temp dir: ", GlobalSettings.temp_dir);
+    LOG2(llDebug, "Temp dir: ", GlobalSettings.output_dir);
 }
 
 
-void load_scene(const char *fname)
+bool load_scene(const char *fname, const char *directory)
 {
+    setup_directories(directory);
     try
     {
         DeallocSimulation();
@@ -85,7 +64,9 @@ void load_scene(const char *fname)
     catch (Error *err)
     {
         LogError(err);
+        return false;
     }
+    return true;
 }
 
 
@@ -153,17 +134,17 @@ int main(int argc, char **argv)
     GlobalSettings.run_env = reDebug;
     GlobalSettings.debug = (GlobalSettings.run_env != reProduction);
 
-    setup_directories();
 
-    if (argc < 2)
+
+    if (argc < 3)
     {
-        printf("Usage: %s <input-file>\n", argv[0]);
+        printf("Usage: %s <input-file> <output folder>\n", argv[0]);
         return 1;
     }
 
     DefineAllTimers();
 
-    load_scene(argv[1]);
+    if (!load_scene(argv[1], argv[2])) return 1;
     generate_scene();
 
 
