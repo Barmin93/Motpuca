@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include <algorithm>
 #include <iostream>
-#include <cstring>
 
 #include "types.h"
 #include "parser.h"
@@ -15,7 +14,6 @@
 #include "log.h"
 #include "timers.h"
 #include "scene.h"
-
 
 
 
@@ -220,41 +218,14 @@ void GrowCell(anyCell *c)
         normalize_conc(c->concentrations[dsPericytes][conc_step_current()]);
     }
 
-    //mitosis
-
-    if(strcmp(c->tissue->name, "membrane") == 0){
-        if (SimulationSettings.sim_phases & spMitosis
-            && SimulationSettings.step > 1  //< pressures are calculated in steps 0 & 1
-            && c->state == csAlive
-            && c->age > tissue->minimum_interphase_time
-            && c->r >= tissue->minimum_mitosis_r
-            && c->pressure_prev < tissue->max_pressure
-            && rand() % 100==23
-            )
-        {
-            // change age...
-            c->age = 0;
-            change_cell_state(c, csAdded);
-
-            // clone cell...
-            anyCell *nc = new anyCell;
-            *nc = *c;
-
-            double time_step = (double)SimulationSettings.step;
-            auto cos = (time_step*time_step*time_step* 100000) /216000000000 ;
-            anyTissueSettings *ts = FindTissueSettings("epidermis");
-            nc->tissue = ts;
-            nc->pos += anyVector(0,c->r,0);
-            c->pos_h1.x = c->pos_h2.x = nc->pos_h1.x = nc->pos_h2.x = -1000000000;
-            AddCell(nc);
-        }
-    }else if (SimulationSettings.sim_phases & spMitosis
+    // mitosis...
+    /// \todo ADD MORE CONDITIONS!
+    if (SimulationSettings.sim_phases & spMitosis
         && SimulationSettings.step > 1  //< pressures are calculated in steps 0 & 1
         && c->state == csAlive
         && c->age > tissue->minimum_interphase_time
         && c->r >= tissue->minimum_mitosis_r
         && c->pressure_prev < tissue->max_pressure
-        && (strcmp(c->tissue->name, "epidermis") != 0)
         && rand() % 1000==23
         )
     {
@@ -276,8 +247,8 @@ void GrowCell(anyCell *c)
 
         double time_step = (double)SimulationSettings.step;
         auto cos = (time_step*time_step*time_step* 100000) /216000000000 ;
-//        std::cout << c->tissue->name << std::endl;
-//        std::cout << (strcmp(c->tissue->name, "epidermis") == 0) << std::endl;
+//        std::cout << time_step << std::endl;
+//        std::cout << cos << std::endl;
 
         if(c->tissue->type == ttTumor
            && mutation

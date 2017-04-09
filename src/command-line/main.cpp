@@ -24,18 +24,15 @@ void setup_directories(const char *directory)
 
     snprintf(GlobalSettings.temp_dir, P_MAX_PATH, "%s", getenv("TEMP"));
     snprintf(GlobalSettings.app_dir, P_MAX_PATH, "%s%s", getenv("USERPROFILE"), PROG_DIR_WIN);
-    snprintf(GlobalSettings.user_dir, P_MAX_PATH, "%s%s", getenv("USERPROFILE"), HOME_DIR_WIN);
-    snprintf(GlobalSettings.output_dir, P_MAX_PATH, "%s", directory);
+    snprintf(GlobalSettings.user_dir, P_MAX_PATH, "%s", directory);
 
     Slashify(GlobalSettings.app_dir, true);
     Slashify(GlobalSettings.user_dir, true);
     Slashify(GlobalSettings.temp_dir, true);
-    Slashify(GlobalSettings.output_dir, true);
 
     LOG2(llDebug, "Home dir: ", GlobalSettings.user_dir);
     LOG2(llDebug, "Prog dir: ", GlobalSettings.app_dir);
     LOG2(llDebug, "Temp dir: ", GlobalSettings.temp_dir);
-    LOG2(llDebug, "Temp dir: ", GlobalSettings.output_dir);
 }
 
 
