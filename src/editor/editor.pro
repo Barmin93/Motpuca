@@ -25,7 +25,8 @@ HEADERS += mainwindow.h \
     parser.h \
     glmodel.h \
     openglstaff.h \
-    glshaderprogram.h
+    glshaderprogram.h \
+    anytube.h
 SOURCES += mainwindow.cpp \
     glwidget.cpp \
     main.cpp \
@@ -41,7 +42,8 @@ SOURCES += mainwindow.cpp \
     myqapp.cpp \
     parser.cpp \
     glmodel.cpp \
-    glshaderprogram.cpp
+    glshaderprogram.cpp \
+    anytube.cpp
 FORMS += mainwindow.ui \
     dialogEditable.ui \
     dialogGlobals.ui \

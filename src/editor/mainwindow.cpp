@@ -75,13 +75,13 @@ void MainWindow::show_help_page(QString const &page)
         // developer environment?...
         switch (GlobalSettings.run_env)
         {
-        case reProduction:
+        case sat::reProduction:
             app = QString("\"") + GlobalSettings.app_dir + "\"" + app;
             args += QString(GlobalSettings.app_dir);
             break;
-        case reDebug:
-        case reRelease:
-        case reUnknown:
+        case sat::reDebug:
+        case sat::reRelease:
+        case sat::reUnknown:
             args += QString(GlobalSettings.app_dir) + "../../manual/";
             break;
         }
@@ -586,7 +586,7 @@ void MainWindow::display_statistics()
         t_color = QString(ts->color.to_HTML());
 
         ui->textBrowser_stats->append("");
-        ui->textBrowser_stats->append(QString("<b>") + ts->name + QString("</b> (") + TissueType_names[ts->type] + ") " +
+        ui->textBrowser_stats->append(QString("<b>") + ts->name + QString("</b> (") + sat::TissueType{ts->type} + ") " +
                                       "<span style='color:" + t_color + "'>&bull;</span>");
         ui->textBrowser_stats->append(tr("  cells: ") + QString::number(ts->no_cells[0]));
         ui->textBrowser_stats->append(tr("  pressure: ") + QString::number(ts->pressure, 'g', 3) + " (" + QString::number(int(ts->pressure*100/ts->max_pressure)) + "%)");

@@ -43,9 +43,9 @@ public:
                 set_frame(GR_MARGIN_LEFT, GR_V_SPACE + (NoTissueSettings - 1 - i + 1)*fy, width() - GR_MARGIN_RIGHT, (NoTissueSettings - i + 1)*fy);
                 anyTissueSettings *t = FindTissueSettingById(i);
                 if (i < NoTissueSettings)
-                    paint_frame(painter, MaxStatistics.counter[i*csLast], t->name);
+                    paint_frame(painter, MaxStatistics.counter[i*sat::csLast], t->name);
                 else
-                    paint_frame(painter, MaxStatistics.counter[i*csLast], MODEL_TUBE_NAME_PL);
+                    paint_frame(painter, MaxStatistics.counter[i*sat::csLast], MODEL_TUBE_NAME_PL);
                 paint_graph(painter, i);
             }
         }
@@ -170,45 +170,45 @@ public:
         anyStatData *sd = Statistics;
 
         float x = 0;
-        int y = sd->counter[counter_id*csLast];
+        int y = sd->counter[counter_id*sat::csLast];
 
         p.setRenderHint(QPainter::Antialiasing, true);
         p.setPen(QPen(QColor(0, 0, 0), 1));
 
         while (sd)
         {
-            p.drawLine(frame_x1 + x, height() - (frame_y1 + y*my), frame_x1 + x + sx, height() - (frame_y1 + sd->counter[counter_id*csLast]*my));
-            y = sd->counter[counter_id*csLast];
+            p.drawLine(frame_x1 + x, height() - (frame_y1 + y*my), frame_x1 + x + sx, height() - (frame_y1 + sd->counter[counter_id*sat::csLast]*my));
+            y = sd->counter[counter_id*sat::csLast];
             x += sx;
 
             sd = sd->next;
         }
 
-        for (int i = csAlive; i < csLast; i++)
+        for (int i = 0; i < sat::csLast; i++)
         {
             switch (i)
             {
-            case csAlive:
+            case sat::csAlive:
                 p.setPen(QPen(QColor(VisualSettings.cell_alive_color.r255(), VisualSettings.cell_alive_color.g255(), VisualSettings.cell_alive_color.b255()), 1));
                 break;
-            case csHypoxia:
+            case sat::csHypoxia:
                 p.setPen(QPen(QColor(VisualSettings.cell_hypoxia_color.r255(), VisualSettings.cell_hypoxia_color.g255(), VisualSettings.cell_hypoxia_color.b255()), 1));
                 break;
-            case csApoptosis:
+            case sat::csApoptosis:
                 p.setPen(QPen(QColor(VisualSettings.cell_apoptosis_color.r255(), VisualSettings.cell_apoptosis_color.g255(), VisualSettings.cell_apoptosis_color.b255()), 1));
                 break;
-            case csNecrosis:
+            case sat::csNecrosis:
                 p.setPen(QPen(QColor(VisualSettings.cell_necrosis_color.r255(), VisualSettings.cell_necrosis_color.g255(), VisualSettings.cell_necrosis_color.b255()), 1));
                 break;
             }
 
             sd = Statistics;
             x = 0;
-            y = sd->counter[counter_id*csLast + i];
+            y = sd->counter[counter_id*sat::csLast + i];
             while (sd)
             {
-                p.drawLine(frame_x1 + x, height() - (frame_y1 + y*my), frame_x1 + x + sx, height() - (frame_y1 + sd->counter[counter_id*csLast + i]*my));
-                y = sd->counter[counter_id*csLast + i];
+                p.drawLine(frame_x1 + x, height() - (frame_y1 + y*my), frame_x1 + x + sx, height() - (frame_y1 + sd->counter[counter_id*sat::csLast + i]*my));
+                y = sd->counter[counter_id*sat::csLast + i];
                 x += sx;
 
                 sd = sd->next;

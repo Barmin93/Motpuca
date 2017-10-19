@@ -7,7 +7,6 @@
 #include "color.h"
 #include "glmodel.h"
 
-
 void GLWidget::initializeGL()
 /**
   OpenGL initialization.
@@ -212,7 +211,7 @@ void GLWidget::draw_barrier(anyBarrier const *b, bool selected)
 {
 
     anyVector size_mod(1, 1, 1);
-    if (b->type == btOut)
+    if (b->type == sat::btOut)
         size_mod = size_mod*-1;
 
     anyTransform dummy;
@@ -224,7 +223,7 @@ void GLWidget::draw_barrier(anyBarrier const *b, bool selected)
     else
     {
         glLineWidth(1);
-        draw_grilled_box(dummy, b->from - size_mod, b->to + size_mod, b->type == btIn ? VisualSettings.in_barrier_color : VisualSettings.out_barrier_color);
+        draw_grilled_box(dummy, b->from - size_mod, b->to + size_mod, b->type == sat::btIn ? VisualSettings.in_barrier_color : VisualSettings.out_barrier_color);
     }
 
     glLineWidth(1);
@@ -385,9 +384,9 @@ void GLWidget::draw_cell(anyCell const *c, real /*p_min*/, real /*p_max*/)
  \param p_max -- maximum pressure
 */
 {
-    if (c->tissue->type == ttNormal && !MainWindowPtr->get_show_elements(SHOW_NORMAL))
+    if (c->tissue->type == sat::ttNormal && !MainWindowPtr->get_show_elements(SHOW_NORMAL))
         return;
-    if (c->tissue->type == ttTumor && !MainWindowPtr->get_show_elements(SHOW_TUMOR))
+    if (c->tissue->type == sat::ttTumor && !MainWindowPtr->get_show_elements(SHOW_TUMOR))
         return;
 
     anyColor color;
@@ -401,13 +400,13 @@ void GLWidget::draw_cell(anyCell const *c, real /*p_min*/, real /*p_max*/)
     // state...
     if (color_mode & COLOR_MODE_STATE)
     {
-        if (c->state == csAlive || c->state == csAdded)
+        if (c->state == sat::csAlive || c->state == sat::csAdded)
             color.add(VisualSettings.cell_alive_color);
-        else if (c->state == csHypoxia)
+        else if (c->state == sat::csHypoxia)
             color.add(VisualSettings.cell_hypoxia_color);
-        else if (c->state == csApoptosis)
+        else if (c->state == sat::csApoptosis)
             color.add(VisualSettings.cell_apoptosis_color);
-        else if (c->state == csNecrosis)
+        else if (c->state == sat::csNecrosis)
             color.add(VisualSettings.cell_necrosis_color);
     }
 
@@ -436,7 +435,7 @@ void GLWidget::draw_cell(anyCell const *c, real /*p_min*/, real /*p_max*/)
     // O2 concentration...
     if (color_mode & COLOR_MODE_O2)
     {
-        real pr = c->concentrations[dsO2][!(SimulationSettings.step % 2)];
+        real pr = c->concentrations[sat::dsO2][!(SimulationSettings.step % 2)];
         real p;
         if (pr < 0)
             p = 0;
@@ -450,7 +449,7 @@ void GLWidget::draw_cell(anyCell const *c, real /*p_min*/, real /*p_max*/)
     // TAF concentration...
     if (color_mode & COLOR_MODE_TAF)
     {
-        real pr = c->concentrations[dsTAF][!(SimulationSettings.step % 2)];
+        real pr = c->concentrations[sat::dsTAF][!(SimulationSettings.step % 2)];
         real p;
         if (pr < 0)
             p = 0;
@@ -464,7 +463,7 @@ void GLWidget::draw_cell(anyCell const *c, real /*p_min*/, real /*p_max*/)
     // Pericytes concentration...
     if (color_mode & COLOR_MODE_PERICYTES)
     {
-        real pr = c->concentrations[dsPericytes][!(SimulationSettings.step % 2)];
+        real pr = c->concentrations[sat::dsPericytes][!(SimulationSettings.step % 2)];
         real p;
         if (pr < 0)
             p = 0;
@@ -528,7 +527,7 @@ void GLWidget::draw_all_cells(bool clip)
         int no_cells = Cells[first_cell].no_cells_in_box;
         for (int i = 0; i < no_cells; i++)
             // draw only active cells...
-            if (Cells[first_cell + i].state != csRemoved)
+            if (Cells[first_cell + i].state != sat::csRemoved)
             {
                 p_avg += Cells[first_cell + i].pressure_avg;
                 p_cnt++;
@@ -794,16 +793,16 @@ void GLWidget::draw_legend()
     if (color_mode & COLOR_MODE_STATE)
     {
         // states...
-        for (int i = csAlive; i <= csNecrosis; i++)
+        for (int i = sat::csAlive; i <= sat::csNecrosis; i++)
         {
-            if (i == csAlive)
-                draw_legend_item(pos++, VisualSettings.cell_alive_color, CellState_names[i]);
-            else if (i == csHypoxia)
-                draw_legend_item(pos++, VisualSettings.cell_hypoxia_color, CellState_names[i]);
-            else if (i == csApoptosis)
-                draw_legend_item(pos++, VisualSettings.cell_apoptosis_color, CellState_names[i]);
-            else if (i == csNecrosis)
-                draw_legend_item(pos++, VisualSettings.cell_necrosis_color, CellState_names[i]);
+            if (i == sat::csAlive)
+                draw_legend_item(pos++, VisualSettings.cell_alive_color, "ALIVE");
+            else if (i == sat::csHypoxia)
+                draw_legend_item(pos++, VisualSettings.cell_hypoxia_color,"HYPOXIA");
+            else if (i == sat::csApoptosis)
+                draw_legend_item(pos++, VisualSettings.cell_apoptosis_color,"APOPTOSIS");
+            else if (i == sat::csNecrosis)
+                draw_legend_item(pos++, VisualSettings.cell_necrosis_color,"NECROSIS");
         }
         draw_legend_caption(pos++, "States:");
     }

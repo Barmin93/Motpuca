@@ -28,7 +28,7 @@ void DeallocStatistics()
 
 void AddStatistics(int step, int tissue_id, int state_id, int count)
 {
-    if (tissue_id > NoTissueSettings || state_id >= csLast)
+    if (tissue_id > NoTissueSettings || state_id >= sat::csLast)
         return;
 
     anyStatData *sd;
@@ -41,8 +41,8 @@ void AddStatistics(int step, int tissue_id, int state_id, int count)
         sd = new anyStatData;
 
         sd->step = step;
-        sd->counter = new int[(NoTissueSettings + 1)*csLast];
-        for (int i = 0; i < (NoTissueSettings + 1)*csLast; i++)
+        sd->counter = new int[(NoTissueSettings + 1)*sat::csLast];
+        for (int i = 0; i < (NoTissueSettings + 1)*sat::csLast; i++)
             sd->counter[i] = 0;
 
         // add to linked list...
@@ -52,8 +52,8 @@ void AddStatistics(int step, int tissue_id, int state_id, int count)
 
             // reset max values...
             delete [] MaxStatistics.counter;
-            MaxStatistics.counter = new int[(NoTissueSettings + 1)*csLast]; // 0,1,2,3,4    5,6,7,8,9    10,11,12,13,14
-            for (int i = 0; i < (NoTissueSettings + 1)*csLast; i++)
+            MaxStatistics.counter = new int[(NoTissueSettings + 1)*sat::csLast]; // 0,1,2,3,4    5,6,7,8,9    10,11,12,13,14
+            for (int i = 0; i < (NoTissueSettings + 1)*sat::csLast; i++)
                 MaxStatistics.counter[i] = 0;
         }
         else
@@ -61,9 +61,9 @@ void AddStatistics(int step, int tissue_id, int state_id, int count)
         LastStatistics = sd;
     }
 
-    sd->counter[tissue_id*csLast + state_id] = count;
-    if (count > MaxStatistics.counter[tissue_id*csLast + state_id])
-        MaxStatistics.counter[tissue_id*csLast + state_id] = count;
+    sd->counter[tissue_id*sat::csLast + state_id] = count;
+    if (count > MaxStatistics.counter[tissue_id*sat::csLast + state_id])
+        MaxStatistics.counter[tissue_id*sat::csLast + state_id] = count;
 }
 
 
@@ -74,7 +74,7 @@ void AddAllStatistics()
     // reset counters...
     while (ts)
     {
-        for (int i = 1; i < csLast; i++)
+        for (int i = 1; i < sat::csLast; i++)
             ts->no_cells[i] = 0;
         ts = ts->next;
     }
@@ -85,7 +85,7 @@ void AddAllStatistics()
     {
         int no_cells = Cells[first_cell].no_cells_in_box;
         for (int i = 0; i < no_cells; i++)
-            if (Cells[first_cell + i].state >= csAlive)
+            if (Cells[first_cell + i].state >= sat::csAlive)
                 Cells[first_cell + i].tissue->no_cells[Cells[first_cell + i].state]++;
 
         first_cell += SimulationSettings.max_cells_per_box;
@@ -94,7 +94,7 @@ void AddAllStatistics()
     ts = FirstTissueSettings;
     while (ts)
     {
-        for (int i = 0; i < csLast; i++)
+        for (int i = 0; i < sat::csLast; i++)
             AddStatistics(SimulationSettings.step, ts->id, i, ts->no_cells[i]);
         ts = ts->next;
     }
@@ -111,8 +111,8 @@ void AddAllStatistics()
             v = v->next;
         }
     }
-    AddStatistics(SimulationSettings.step, NoTissueSettings, csAlive, fl);
-    AddStatistics(SimulationSettings.step, NoTissueSettings, csHypoxia, NoTubeChains);
+    AddStatistics(SimulationSettings.step, NoTissueSettings, sat::csAlive, fl);
+    AddStatistics(SimulationSettings.step, NoTissueSettings, sat::csHypoxia, NoTubeChains);
 }
 
 
@@ -135,10 +135,10 @@ void SaveStatistics(char const *fname)
             anyTissueSettings *t = FindTissueSettingById(i);
 
             fprintf(f, "%s; ", t->name);
-            fprintf(f, "%s (%s); ", t->name, CellState_names[csAlive]);
-            fprintf(f, "%s (%s); ", t->name, CellState_names[csHypoxia]);
-            fprintf(f, "%s (%s); ", t->name, CellState_names[csApoptosis]);
-            fprintf(f, "%s (%s); ", t->name, CellState_names[csNecrosis]);
+            fprintf(f, "%s (%s); ", t->name, "ALIVE");
+            fprintf(f, "%s (%s); ", t->name, "HYPOXIA");
+            fprintf(f, "%s (%s); ", t->name, "APOPTOSIS");
+            fprintf(f, "%s (%s); ", t->name, "NECROSIS");
         }
         fprintf(f, "%s; ", MODEL_TUBE_SHORTNAME_PL_PCHAR);
         fprintf(f, "%s (with flow); ", MODEL_TUBE_SHORTNAME_PL_PCHAR);
@@ -155,17 +155,17 @@ void SaveStatistics(char const *fname)
             {
                 if (i < NoTissueSettings)
                 {
-                    fprintf(f, "%d; ", sd->counter[i*csLast]);
-                    fprintf(f, "%d; ", sd->counter[i*csLast + csAlive]);
-                    fprintf(f, "%d; ", sd->counter[i*csLast + csHypoxia]);
-                    fprintf(f, "%d; ", sd->counter[i*csLast + csApoptosis]);
-                    fprintf(f, "%d; ", sd->counter[i*csLast + csNecrosis]);
+                    fprintf(f, "%d; ", sd->counter[i*sat::csLast]);
+                    fprintf(f, "%d; ", sd->counter[i*sat::csLast + sat::csAlive]);
+                    fprintf(f, "%d; ", sd->counter[i*sat::csLast + sat::csHypoxia]);
+                    fprintf(f, "%d; ", sd->counter[i*sat::csLast + sat::csApoptosis]);
+                    fprintf(f, "%d; ", sd->counter[i*sat::csLast + sat::csNecrosis]);
                 }
                 else
                 {
-                    fprintf(f, "%d; ", sd->counter[i*csLast]);
-                    fprintf(f, "%d; ", sd->counter[i*csLast + csAlive]);
-                    fprintf(f, "%d; ", sd->counter[i*csLast + csHypoxia]);
+                    fprintf(f, "%d; ", sd->counter[i*sat::csLast]);
+                    fprintf(f, "%d; ", sd->counter[i*sat::csLast + sat::csAlive]);
+                    fprintf(f, "%d; ", sd->counter[i*sat::csLast + sat::csHypoxia]);
                 }
             }
 

@@ -24,27 +24,27 @@ void SetupDirectories()
     Slashify(GlobalSettings.app_dir, true);
 
     // try to guess the environment...
-    GlobalSettings.run_env = reProduction;
+    GlobalSettings.run_env = sat::reProduction;
     char dev_dir[50];
     strncpy(dev_dir, "/src/editor/release/", 50);
     Slashify(dev_dir, true);
     if (QString(GlobalSettings.app_dir).indexOf(dev_dir) >= 0)
     {
-        GlobalSettings.run_env = reRelease;
+        GlobalSettings.run_env = sat::reRelease;
         GlobalSettings.app_dir[strlen(GlobalSettings.app_dir) - strlen(dev_dir) + 1] = 0;
     }
     strncpy(dev_dir, "/src/editor/debug/", 50);
     Slashify(dev_dir, true);
-    if (GlobalSettings.run_env != reRelease && QString(GlobalSettings.app_dir).indexOf(dev_dir) >= 0)
+    if (GlobalSettings.run_env != sat::reRelease && QString(GlobalSettings.app_dir).indexOf(dev_dir) >= 0)
     {
-        GlobalSettings.run_env = reDebug;
+        GlobalSettings.run_env = sat::reDebug;
         GlobalSettings.app_dir[strlen(GlobalSettings.app_dir) - strlen(dev_dir) + 1] = 0;
     }
 
-    GlobalSettings.debug = (GlobalSettings.run_env != reProduction);
+    GlobalSettings.debug = (GlobalSettings.run_env != sat::reProduction);
 
     // user data path...
-    if (GlobalSettings.run_env != reProduction)
+    if (GlobalSettings.run_env != sat::reProduction)
     {
         strcpy(GlobalSettings.user_dir, GlobalSettings.app_dir);
         strncat(GlobalSettings.user_dir, "home/", P_MAX_PATH);

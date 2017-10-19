@@ -57,7 +57,6 @@ int NoTubeMerge = 0;           ///< number of tube pairs to merge
 
 real ***Concentrations = 0;
 
-
 void AddTissueSettings(anyTissueSettings *ts)
 /**
   Creates new tissue settings and adds to linked list.
@@ -161,7 +160,7 @@ void ParseTissueSettingsValue(FILE *f, anyTissueSettings *ts, bool check_name)
         ts->name = new char[strlen(Token.str) + 1];
         strcpy(ts->name, Token.str);
     }
-    PARSE_VALUE_ENUM((*ts), TissueType, type)
+    PARSE_VALUE_ENUM((*ts), sat::TissueType, type)
     PARSE_VALUE_COLOR((*ts), color)
     PARSE_VALUE_REAL((*ts), cell_r)
     PARSE_VALUE_REAL((*ts), density)
@@ -480,7 +479,7 @@ void ParseBarrierValue(FILE *f, anyBarrier *b)
 
     // assign value...
     if (0) ;
-    PARSE_VALUE_ENUM((*b), BarrierType, type)
+    PARSE_VALUE_ENUM((*b), sat::BarrierType, type)
     PARSE_VALUE_VECTOR((*b), from)
     PARSE_VALUE_VECTOR((*b), to)
     PARSE_VALUE_TRANSFORMATION((*b), trans)
@@ -541,6 +540,7 @@ void SaveBarrier_ag(FILE *f, anyBarrier const *b)
     fprintf(f, " {\n");
 
     // save all fields...
+
     SAVE_ENUM(f, b, type, BarrierType_names);
     SAVE_VECT(f, b, from);
     SAVE_TRANSFORMATION(f, b, trans);
@@ -619,8 +619,8 @@ void AllocSimulation()
         Concentrations = new real**[2];
         for(int frame = 0; frame < 2; frame++)
         {
-            Concentrations[frame] = new real*[dsLast];
-            for (int i = 0; i < dsLast; i++)
+            Concentrations[frame] = new real*[sat::dsLast];
+            for (int i = 0; i < sat::dsLast; i++)
             {
                 Concentrations[frame][i] = new real[SimulationSettings.no_boxes];
                 for (int j = 0; j < SimulationSettings.no_boxes; j++)
@@ -683,7 +683,7 @@ void DeallocSimulation()
     {
         for (int frame = 0; frame < 2; frame++)
         {
-            for (int i = 0; i < dsLast; i++)
+            for (int i = 0; i < sat::dsLast; i++)
             {
                 delete[] Concentrations[frame][i];
                 Concentrations[frame][i] = 0;
@@ -837,7 +837,7 @@ void ParseCellValue(FILE *f, anyCell *c)
             throw new Error(__FILE__, __LINE__, "Invalid concentration value", TokenToString(Token), ParserFile, ParserLine);
         if (Token.number < 0 || Token.number > 1)
             throw new Error(__FILE__, __LINE__, "Invalid concentration value", TokenToString(Token), ParserFile, ParserLine);
-        c->concentrations[dsO2][0] = c->concentrations[dsO2][1] = Token.number;
+        c->concentrations[sat::dsO2][0] = c->concentrations[sat::dsO2][1] = Token.number;
     }
     else if (!StrCmp(tv.str, "conc_TAF"))
     {
@@ -845,7 +845,7 @@ void ParseCellValue(FILE *f, anyCell *c)
             throw new Error(__FILE__, __LINE__, "Invalid concentration value", TokenToString(Token), ParserFile, ParserLine);
         if (Token.number < 0 || Token.number > 1)
             throw new Error(__FILE__, __LINE__, "Invalid concentration value", TokenToString(Token), ParserFile, ParserLine);
-        c->concentrations[dsTAF][0] = c->concentrations[dsTAF][1] = Token.number;
+        c->concentrations[sat::dsTAF][0] = c->concentrations[sat::dsTAF][1] = Token.number;
     }
     else if (!StrCmp(tv.str, "conc_Pericytes"))
     {
@@ -853,12 +853,12 @@ void ParseCellValue(FILE *f, anyCell *c)
             throw new Error(__FILE__, __LINE__, "Invalid concentration value", TokenToString(Token), ParserFile, ParserLine);
         if (Token.number < 0 || Token.number > 1)
             throw new Error(__FILE__, __LINE__, "Invalid concentration value", TokenToString(Token), ParserFile, ParserLine);
-        c->concentrations[dsPericytes][0] = c->concentrations[dsPericytes][1] = Token.number;
+        c->concentrations[sat::dsPericytes][0] = c->concentrations[sat::dsPericytes][1] = Token.number;
     }
     PARSE_VALUE_VECTOR((*c), pos)
     PARSE_VALUE_REAL((*c), r)
     PARSE_VALUE_REAL((*c), age)
-    PARSE_VALUE_ENUM((*c), CellState, state)
+    PARSE_VALUE_ENUM((*c), sat::CellState, state)
     PARSE_VALUE_REAL((*c), state_age)
     PARSE_VALUE_REAL((*c), time_to_necrosis)
 
@@ -927,9 +927,9 @@ void SaveCell_ag(FILE *f, anyCell *c)
     SAVE_REAL(f, c, state_age);
     SAVE_REAL(f, c, time_to_necrosis);
 
-    fprintf(f, "  conc_O2 = %g\n", c->concentrations[dsO2][SimulationSettings.step % 2]);
-    fprintf(f, "  conc_TAF = %g\n", c->concentrations[dsTAF][SimulationSettings.step % 2]);
-    fprintf(f, "  conc_Pericytes = %g\n", c->concentrations[dsPericytes][SimulationSettings.step % 2]);
+    fprintf(f, "  conc_O2 = %g\n", c->concentrations[sat::dsO2][SimulationSettings.step % 2]);
+    fprintf(f, "  conc_TAF = %g\n", c->concentrations[sat::dsTAF][SimulationSettings.step % 2]);
+    fprintf(f, "  conc_Pericytes = %g\n", c->concentrations[sat::dsPericytes][SimulationSettings.step % 2]);
 
     fprintf(f, " }\n");
 }
@@ -943,7 +943,7 @@ void SaveAllCells_ag(FILE *f)
         int no_cells = Cells[first_cell].no_cells_in_box;
         for (int i = 0; i < no_cells; i++)
             // save only active cells...
-            if (Cells[first_cell + i].state > csRemoved)
+            if (Cells[first_cell + i].state > sat::csRemoved)
                 SaveCell_ag(f, Cells + first_cell + i);
 
         first_cell += SimulationSettings.max_cells_per_box;
@@ -1035,7 +1035,7 @@ void ParseCellBlockValue(FILE *f, anyCellBlock *b)
             throw new Error(__FILE__, __LINE__, "Invalid concentration value", TokenToString(Token), ParserFile, ParserLine);
         if (Token.number < 0 || Token.number > 1)
             throw new Error(__FILE__, __LINE__, "Invalid concentration value", TokenToString(Token), ParserFile, ParserLine);
-        b->concentrations[dsO2] = Token.number;
+        b->concentrations[sat::dsO2] = Token.number;
     }
     else if (!StrCmp(tv.str, "conc_TAF"))
     {
@@ -1043,7 +1043,7 @@ void ParseCellBlockValue(FILE *f, anyCellBlock *b)
             throw new Error(__FILE__, __LINE__, "Invalid concentration value", TokenToString(Token), ParserFile, ParserLine);
         if (Token.number < 0 || Token.number > 1)
             throw new Error(__FILE__, __LINE__, "Invalid concentration value", TokenToString(Token), ParserFile, ParserLine);
-        b->concentrations[dsTAF] = Token.number;
+        b->concentrations[sat::dsTAF] = Token.number;
     }
     else if (!StrCmp(tv.str, "conc_Pericytes"))
     {
@@ -1051,7 +1051,7 @@ void ParseCellBlockValue(FILE *f, anyCellBlock *b)
             throw new Error(__FILE__, __LINE__, "Invalid concentration value", TokenToString(Token), ParserFile, ParserLine);
         if (Token.number < 0 || Token.number > 1)
             throw new Error(__FILE__, __LINE__, "Invalid concentration value", TokenToString(Token), ParserFile, ParserLine);
-        b->concentrations[dsPericytes] = Token.number;
+        b->concentrations[sat::dsPericytes] = Token.number;
     }
     PARSE_VALUE_VECTOR((*b), from)
     PARSE_VALUE_VECTOR((*b), to)
@@ -1119,9 +1119,9 @@ void SaveCellBlock_ag(FILE *f, anyCellBlock const *b)
     SAVE_TRANSFORMATION(f, b, trans);
     SAVE_VECT(f, b, from);
     SAVE_VECT(f, b, to);
-    fprintf(f, "  conc_o2 = %g\n", b->concentrations[dsO2]);
-    fprintf(f, "  conc_taf = %g\n", b->concentrations[dsTAF]);
-    fprintf(f, "  conc_pericytes = %g\n", b->concentrations[dsPericytes]);
+    fprintf(f, "  conc_o2 = %g\n", b->concentrations[sat::dsO2]);
+    fprintf(f, "  conc_taf = %g\n", b->concentrations[sat::dsTAF]);
+    fprintf(f, "  conc_pericytes = %g\n", b->concentrations[sat::dsPericytes]);
 
     fprintf(f, " }\n");
 }
@@ -1567,7 +1567,7 @@ void ParseTubeValue(FILE *f, anyTube *v)
     PARSE_VALUE_REAL((*v), final_r)
     PARSE_VALUE_REAL((*v), length)
     PARSE_VALUE_REAL((*v), final_length)
-    PARSE_VALUE_ENUM((*v), CellState, state)
+    PARSE_VALUE_ENUM((*v), sat::CellState, state)
     PARSE_VALUE_REAL((*v), age)
     PARSE_VALUE_REAL((*v), state_age)
     PARSE_VALUE_INT((*v),  base_id)
@@ -1772,7 +1772,7 @@ void GenerateCellsInBlock(anyCellBlock *b)
     c.r = r;
     c.tissue = b->tissue;
 
-    for (int i = 0; i < dsLast; i++)
+    for (int i = 0; i < sat::dsLast; i++)
         c.concentrations[i][0] = c.concentrations[i][1] = b->concentrations[i];
 
     SetCellMass(&c);
@@ -2130,7 +2130,7 @@ void save_povray_cells(FILE *f)
         int no_cells = Cells[first_cell].no_cells_in_box;
         for (int i = 0; i < no_cells; i++)
             // draw only active, tumor cells...
-            if (Cells[first_cell + i].state != csRemoved && Cells[first_cell + i].tissue->type == ttTumor)
+            if (Cells[first_cell + i].state != sat::csRemoved && Cells[first_cell + i].tissue->type == sat::ttTumor)
             {
                 int clipped =
                         Cells[first_cell + i].pos.x*VisualSettings.clip_plane[0] +
@@ -2144,8 +2144,8 @@ void save_povray_cells(FILE *f)
                         Cells[first_cell + i].pos.toString(),
                         Cells[first_cell + i].r,
                         int(Cells[first_cell + i].state),
-                        Cells[first_cell + i].concentrations[dsO2][SimulationSettings.step % 2],
-                        Cells[first_cell + i].concentrations[dsTAF][SimulationSettings.step % 2],
+                        Cells[first_cell + i].concentrations[sat::dsO2][SimulationSettings.step % 2],
+                        Cells[first_cell + i].concentrations[sat::dsTAF][SimulationSettings.step % 2],
                         clipped);
             }
 
@@ -2161,7 +2161,7 @@ void save_povray_cells(FILE *f)
         int no_cells = Cells[first_cell].no_cells_in_box;
         for (int i = 0; i < no_cells; i++)
             // draw only active, normal cells...
-            if (Cells[first_cell + i].state != csRemoved && Cells[first_cell + i].tissue->type == ttNormal)
+            if (Cells[first_cell + i].state != sat::csRemoved && Cells[first_cell + i].tissue->type == sat::ttNormal)
             {
                 int clipped =
                         Cells[first_cell + i].pos.x*VisualSettings.clip_plane[0] +
@@ -2175,8 +2175,8 @@ void save_povray_cells(FILE *f)
                         Cells[first_cell + i].pos.toString(),
                         Cells[first_cell + i].r,
                         int(Cells[first_cell + i].state),
-                        Cells[first_cell + i].concentrations[dsO2][SimulationSettings.step % 2],
-                        Cells[first_cell + i].concentrations[dsTAF][SimulationSettings.step % 2],
+                        Cells[first_cell + i].concentrations[sat::dsO2][SimulationSettings.step % 2],
+                        Cells[first_cell + i].concentrations[sat::dsTAF][SimulationSettings.step % 2],
                         clipped);
             }
 
@@ -2391,6 +2391,21 @@ void SaveVTK()
     }
 }
 
+anyTube *FindTubeById(int id, bool current)
+{
+    // loop over all tubes...
+    for (int i = 0; i < NoTubeChains; i++)
+    {
+        anyTube *v = TubeChains[i];
+        while (v)
+        {
+            if ((v->id == id && current) || (v->parsed_id == id && !current))
+                return v;
+            v = v->next;
+        }
+    }
+    return 0;
+}
 
 void anyBoundingBox::update_bounding_box_by_point(anyVector v, anyVector &u_from, anyVector &u_to, bool &first)
 {
@@ -2723,9 +2738,9 @@ void anyCellBlock::prepare_dialog()
 
     anyEditable::prepare_dialog();
 
-    dialog->dialog->doubleSpinBox_concO2->setValue(concentrations[dsO2]);
-    dialog->dialog->doubleSpinBox_concTAF->setValue(concentrations[dsTAF]);
-    dialog->dialog->doubleSpinBox_concPericytes->setValue(concentrations[dsPericytes]);
+    dialog->dialog->doubleSpinBox_concO2->setValue(concentrations[sat::dsO2]);
+    dialog->dialog->doubleSpinBox_concTAF->setValue(concentrations[sat::dsTAF]);
+    dialog->dialog->doubleSpinBox_concPericytes->setValue(concentrations[sat::dsPericytes]);
 
     // select tissue in combo...
     if (tissue)
@@ -2771,9 +2786,9 @@ void anyCellBlock::update_from_dialog()
         ts = ts->next;
     }
 
-    concentrations[dsO2] = dialog->dialog->doubleSpinBox_concO2->value();
-    concentrations[dsTAF] = dialog->dialog->doubleSpinBox_concTAF->value();
-    concentrations[dsPericytes] = dialog->dialog->doubleSpinBox_concPericytes->value();
+    concentrations[sat::dsO2] = dialog->dialog->doubleSpinBox_concO2->value();
+    concentrations[sat::dsTAF] = dialog->dialog->doubleSpinBox_concTAF->value();
+    concentrations[sat::dsPericytes] = dialog->dialog->doubleSpinBox_concPericytes->value();
 
     LOG(llDebug, "CellBlock updated from dialog");
 }
@@ -2879,7 +2894,7 @@ void anyBarrier::prepare_dialog()
     anyEditable::prepare_dialog();
 
     // set barrier type...
-    if (type == btIn)
+    if (type == sat::btIn)
         dialog->dialog->radioButton_in->setChecked(true);
     else
         dialog->dialog->radioButton_out->setChecked(true);
@@ -2902,9 +2917,9 @@ void anyBarrier::update_from_dialog()
 
     // get barrier type...
     if (dialog->dialog->radioButton_in->isChecked())
-        type = btIn;
+        type = sat::btIn;
     else
-        type = btOut;
+        type = sat::btOut;
 
     LOG(llDebug, "Barrier updated from dialog");
 }
@@ -3111,8 +3126,8 @@ void anyTissueSettings::prepare_dialog()
     dialog->color = color;
     snprintf(style, 200, "background-color: rgb(%d,%d,%d)", int(floor(color.rgba_array[0]*255.0)), int(floor(color.rgba_array[1]*255.0)), int(floor(color.rgba_array[2]*255.0)));
     dialog->dialog->pushButton_color->setStyleSheet(style);
-    dialog->dialog->radioButton_t_type_normal->setChecked(type == ttNormal);
-    dialog->dialog->radioButton_t_type_tumor->setChecked(type == ttTumor);
+    dialog->dialog->radioButton_t_type_normal->setChecked(type == sat::ttNormal);
+    dialog->dialog->radioButton_t_type_tumor->setChecked(type == sat::ttTumor);
     dialog->dialog->doubleSpinBox_t_radius->setValue(cell_r);
     dialog->dialog->doubleSpinBox_t_density->setValue(density);
     dialog->dialog->doubleSpinBox_t_growth->setValue(cell_grow_speed);
@@ -3211,9 +3226,9 @@ void anyTissueSettings::update_from_dialog()
     delete name;
     name = new char[dialog->dialog->lineEdit_name->text().length() + 1];
     if (dialog->dialog->radioButton_t_type_normal->isChecked())
-        type = ttNormal;
+        type = sat::ttNormal;
     else if (dialog->dialog->radioButton_t_type_tumor->isChecked())
-        type = ttTumor;
+        type = sat::ttTumor;
     strcpy(name, dialog->dialog->lineEdit_name->text().toLatin1());
     color = dialog->color;
     cell_r = billion_to_inf(dialog->dialog->doubleSpinBox_t_radius->value());
@@ -3346,24 +3361,6 @@ bool anyCellBlock::should_be_generated_next()
 
     return true;
 }
-
-
-anyTube *FindTubeById(int id, bool current)
-{
-    // loop over all tubes...
-    for (int i = 0; i < NoTubeChains; i++)
-    {
-        anyTube *v = TubeChains[i];
-        while (v)
-        {
-            if ((v->id == id && current) || (v->parsed_id == id && !current))
-                return v;
-            v = v->next;
-        }
-    }
-    return 0;
-}
-
 
 void RelinkTubes()
 {

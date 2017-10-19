@@ -5,7 +5,6 @@
 #include <QDialog>
 #endif
 
-#include "const.h"
 #include "func.h"
 #include "types.h"
 #include "vector.h"
@@ -19,9 +18,7 @@
 #include "ui_dialogGlobals.h"
 #endif
 
-enum anyRunEnv { reUnknown, reProduction, reDebug, reRelease };
-enum anySimPhase { spForces = 0x0001, spGrow = 0x0002, spMitosis = 0x0004, spDiffusion = 0x0008, spTubeDiv = 0x0010, spBloodFlow = 0x0020,
-                   spALL = 0xFFFF };
+
 
 class anyGlobalSettings
 /**
@@ -35,7 +32,7 @@ public:
     char temp_dir[P_MAX_PATH];   ///< temp dir
     char input_file[P_MAX_PATH]; ///< input file name
     char output_dir[P_MAX_PATH]; ///< output file name
-    enum anyRunEnv run_env;    ///< environment
+    sat::anyRunEnv run_env;    ///< environment
     bool simulation_allocated; ///< simulation is allocated?
     bool save_needed;          ///< save needed?
 
@@ -55,7 +52,7 @@ public:
         temp_dir[0] = 0;
         save_needed = false;
         simulation_allocated = false;
-        run_env = reUnknown;
+        run_env = sat::reUnknown;
         debug = false;
         app_thread_id = 0;
     }
@@ -214,7 +211,7 @@ public:
     int max_max_max_cells_per_box; ///< all-time maximum number of cells in box
     real farest_point;   ///< farest distance from (0, 0, 0)
     real force_r_cut2;   ///< force_r_cut*force_r_cut
-    real diffusion_coeff[dsLast];   ///< oxygen, TAF etc diffusion coefficient ( TODO: stability condition)
+    real diffusion_coeff[sat::dsLast];   ///< oxygen, TAF etc diffusion coefficient ( TODO: stability condition)
     real max_o2_concentration;   ///< maximum oxygen in kg/um^3 in cell represented by concentration == 1
     anySimulationSettings() {}
 

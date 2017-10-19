@@ -61,7 +61,7 @@ and tend to be at their highest levels in S and at their lowest near mitosis.
 
 
 inline
-void change_cell_state(anyCell *c, CellState new_state)
+void change_cell_state(anyCell *c, sat::CellState new_state)
 /**
   Changes state of cell and resets its timer.
 
@@ -75,7 +75,7 @@ void change_cell_state(anyCell *c, CellState new_state)
 
 
 inline
-void change_tube_state(anyTube *v, CellState new_state)
+void change_tube_state(anyTube *v, sat::CellState new_state)
 /**
   Changes state of tube and resets its timer.
 
@@ -203,29 +203,29 @@ void GrowCell(anyCell *c)
 //    if (tissue->type == ttNormal && 2*c->nei_cnt[ttTumor] > c->nei_cnt[ttNormal])
 //        ;
 //    else
-        c->concentrations[dsO2][conc_step_current()] -= c->tissue->o2_consumption * c->tissue->density / 10e18 * SimulationSettings.time_step / SimulationSettings.max_o2_concentration / 10;
-    normalize_conc(c->concentrations[dsO2][conc_step_current()]);
+        c->concentrations[sat::dsO2][conc_step_current()] -= c->tissue->o2_consumption * c->tissue->density / 10e18 * SimulationSettings.time_step / SimulationSettings.max_o2_concentration / 10;
+    normalize_conc(c->concentrations[sat::dsO2][conc_step_current()]);
 
     // TAF production...
-    if (c->state == csHypoxia)
+    if (c->state == sat::csHypoxia)
     {
         // TAF production...
-        c->concentrations[dsTAF][conc_step_current()] = 1;
+        c->concentrations[sat::dsTAF][conc_step_current()] = 1;
     }
 
     // Pericytes production....
-    if (c->state == csAlive)
+    if (c->state == sat::csAlive)
     {
-        c->concentrations[dsPericytes][conc_step_current()] += c->tissue->pericyte_production * SimulationSettings.time_step;
-        normalize_conc(c->concentrations[dsPericytes][conc_step_current()]);
+        c->concentrations[sat::dsPericytes][conc_step_current()] += c->tissue->pericyte_production * SimulationSettings.time_step;
+        normalize_conc(c->concentrations[sat::dsPericytes][conc_step_current()]);
     }
 
     //mitosis
 
     if(strcmp(c->tissue->name, "membrane") == 0){
-        if (SimulationSettings.sim_phases & spMitosis
+        if (SimulationSettings.sim_phases & sat::spMitosis
             && SimulationSettings.step > 1  //< pressures are calculated in steps 0 & 1
-            && c->state == csAlive
+            && c->state == sat::csAlive
             && c->age > tissue->minimum_interphase_time
             && c->r >= tissue->minimum_mitosis_r
             && c->pressure_prev < tissue->max_pressure
@@ -234,23 +234,23 @@ void GrowCell(anyCell *c)
         {
             // change age...
             c->age = 0;
-            change_cell_state(c, csAdded);
+            change_cell_state(c, sat::csAdded);
 
             // clone cell...
             anyCell *nc = new anyCell;
             *nc = *c;
 
-            double time_step = (double)SimulationSettings.step;
-            auto cos = (time_step*time_step*time_step* 100000) /216000000000 ;
+            //double time_step = (double)SimulationSettings.step;
+            //auto cos = (time_step*time_step*time_step* 100000) /216000000000 ;
             anyTissueSettings *ts = FindTissueSettings("epidermis");
             nc->tissue = ts;
             nc->pos += anyVector(0,c->r,0);
             c->pos_h1.x = c->pos_h2.x = nc->pos_h1.x = nc->pos_h2.x = -1000000000;
             AddCell(nc);
         }
-    }else if (SimulationSettings.sim_phases & spMitosis
+    }else if (SimulationSettings.sim_phases & sat::spMitosis
         && SimulationSettings.step > 1  //< pressures are calculated in steps 0 & 1
-        && c->state == csAlive
+        && c->state == sat::csAlive
         && c->age > tissue->minimum_interphase_time
         && c->r >= tissue->minimum_mitosis_r
         && c->pressure_prev < tissue->max_pressure
@@ -268,7 +268,7 @@ void GrowCell(anyCell *c)
 
         // change age...
         c->age = 0;
-        change_cell_state(c, csAdded);
+        change_cell_state(c, sat::csAdded);
 
         // clone cell...
         anyCell *nc = new anyCell;
@@ -279,7 +279,7 @@ void GrowCell(anyCell *c)
 //        std::cout << c->tissue->name << std::endl;
 //        std::cout << (strcmp(c->tissue->name, "epidermis") == 0) << std::endl;
 
-        if(c->tissue->type == ttTumor
+        if(c->tissue->type == sat::ttTumor
            && mutation
            && (rand() % 100000 < cos)
         ){
@@ -303,16 +303,16 @@ void GrowCell(anyCell *c)
     // state and radius change...
     switch (c->state)
     {
-    case csAdded:
+    case sat::csAdded:
         break;
-    case csAlive:
+    case sat::csAlive:
 /*        if (tissue->type == ttNormal && c->nei_cnt[ttTumor] > c->nei_cnt[ttNormal])
             change_cell_state(c, csApoptosis);
         else*/ if (c->state_age > tissue->time_to_apoptosis)
-            change_cell_state(c, csApoptosis);
-        else if (c->tissue->o2_hypoxia > 0 && c->concentrations[dsO2][conc_step_current()] < c->tissue->o2_hypoxia)
+            change_cell_state(c, sat::csApoptosis);
+        else if (c->tissue->o2_hypoxia > 0 && c->concentrations[sat::dsO2][conc_step_current()] < c->tissue->o2_hypoxia)
         {
-            change_cell_state(c, csHypoxia);
+            change_cell_state(c, sat::csHypoxia);
         }
         else if(c->r < tissue->cell_r
                 && c->pressure_prev < tissue->max_pressure
@@ -325,15 +325,15 @@ void GrowCell(anyCell *c)
             SetCellMass(c);
         }
         break;
-    case csApoptosis:
-    case csHypoxia:
+    case sat::csApoptosis:
+    case sat::csHypoxia:
         if (c->state_age > c->time_to_necrosis)
-            change_cell_state(c, csNecrosis);
+            change_cell_state(c, sat::csNecrosis);
         break;
-    case csNecrosis:
+    case sat::csNecrosis:
         if (c->state_age > tissue->time_in_necrosis)
         {
-            change_cell_state(c, csRemoved);
+            change_cell_state(c, sat::csRemoved);
         }
         else if(c->r > tissue->dead_r)
         {
@@ -360,7 +360,7 @@ void GrowAllCells()
   Growth of all cells.
 */
 {
-    if (SimulationSettings.sim_phases & spGrow)
+    if (SimulationSettings.sim_phases & sat::spGrow)
     {
         StartTimer(TimerCellGrowId);
 
@@ -371,7 +371,7 @@ void GrowAllCells()
             int no_cells = Cells[first_cell].no_cells_in_box;
             for (int i = 0; i < no_cells; i++)
                 // grow only active cells...
-                if (Cells[first_cell + i].state != csRemoved)
+                if (Cells[first_cell + i].state != sat::csRemoved)
                     GrowCell(Cells + first_cell + i);
 
             first_cell += SimulationSettings.max_cells_per_box;
@@ -447,8 +447,8 @@ void UpdateTubes()
             }
 
             // change state...
-            if (v->state == csAdded)
-                v->state = csAlive;
+            if (v->state == sat::csAdded)
+                v->state = sat::csAlive;
 
             v = v->next;
         }
@@ -479,10 +479,10 @@ void RearrangeCells()
                 for (int i = 0; i < no_cells; i++)
                 {
                     // promote cell?...
-                    if (Cells[first_cell + i].state == csAdded)
-                        Cells[first_cell + i].state = csAlive;
+                    if (Cells[first_cell + i].state == sat::csAdded)
+                        Cells[first_cell + i].state = sat::csAlive;
                     // remove cell?
-                    else if (Cells[first_cell + i].state == csRemoved)
+                    else if (Cells[first_cell + i].state == sat::csRemoved)
                     {
                         // remove cell...
                         Cells[first_cell + i].tissue->no_cells[0]--;
@@ -640,7 +640,7 @@ bool calc_force(anyVector const &p1, anyVector const &p2, anyVector &force, real
     if (do_r_cut && dr_len > SimulationSettings.force_r_cut)
         return false;
 
-    if (SimulationSettings.sim_phases & spForces)
+    if (SimulationSettings.sim_phases & sat::spForces)
     {
 
         anyVector dr = d_c1c2*(dr_len/d_c1c2_len);
@@ -677,7 +677,7 @@ real vol(real r) {
 
 
 static
-void concentration_exchange(real conc1[dsLast][2], real conc2[dsLast][2], real r1, real r2, real dist2, bool bidirectional = true)
+void concentration_exchange(real conc1[sat::dsLast][2], real conc2[sat::dsLast][2], real r1, real r2, real dist2, bool bidirectional = true)
 {
     int current_frame = conc_step_current();
     int prev_frame = conc_step_prev();
@@ -692,7 +692,7 @@ void concentration_exchange(real conc1[dsLast][2], real conc2[dsLast][2], real r
     real min_r = MIN(r1, r2);
     real min_vol = vol(min_r);
 
-    for (int sub = 0; sub < dsLast; sub++)
+    for (int sub = 0; sub < sat::dsLast; sub++)
     {
         real diffLevel = conc1[sub][prev_frame] - conc2[sub][prev_frame];
         if (diffLevel != 0 && dist2 < (r1+r2)*(r1+r2)*1.2)
@@ -742,7 +742,7 @@ void cell_cell_force(anyCell *c1, anyCell *c2)
     c1->nei_cnt[c2->tissue->type]++;
     c2->nei_cnt[c1->tissue->type]++;
 
-    if (SimulationSettings.sim_phases & spForces)
+    if (SimulationSettings.sim_phases & sat::spForces)
     {
         calc_force_dissipative_and_random(c1->pos, c2->pos,
                  c1->r + c2->r,
@@ -760,7 +760,7 @@ void cell_cell_force(anyCell *c1, anyCell *c2)
         c2->pressure_sum += c1->pressure_prev;
     }
 
-    if (SimulationSettings.sim_phases & spDiffusion)
+    if (SimulationSettings.sim_phases & sat::spDiffusion)
     {
         concentration_exchange(c1->concentrations, c2->concentrations,
                                c1->r, c2->r,
@@ -1013,7 +1013,7 @@ void CellBarrierForces()
   Highly UNEFFICIENT bariers - cells interactions.
 */
 {
-    if (SimulationSettings.sim_phases & spForces)
+    if (SimulationSettings.sim_phases & sat::spForces)
     {
         StartTimer(TimerCellBarrierForcesId);
 
@@ -1028,9 +1028,9 @@ void CellBarrierForces()
                 int no_cells = Cells[first_cell].no_cells_in_box;
                 for (int i = 0; i < no_cells; i++)
                     // grow only active cells...
-                    if (Cells[first_cell + i].state != csRemoved)
+                    if (Cells[first_cell + i].state != sat::csRemoved)
                     {
-                    if (b->type == btIn)
+                    if (b->type == sat::btIn)
                         cell_barrier_in_force(b, Cells + first_cell + i);
                     else
                         cell_barrier_out_force(b, Cells + first_cell + i);
@@ -1069,7 +1069,7 @@ void TissueProperties()
     {
         int no_cells = Cells[first_cell].no_cells_in_box;
         for (int i = 0; i < no_cells; i++)
-            if (Cells[first_cell + i].state != csRemoved)
+            if (Cells[first_cell + i].state != sat::csRemoved)
             {
                Cells[first_cell + i].tissue->pressure_sum += Cells[first_cell + i].pressure_avg;
             }
@@ -1359,7 +1359,7 @@ void tube_tube_force(anyTube *v1, anyTube *v2)
 
 
 
-    if (SimulationSettings.sim_phases & spForces)
+    if (SimulationSettings.sim_phases & sat::spForces)
     {
         v1->force1 += force*(1 - t1);
         v1->force2 += force*t1;
@@ -1463,7 +1463,7 @@ void tube_cell_force(anyTube *v, anyCell *c)
 {
     real p = 0.5;
 
-    if (SimulationSettings.sim_phases & spForces)
+    if (SimulationSettings.sim_phases & sat::spForces)
     {
         anyVector p12 = v->pos2 - v->pos1;
         anyVector pc = c->pos - v->pos1;
@@ -1501,7 +1501,7 @@ void tube_cell_force(anyTube *v, anyCell *c)
                         ))
             return;
 
-        c->nei_cnt[ttNormal]++;
+        c->nei_cnt[sat::ttNormal]++;
         v->nei_cnt++;
 
         c->force += force;
@@ -1514,7 +1514,7 @@ void tube_cell_force(anyTube *v, anyCell *c)
         v->pressure_sum += c->pressure_prev;
     }
 
-    if ((SimulationSettings.sim_phases & spDiffusion) && v->blood_flow)
+    if ((SimulationSettings.sim_phases & sat::spDiffusion) && v->blood_flow)
     {
         const real vessel_conc_accel = 0.25;
         concentration_exchange(c->concentrations, v->concentrations,
@@ -1528,7 +1528,7 @@ void tube_cell_force(anyTube *v, anyCell *c)
 
 void TubeCellForces()
 {
-    if (SimulationSettings.sim_phases & spForces)
+    if (SimulationSettings.sim_phases & sat::spForces)
     {
         int x1, y1, z1, x2, y2, z2;
 
@@ -1565,7 +1565,7 @@ void TubeCellForces()
                                 int no_cells = Cells[first_cell].no_cells_in_box;
                                 for (int j = 0; j < no_cells; j++)
                                 // only active cells...
-                                if (Cells[first_cell + j].state != csRemoved)
+                                if (Cells[first_cell + j].state != sat::csRemoved)
                                 {
                                     tube_cell_force(v, Cells + first_cell + j);
                                 }
@@ -1583,7 +1583,7 @@ void TubeTubeForces()
   Calculates forces between tubes.
 */
 {
-    if (SimulationSettings.sim_phases & spForces)
+    if (SimulationSettings.sim_phases & sat::spForces)
     {
         StartTimer(TimerTubeTubeForcesId);
 
@@ -1641,7 +1641,7 @@ void GrowTube(anyTube *v)
     v->velocity2 *= 0.5;
 
     // tip division...
-    if (SimulationSettings.sim_phases & spTubeDiv
+    if (SimulationSettings.sim_phases & sat::spTubeDiv
         && !v->next
         && !v->top
         && (v->pos1 - v->pos2).length2() >= (v->final_length)*(v->final_length)*0.99
@@ -1654,7 +1654,7 @@ void GrowTube(anyTube *v)
         *v2 = *v;
         v2->base = v2->fork = 0;
 
-        change_tube_state(v2, csAdded);
+        change_tube_state(v2, sat::csAdded);
         v2->age = 0;
 
         // new ending points...
@@ -1674,7 +1674,7 @@ void GrowTube(anyTube *v)
     }
 
     // sprout division...
-    else if (SimulationSettings.sim_phases & spTubeDiv
+    else if (SimulationSettings.sim_phases & sat::spTubeDiv
         && (v->next)
         && (!v->fork)
         && (!v->jab)
@@ -1687,7 +1687,7 @@ void GrowTube(anyTube *v)
         anyTube *v2 = new anyTube;
         *v2 = *v;
 
-        change_tube_state(v2, csAdded);
+        change_tube_state(v2, sat::csAdded);
         v2->age = 0;
 
         // new ending points...
@@ -1729,15 +1729,15 @@ void GrowTube(anyTube *v)
     // state, length and radius change...
     switch (v->state)
     {
-    case csAdded:
-    case csRemoved:
+    case sat::csAdded:
+    case sat::csRemoved:
         break;
-    case csAlive:
+    case sat::csAlive:
         // death?...
         if (!v->fixed_blood_pressure &&
             SimulationSettings.time - v->flow_time > TubularSystemSettings.time_to_degradation &&
             !v->next && !v->top && !v->fork && !v->jab)
-            v->state = csRemoved;
+            v->state = sat::csRemoved;
 
         // lengthening...
         if (v->length < v->final_length)
@@ -1762,12 +1762,12 @@ void GrowTube(anyTube *v)
         throw new Error(__FILE__, __LINE__, "Unexpected state of cell");
     }
 
-    v->taf_triggered = v->concentrations[dsTAF][conc_step_current()] > TubularSystemSettings.TAFtrigger;
+    v->taf_triggered = v->concentrations[sat::dsTAF][conc_step_current()] > TubularSystemSettings.TAFtrigger;
 
     // concentration changes...
-    v->concentrations[dsTAF][conc_step_current()] = 0;
+    v->concentrations[sat::dsTAF][conc_step_current()] = 0;
     if (v->blood_flow != 0)
-        v->concentrations[dsO2][conc_step_current()] = 1;
+        v->concentrations[sat::dsO2][conc_step_current()] = 1;
 
     // update timers...
     v->age += SimulationSettings.time_step;
@@ -1784,7 +1784,7 @@ void GrowAllTubes()
   Growth of all tubes.
 */
 {
-    if (SimulationSettings.sim_phases & spGrow)
+    if (SimulationSettings.sim_phases & sat::spGrow)
     {
         StartTimer(TimerTubeGrowId);
 
@@ -1793,7 +1793,7 @@ void GrowAllTubes()
             anyTube *v = TubeChains[i];
             while (v)
             {
-                if (v->state != csAdded)
+                if (v->state != sat::csAdded)
                     GrowTube(v);
                 v = v->next;
             }
@@ -1815,7 +1815,7 @@ void CopyConcentrations()
         {
             anyCell &currentCell = Cells[first_cell + i];
 
-            for (int k = 0; k < dsLast; k++)
+            for (int k = 0; k < sat::dsLast; k++)
               currentCell.concentrations[k][conc_step_prev()] = currentCell.concentrations[k][conc_step_current()];
         }
         first_cell += SimulationSettings.max_cells_per_box;
@@ -1838,7 +1838,7 @@ void ResetForces()
         {
             anyCell& currentCell = Cells[first_cell + i];
             currentCell.force.set(0, 0, 0);
-            currentCell.nei_cnt[ttNormal] = currentCell.nei_cnt[ttTumor] = 0;
+            currentCell.nei_cnt[sat::ttNormal] = currentCell.nei_cnt[sat::ttTumor] = 0;
         }
         first_cell += SimulationSettings.max_cells_per_box;
     }
@@ -1886,7 +1886,7 @@ void UpdatePressures()
             else
                 currentCell.pressure = (currentCell.pressure) / currentCell.r;
 
-            currentCell.pressure_avg = currentCell.pressure_sum/(currentCell.nei_cnt[ttNormal] + currentCell.nei_cnt[ttTumor] + 1);
+            currentCell.pressure_avg = currentCell.pressure_sum/(currentCell.nei_cnt[sat::ttNormal] + currentCell.nei_cnt[sat::ttTumor] + 1);
             currentCell.pressure_prev = currentCell.pressure;
             currentCell.pressure_sum = currentCell.pressure_prev;
         }
@@ -1925,7 +1925,7 @@ void RemoveTubes()
         anyTube *v = TubeChains[i];
         while (v)
         {
-            if (v->state == csRemoved)
+            if (v->state == sat::csRemoved)
             {
                 // forked?...
                 if (v->base)
@@ -1955,7 +1955,7 @@ void RemoveTubes()
 
 void BloodFlow()
 {
-    if (SimulationSettings.sim_phases & spBloodFlow)
+    if (SimulationSettings.sim_phases & sat::spBloodFlow)
     {
         StartTimer(TimerBloodFlowId);
 

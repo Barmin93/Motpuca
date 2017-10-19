@@ -88,9 +88,9 @@ void SaveSimulationSettings_ag(FILE *f, anySimulationSettings const *ss)
 
     SAVE_INT(f, ss, graph_sampling);
 
-    SAVE_REAL_N(f, ss, diffusion_coeff[dsO2], diffusion_coeff_O2);
-    SAVE_REAL_N(f, ss, diffusion_coeff[dsTAF], diffusion_coeff_TAF);
-    SAVE_REAL_N(f, ss, diffusion_coeff[dsPericytes], diffusion_coeff_Pericytes);
+    SAVE_REAL_N(f, ss, diffusion_coeff[sat::dsO2], diffusion_coeff_O2);
+    SAVE_REAL_N(f, ss, diffusion_coeff[sat::dsTAF], diffusion_coeff_TAF);
+    SAVE_REAL_N(f, ss, diffusion_coeff[sat::dsPericytes], diffusion_coeff_Pericytes);
 
     fprintf(f, " }\n");
 }
@@ -187,9 +187,9 @@ void ParseSimulationSettingsValue(FILE *f)
 
     PARSE_VALUE_INT(SimulationSettings, graph_sampling)
 
-    PARSE_VALUE_REAL_N(SimulationSettings, diffusion_coeff[dsO2], diffusion_coeff_o2)
-    PARSE_VALUE_REAL_N(SimulationSettings, diffusion_coeff[dsTAF], diffusion_coeff_taf)
-    PARSE_VALUE_REAL_N(SimulationSettings, diffusion_coeff[dsPericytes], diffusion_coeff_pericytes)
+    PARSE_VALUE_REAL_N(SimulationSettings, diffusion_coeff[sat::dsO2], diffusion_coeff_o2)
+    PARSE_VALUE_REAL_N(SimulationSettings, diffusion_coeff[sat::dsTAF], diffusion_coeff_taf)
+    PARSE_VALUE_REAL_N(SimulationSettings, diffusion_coeff[sat::dsPericytes], diffusion_coeff_pericytes)
 
     else
         throw new Error(__FILE__, __LINE__, "Unknown token in 'simulation'", TokenToString(tv), ParserFile, ParserLine);
@@ -356,9 +356,9 @@ void anyGlobalsDialog::prepare_dialog()
     dialog->spinBox_cellsperbox->setValue(SimulationSettings.max_cells_per_box);
     dialog->doubleSpinBox_forcercut->setValue(SimulationSettings.force_r_cut);
     dialog->spinBox_max_tube_chains->setValue(SimulationSettings.max_tube_chains);
-    dialog->doubleSpinBox_diffcoefO2->setValue(SimulationSettings.diffusion_coeff[dsO2]);
-    dialog->doubleSpinBox_diffcoefTAF->setValue(SimulationSettings.diffusion_coeff[dsTAF]);
-    dialog->doubleSpinBox_diffcoefPeri->setValue(SimulationSettings.diffusion_coeff[dsPericytes]);
+    dialog->doubleSpinBox_diffcoefO2->setValue(SimulationSettings.diffusion_coeff[sat::dsO2]);
+    dialog->doubleSpinBox_diffcoefTAF->setValue(SimulationSettings.diffusion_coeff[sat::dsTAF]);
+    dialog->doubleSpinBox_diffcoefPeri->setValue(SimulationSettings.diffusion_coeff[sat::dsPericytes]);
     dialog->doubleSpinBox_stop_time->setValue(SimulationSettings.stop_time);
 
     dialog->spinBox_savepovray->setValue(SimulationSettings.save_povray);
@@ -366,12 +366,12 @@ void anyGlobalsDialog::prepare_dialog()
     dialog->spinBox_savestats->setValue(SimulationSettings.save_statistics);
     dialog->spinBox_graphrate->setValue(SimulationSettings.graph_sampling);
 
-    dialog->checkBox_sim_diffusion->setChecked(SimulationSettings.sim_phases & spDiffusion);
-    dialog->checkBox_sim_forces->setChecked(SimulationSettings.sim_phases & spForces);
-    dialog->checkBox_sim_mitosis->setChecked(SimulationSettings.sim_phases & spMitosis);
-    dialog->checkBox_sim_tube_div->setChecked(SimulationSettings.sim_phases & spTubeDiv);
-    dialog->checkBox_sim_flow->setChecked(SimulationSettings.sim_phases & spBloodFlow);
-    dialog->checkBox_sim_growth->setChecked(SimulationSettings.sim_phases & spGrow);
+    dialog->checkBox_sim_diffusion->setChecked(SimulationSettings.sim_phases & sat::spDiffusion);
+    dialog->checkBox_sim_forces->setChecked(SimulationSettings.sim_phases & sat::spForces);
+    dialog->checkBox_sim_mitosis->setChecked(SimulationSettings.sim_phases & sat::spMitosis);
+    dialog->checkBox_sim_tube_div->setChecked(SimulationSettings.sim_phases & sat::spTubeDiv);
+    dialog->checkBox_sim_flow->setChecked(SimulationSettings.sim_phases & sat::spBloodFlow);
+    dialog->checkBox_sim_growth->setChecked(SimulationSettings.sim_phases & sat::spGrow);
 
     // tubular system settings...
     dialog->lineEdit_o2prod->setText(QString::number(TubularSystemSettings.o2_production));
@@ -437,21 +437,21 @@ void anyGlobalsDialog::update_from_dialog()
     SimulationSettings.max_cells_per_box = dialog->spinBox_cellsperbox->value();
     SimulationSettings.force_r_cut = dialog->doubleSpinBox_forcercut->value();
     SimulationSettings.max_tube_chains = dialog->spinBox_max_tube_chains->value();
-    SimulationSettings.diffusion_coeff[dsO2] = dialog->doubleSpinBox_diffcoefO2->value();
-    SimulationSettings.diffusion_coeff[dsTAF] = dialog->doubleSpinBox_diffcoefTAF->value();
-    SimulationSettings.diffusion_coeff[dsPericytes] = dialog->doubleSpinBox_diffcoefPeri->value();
+    SimulationSettings.diffusion_coeff[sat::dsO2] = dialog->doubleSpinBox_diffcoefO2->value();
+    SimulationSettings.diffusion_coeff[sat::dsTAF] = dialog->doubleSpinBox_diffcoefTAF->value();
+    SimulationSettings.diffusion_coeff[sat::dsPericytes] = dialog->doubleSpinBox_diffcoefPeri->value();
 
     SimulationSettings.save_povray = dialog->spinBox_savepovray->value();
     SimulationSettings.save_ag = dialog->spinBox_saveag->value();
     SimulationSettings.save_statistics = dialog->spinBox_savestats->value();
     SimulationSettings.graph_sampling = dialog->spinBox_graphrate->value();
 
-    SimulationSettings.sim_phases = dialog->checkBox_sim_diffusion->isChecked()*spDiffusion +
-                                    dialog->checkBox_sim_forces->isChecked()*spForces +
-                                    dialog->checkBox_sim_growth->isChecked()*spGrow +
-                                    dialog->checkBox_sim_mitosis->isChecked()*spMitosis +
-                                    dialog->checkBox_sim_tube_div->isChecked()*spTubeDiv +
-                                    dialog->checkBox_sim_flow->isChecked()*spBloodFlow;
+    SimulationSettings.sim_phases = dialog->checkBox_sim_diffusion->isChecked()*sat::spDiffusion +
+                                    dialog->checkBox_sim_forces->isChecked()*sat::spForces +
+                                    dialog->checkBox_sim_growth->isChecked()*sat::spGrow +
+                                    dialog->checkBox_sim_mitosis->isChecked()*sat::spMitosis +
+                                    dialog->checkBox_sim_tube_div->isChecked()*sat::spTubeDiv +
+                                    dialog->checkBox_sim_flow->isChecked()*sat::spBloodFlow;
     SimulationSettings.stop_time = billion_to_inf(dialog->doubleSpinBox_stop_time->value());
 
     // tubular system settings...

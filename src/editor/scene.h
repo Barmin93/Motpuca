@@ -13,24 +13,12 @@
 #include "transform.h"
 #include "func.h"
 #include "log.h"
+#include "anytube.h"
 
 #ifdef QT_CORE_LIB
 #include "columnresizer.h"
 #include "ui_dialogEditable.h"
 #endif
-
-
-enum CellState { csAdded, csRemoved, csAlive, csHypoxia, csApoptosis, csNecrosis, csLast };  ///< states of cell. csAdded and csRemoved must be at the beginnig
-extern char const *CellState_names[];
-
-enum TissueType { ttNormal, ttTumor };
-extern char const *TissueType_names[];
-
-enum BarrierType { btIn, btOut };
-extern char const *BarrierType_names[];
-
-enum DiffundingSubstances {dsO2, dsTAF, dsPericytes, dsLast};
-extern char const *DiffundingSubstances_names[];
 
 class anyTissueSettings;
 extern anyTissueSettings *FindTissueSettings(char const *name);
@@ -270,9 +258,9 @@ class anyBarrier: public anyEditable
 */
 {
 public:
-    BarrierType type;          ///< type
+    sat::BarrierType type;          ///< type
 
-    anyBarrier(): type(btIn)
+    anyBarrier(): type(sat::btIn)
     {}
 
     virtual ~anyBarrier() {}
@@ -283,7 +271,7 @@ public:
         tb->clear();
         tb->append(QObject::tr("BARRIER"));
         tb->append("");
-        if (type == btIn)
+        if (type == sat::btIn)
             tb->append(QObject::tr("type: ") + "<b>" + QObject::tr("in") + "</b>");
         else
             tb->append(QObject::tr("type: ") + "<b>" + QObject::tr("out") + "</b>");
@@ -296,7 +284,7 @@ public:
     virtual char *get_name()
     {
         static char buff[50];
-        if (type == btIn)
+        if (type == sat::btIn)
             snprintf(buff, 50, "barrier (keeps cells inside)");
         else
             snprintf(buff, 50, "barrier (keeps cells outside)");
@@ -307,7 +295,7 @@ public:
     {
         // barriers influence on simulation bounding box only if (type == btIn)
 
-        if (type == btIn)
+        if (type == sat::btIn)
             anyEditable::update_bounding_box(from, to, first);
     }
 
@@ -340,7 +328,7 @@ public:
 
     virtual bool is_point_inside(anyVector const &p, real r)
     {
-        if (type == btIn)
+        if (type == sat::btIn)
             return anyEditable::is_point_inside(p, r);
         else
             return !anyEditable::is_point_inside(p, -r);
@@ -365,7 +353,7 @@ class anyTissueSettings: public anyEditable
 {
 public:
     anyColor color;            ///< color
-    TissueType type;           ///< type
+    sat::TissueType type;           ///< type
     char *name;                ///< unique name of tissue settings
     real cell_r;               ///< radius of mature cell [um]
     real density;              ///< tissue density [kg/m^3]
@@ -392,11 +380,11 @@ public:
 
     // aux fields...
     int id;                    ///< id of tissue (0, 1,...)
-    int no_cells[csLast];      ///< number of cells (0 - all; 2...5 - for every state)
+    int no_cells[sat::csLast];      ///< number of cells (0 - all; 2...5 - for every state)
     real pressure_sum;         ///< sum of cell pressures
     real pressure;             ///< average pressure
 
-    anyTissueSettings(): color(0, 0, 0), type(ttNormal), name(0), cell_r(10), density(1),
+    anyTissueSettings(): color(0, 0, 0), type(sat::ttNormal), name(0), cell_r(10), density(1),
                          cell_grow_speed(0), minimum_interphase_time(0), time_to_apoptosis(MAX_REAL), time_to_necrosis(0),
                          time_to_necrosis_var(0),
                          time_in_necrosis(0), dead_r(1),
@@ -405,7 +393,7 @@ public:
                          max_pressure(0), o2_consumption(7.5e-9), pericyte_production(0), o2_hypoxia(0),
                          next(0), id(0), pressure_sum(0), pressure(0)
     {
-        for (int i = 0; i < csLast; i++)
+        for (int i = 0; i < sat::csLast; i++)
             no_cells[i] = 0;
     }
 
@@ -458,10 +446,10 @@ public:
         tb->append(QObject::tr("name: ") + " <b>" + name + "</b>");
         switch (type)
         {
-        case ttNormal:
+        case sat::ttNormal:
             tb->append(QObject::tr("type: ") + " <b>" + QObject::tr("NORMAL") + "</b>");
             break;
-        case ttTumor:
+        case sat::ttTumor:
             tb->append(QObject::tr("type: ") + " <b>" + QObject::tr("TUMOR") + "</b>");
             break;
         }
@@ -503,11 +491,11 @@ class anyCellBlock: public anyEditable
 public:
     anyTissueSettings *tissue; ///< tissue
     bool generated;            ///< are cells generated?
-    real concentrations[dsLast]; ///< initial concentrations
+    real concentrations[sat::dsLast]; ///< initial concentrations
 
     anyCellBlock(): tissue(0), generated(false)
     {
-        for (int i = 0; i < dsLast; i++)
+        for (int i = 0; i < sat::dsLast; i++)
         concentrations[i] = 0;
     }
 
@@ -563,9 +551,9 @@ public:
         tb->append(QObject::tr("depth: ") + "<b>" + real_to_str(to.z - from.z) + "</b>");
         if (!generated)
         {
-            tb->append(QObject::tr("init O2 conc: ") + "<b>" + real_to_str(concentrations[dsO2]) + "</b>");
-            tb->append(QObject::tr("init TAF conc: ") + "<b>" + real_to_str(concentrations[dsTAF]) + "</b>");
-            tb->append(QObject::tr("init Pericytes conc: ") + "<b>" + real_to_str(concentrations[dsPericytes]) + "</b>");
+            tb->append(QObject::tr("init O2 conc: ") + "<b>" + real_to_str(concentrations[sat::dsO2]) + "</b>");
+            tb->append(QObject::tr("init TAF conc: ") + "<b>" + real_to_str(concentrations[sat::dsTAF]) + "</b>");
+            tb->append(QObject::tr("init Pericytes conc: ") + "<b>" + real_to_str(concentrations[sat::dsPericytes]) + "</b>");
         }
     }
 #endif
@@ -583,7 +571,7 @@ public:
     anyVector pos_h1, pos_h2;  ///< historical positions (for displacement drawing)
                                // every N steps: pos_h2 := pos_h1; pos_h1 := pos;
     real r;                    ///< current radius
-    CellState state;           ///< state
+    sat::CellState state;           ///< state
     real age;                  ///< age
     real state_age;            ///< age in current state
 
@@ -599,17 +587,17 @@ public:
     real pressure_sum;         ///< pressure sum for averaging
     int  nei_cnt[2];           ///< number of neighbouring cells (0 - normal, 1 - tumor)
     real time_to_necrosis;     ///< individual time to necrosis (in hypoxia or apoptosis)
-    real concentrations[dsLast][2];
+    real concentrations[sat::dsLast][2];
 
     bool mark;                 ///< marker (for debugging)
 
-    anyCell(): tissue(0), pos(0, 0, 0), pos_h1(-1000000000, 0, 0), pos_h2(-1000000000, 0, 0), r(0), state(csAlive), age(0), state_age(0), no_cells_in_box(0),
+    anyCell(): tissue(0), pos(0, 0, 0), pos_h1(-1000000000, 0, 0), pos_h2(-1000000000, 0, 0), r(0), state(sat::csAlive), age(0), state_age(0), no_cells_in_box(0),
         one_by_mass(0), velocity(0, 0, 0), force(0, 0, 0), pressure(0), pressure_prev(0), pressure_avg(0), pressure_sum(0), time_to_necrosis(0),
                mark(false)
     {
-        for (int i =0; i < dsLast; i++)
+        for (int i =0; i < sat::dsLast; i++)
             concentrations[i][0] = concentrations[i][1] = 0;
-        nei_cnt[ttNormal] = nei_cnt[ttTumor] = 0;
+        nei_cnt[sat::ttNormal] = nei_cnt[sat::ttTumor] = 0;
     }
 };
 
@@ -802,107 +790,6 @@ public:
 };
 
 
-class anyTube
-/**
-  Structure defining tube.
-*/
-{
-public:
-    anyVector pos1;    ///< tip #1 of tube
-    anyVector pos2;    ///< tip #2 of tube
-    real length;       ///< length of tube
-    real final_length; ///< final length of tube
-    real r;            ///< radius
-    real final_r;      ///< final radius
-    CellState state;   ///< state of tube
-    real age;          ///< age
-    real state_age;    ///< age in current state
-    real flow_time;    ///< time of last blood flow
-
-    anyVector velocity1; /// velocity in tip #1
-    anyVector velocity2; /// velocity in tip #2
-    anyVector force1;  ///< force in tip #1
-    anyVector force2;  ///< force in tip #2
-
-    anyTube *next;   ///< next tube in chain
-    anyTube *prev;   ///< previous tube in chain
-    anyTube *fork;   ///< link to first tube in forking chain
-    anyTube *base;   ///< link to base tube of first forked tube
-    anyTube *top;    ///< link to base tube of last forked tube
-    anyTube *jab;    ///< link to attached tube
-
-    real concentrations[dsLast][2];
-
-    bool fixed_blood_pressure; ///< is blood pressure fixed?
-    real blood_pressure; ///< blood pressure
-
-    // aux values...
-    bool taf_triggered; ///< enough TAF for sprouting?
-    real blood_flow;    ///< blood flows
-
-    int id;            ///< tube id
-    int parsed_id;     ///< id read from input file
-    int base_id;       ///< id of read base tube
-    int top_id;        ///< id of read top tube
-    int nx, ny, nz;    ///< minimum bounding box
-    real one_by_mass;  ///< 1/mass
-    real pressure;             ///< pressure - real value of pressure in cell, may not be used in visualization or any calculations inside CellCellForces
-    real pressure_prev;        ///< pressure in previous step (for calculating pressure_avg in nei. cells)
-    real pressure_avg;         ///< average pressure - may not be used for visualization  or any calculations inside CellCellForces
-    real pressure_sum;         ///< pressure sum for averaging
-    int  nei_cnt;              ///< number of neighbouring cells
-
-    anyTube(): pos1(0, 0, 0), pos2(0, 0, 0), length(0), final_length(0), r(0), final_r(0), state(csAlive), age(0), state_age(0), flow_time(0),
-                 velocity1(0, 0, 0), velocity2(0, 0, 0), force1(0, 0, 0), force2(0, 0, 0),
-                 next(0), prev(0), fork(0), base(0), top(0), jab(0),
-                 fixed_blood_pressure(false), blood_pressure(0),
-                 taf_triggered(false), blood_flow(0), id(0), parsed_id(0), base_id(0), top_id(0), one_by_mass(0),
-                 pressure(0), pressure_prev(0), pressure_avg(0), pressure_sum(0), nei_cnt(0)
-    {
-        for (int i = 0; i < dsLast; i++)
-            concentrations[i][0] = concentrations[i][1] = 0;
-    }
-
-    anyVector smooth_pos1() const
-    {
-        anyVector p = pos1;
-        if (prev)
-            p = (p + prev->pos2)*0.5;
-        else if (base)
-            p = (p + base->smooth_pos1() + base->smooth_pos2())*0.333333333333;
-
-        return p;
-    }
-
-    anyVector smooth_pos2() const
-    {
-        anyVector p = pos2;
-        if (next)
-            p = (p + next->pos1)*0.5;
-        else if (top)
-            p = (p + top->smooth_pos1() + top->smooth_pos2())*0.333333333333;
-
-        return p;
-    }
-
-};
-
-
-class anyTubeBox
-{
-public:
-    int no_tubes;
-    anyTube **tubes;
-
-    anyTubeBox(): no_tubes(0), tubes(0) {}
-};
-
-
-class anyTubeMerge
-{
-public:
-    anyTube *t1, *t2;
-};
 
 
 extern anyBarrier *FirstBarrier;
