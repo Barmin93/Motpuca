@@ -36,6 +36,9 @@
 *.app
 
 ### Qt ###
+*.Debug
+*.Release
+
 # C++ objects and libs
 
 
