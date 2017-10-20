@@ -2407,57 +2407,6 @@ anyTube *FindTubeById(int id, bool current)
     return 0;
 }
 
-void anyBoundingBox::update_bounding_box_by_point(anyVector v, anyVector &u_from, anyVector &u_to, bool &first)
-{
-    v = trans*v;
-    if (first)
-    {
-        u_from = v;
-        u_to = v;
-        first = false;
-    }
-    else
-    {
-        if (v.x < u_from.x)
-            u_from.x = v.x;
-        if (v.x > u_to.x)
-            u_to.x = v.x;
-
-        if (v.y < u_from.y)
-            u_from.y = v.y;
-        if (v.y > u_to.y)
-            u_to.y = v.y;
-
-        if (v.z < u_from.z)
-            u_from.z = v.z;
-        if (v.z > u_to.z)
-            u_to.z = v.z;
-    }
-}
-
-
-void anyBoundingBox::update_bounding_box(anyVector &u_from, anyVector &u_to, bool &first)
-{
-    anyVector v;
-
-    v.set(from.x, from.y, from.z);
-    update_bounding_box_by_point(v, u_from, u_to, first);
-    v.set(from.x, from.y, to.z);
-    update_bounding_box_by_point(v, u_from, u_to, first);
-    v.set(from.x, to.y,   from.z);
-    update_bounding_box_by_point(v, u_from, u_to, first);
-    v.set(from.x, to.y,   to.z);
-    update_bounding_box_by_point(v, u_from, u_to, first);
-    v.set(to.x,   from.y, from.z);
-    update_bounding_box_by_point(v, u_from, u_to, first);
-    v.set(to.x,   from.y, to.z);
-    update_bounding_box_by_point(v, u_from, u_to, first);
-    v.set(to.x,   to.y,   from.z);
-    update_bounding_box_by_point(v, u_from, u_to, first);
-    v.set(to.x,   to.y,   to.z);
-    update_bounding_box_by_point(v, u_from, u_to, first);
-}
-
 
 #ifdef QT_CORE_LIB
 void anyEditableDialog::slot_ok_clicked()
