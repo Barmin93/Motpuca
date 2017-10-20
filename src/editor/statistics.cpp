@@ -2,6 +2,7 @@
 #include "scene.h"
 #include "statistics.h"
 #include "log.h"
+#include "anytube.h"
 
 anyStatData *Statistics = 0;
 anyStatData *LastStatistics = 0;
@@ -28,7 +29,7 @@ void DeallocStatistics()
 
 void AddStatistics(int step, int tissue_id, int state_id, int count)
 {
-    if (tissue_id > NoTissueSettings || state_id >= sat::csLast)
+    if (tissue_id > scene::NoTissueSettings || state_id >= sat::csLast)
         return;
 
     anyStatData *sd;
@@ -41,8 +42,8 @@ void AddStatistics(int step, int tissue_id, int state_id, int count)
         sd = new anyStatData;
 
         sd->step = step;
-        sd->counter = new int[(NoTissueSettings + 1)*sat::csLast];
-        for (int i = 0; i < (NoTissueSettings + 1)*sat::csLast; i++)
+        sd->counter = new int[(scene::NoTissueSettings + 1)*sat::csLast];
+        for (int i = 0; i < (scene::NoTissueSettings + 1)*sat::csLast; i++)
             sd->counter[i] = 0;
 
         // add to linked list...
@@ -52,8 +53,8 @@ void AddStatistics(int step, int tissue_id, int state_id, int count)
 
             // reset max values...
             delete [] MaxStatistics.counter;
-            MaxStatistics.counter = new int[(NoTissueSettings + 1)*sat::csLast]; // 0,1,2,3,4    5,6,7,8,9    10,11,12,13,14
-            for (int i = 0; i < (NoTissueSettings + 1)*sat::csLast; i++)
+            MaxStatistics.counter = new int[(scene::NoTissueSettings + 1)*sat::csLast]; // 0,1,2,3,4    5,6,7,8,9    10,11,12,13,14
+            for (int i = 0; i < (scene::NoTissueSettings + 1)*sat::csLast; i++)
                 MaxStatistics.counter[i] = 0;
         }
         else
@@ -69,7 +70,7 @@ void AddStatistics(int step, int tissue_id, int state_id, int count)
 
 void AddAllStatistics()
 {
-    anyTissueSettings *ts = FirstTissueSettings;
+    anyTissueSettings *ts = scene::FirstTissueSettings;
 
     // reset counters...
     while (ts)
@@ -79,19 +80,19 @@ void AddAllStatistics()
         ts = ts->next;
     }
 
-    // count cells...
+    // count scene::Cells...
     int first_cell = 0;
     for (int box_id = 0; box_id < SimulationSettings.no_boxes; box_id++)
     {
-        int no_cells = Cells[first_cell].no_cells_in_box;
+        int no_cells = scene::Cells[first_cell].no_cells_in_box;
         for (int i = 0; i < no_cells; i++)
-            if (Cells[first_cell + i].state >= sat::csAlive)
-                Cells[first_cell + i].tissue->no_cells[Cells[first_cell + i].state]++;
+            if (scene::Cells[first_cell + i].state >= sat::csAlive)
+                scene::Cells[first_cell + i].tissue->no_cells[scene::Cells[first_cell + i].state]++;
 
         first_cell += SimulationSettings.max_cells_per_box;
     }
 
-    ts = FirstTissueSettings;
+    ts = scene::FirstTissueSettings;
     while (ts)
     {
         for (int i = 0; i < sat::csLast; i++)
@@ -100,19 +101,19 @@ void AddAllStatistics()
     }
 
     // count tubes...
-    AddStatistics(SimulationSettings.step, NoTissueSettings, 0, NoTubes);
+    AddStatistics(SimulationSettings.step, scene::NoTissueSettings, 0, scene::NoTubes);
     int fl = 0;
-    for (int i = 0; i < NoTubeChains; i++)
+    for (int i = 0; i < scene::NoTubeChains; i++)
     {
-        anyTube *v = TubeChains[i];
+        anyTube *v = scene::TubeChains[i];
         while (v)
         {
             if (v->blood_flow != 0) fl++;
             v = v->next;
         }
     }
-    AddStatistics(SimulationSettings.step, NoTissueSettings, sat::csAlive, fl);
-    AddStatistics(SimulationSettings.step, NoTissueSettings, sat::csHypoxia, NoTubeChains);
+    AddStatistics(SimulationSettings.step, scene::NoTissueSettings, sat::csAlive, fl);
+    AddStatistics(SimulationSettings.step, scene::NoTissueSettings, sat::csHypoxia, scene::NoTubeChains);
 }
 
 
@@ -130,9 +131,9 @@ void SaveStatistics(char const *fname)
     {
         // header...
         fprintf(f, "time; ");
-        for (int i = 0; i < NoTissueSettings; i++)
+        for (int i = 0; i < scene::NoTissueSettings; i++)
         {
-            anyTissueSettings *t = FindTissueSettingById(i);
+            anyTissueSettings *t = scene::FindTissueSettingById(i);
 
             fprintf(f, "%s; ", t->name);
             fprintf(f, "%s (%s); ", t->name, "ALIVE");
@@ -151,9 +152,9 @@ void SaveStatistics(char const *fname)
         {
             fprintf(f, "%.1f; ", sd->step*SimulationSettings.time_step);
 
-            for (int i = 0; i < NoTissueSettings + 1; i++)
+            for (int i = 0; i < scene::NoTissueSettings + 1; i++)
             {
-                if (i < NoTissueSettings)
+                if (i < scene::NoTissueSettings)
                 {
                     fprintf(f, "%d; ", sd->counter[i*sat::csLast]);
                     fprintf(f, "%d; ", sd->counter[i*sat::csLast + sat::csAlive]);

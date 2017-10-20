@@ -36,13 +36,13 @@ public:
 
         if (width() > 0 && Statistics)
         {
-            int fy = (height() - GR_V_SPACE)/(NoTissueSettings + 1);
+            int fy = (height() - GR_V_SPACE)/(scene::NoTissueSettings + 1);
 
-            for (int i = 0; i < NoTissueSettings + 1; i++)
+            for (int i = 0; i < scene::NoTissueSettings + 1; i++)
             {
-                set_frame(GR_MARGIN_LEFT, GR_V_SPACE + (NoTissueSettings - 1 - i + 1)*fy, width() - GR_MARGIN_RIGHT, (NoTissueSettings - i + 1)*fy);
-                anyTissueSettings *t = FindTissueSettingById(i);
-                if (i < NoTissueSettings)
+                set_frame(GR_MARGIN_LEFT, GR_V_SPACE + (scene::NoTissueSettings - 1 - i + 1)*fy, width() - GR_MARGIN_RIGHT, (scene::NoTissueSettings - i + 1)*fy);
+                anyTissueSettings *t = scene::FindTissueSettingById(i);
+                if (i < scene::NoTissueSettings)
                     paint_frame(painter, MaxStatistics.counter[i*sat::csLast], t->name);
                 else
                     paint_frame(painter, MaxStatistics.counter[i*sat::csLast], MODEL_TUBE_NAME_PL);

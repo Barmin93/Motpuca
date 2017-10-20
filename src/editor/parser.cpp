@@ -12,6 +12,12 @@
 #include "log.h"
 #include "config.h"
 
+#include "anytube.h"
+#include "anybarrier.h"
+#include "anycellblock.h"
+#include "anytubebundle.h"
+#include "anytubeline.h"
+
 static const char *char_newline      = "\n"; ///< newline characters
 static const char *char_ident_start  = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"; ///< ident starting characters
 static const char *char_ident        = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789"; ///< ident characters
@@ -514,30 +520,30 @@ void ParseFile(char const *fname, bool store_filename)
             else if (!StrCmp(Token.str, "simulation"))
             {
                 ParseSimulationSettings(f);
-                DeallocSimulation();
+                scene::DeallocSimulation();
 //                AllocSimulation();
             }
 
             else if (!StrCmp(Token.str, "tissue"))
-                ParseTissueSettings(f, new anyTissueSettings, true);
+                scene::ParseTissueSettings(f, new anyTissueSettings, true);
 
             else if (!StrCmp(Token.str, "barrier"))
-                ParseBarrier(f, new anyBarrier, true);
+                scene::ParseBarrier(f, new anyBarrier, true);
 
             else if (!StrCmp(Token.str, "cellblock"))
-                ParseCellBlock(f, new anyCellBlock, true);
+                scene::ParseCellBlock(f, new anyCellBlock, true);
 
             else if (!StrCmp(Token.str, "cell"))
-                ParseCell(f);
+                scene::ParseCell(f);
 
             else if (!StrCmp(Token.str, "tube"))
-                ParseTube(f);
+                scene::ParseTube(f);
 
             else if (!StrCmp(Token.str, "tubeline"))
-                ParseTubeLine(f, new anyTubeLine, true);
+                scene::ParseTubeLine(f, new anyTubeLine, true);
 
             else if (!StrCmp(Token.str, "tubebundle"))
-                ParseTubeBundle(f, new anyTubeBundle, true);
+                scene::ParseTubeBundle(f, new anyTubeBundle, true);
 
             else
                 throw new Error(__FILE__, __LINE__, "Unexpected keyword", TokenToString(Token), ParserFile, ParserLine);
@@ -552,7 +558,7 @@ void ParseFile(char const *fname, bool store_filename)
 
     fclose(f);
 
-    RelinkTubes();
+    scene::RelinkTubes();
 
     // store filename and output directory...
     if (store_filename)

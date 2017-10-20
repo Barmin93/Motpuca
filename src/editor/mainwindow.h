@@ -8,8 +8,9 @@
 #include <QMessageBox>
 #include <QProcess>
 
-#include "scene.h"
+
 #include "const.h"
+#include "anyeditable.h"
 
 #define SHOW_BARRIERS 1
 #define SHOW_COMPBOX  2

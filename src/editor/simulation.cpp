@@ -16,6 +16,8 @@
 #include "timers.h"
 #include "scene.h"
 
+#include "anytube.h"
+#include "anybarrier.h"
 
 
 
@@ -242,11 +244,11 @@ void GrowCell(anyCell *c)
 
             //double time_step = (double)SimulationSettings.step;
             //auto cos = (time_step*time_step*time_step* 100000) /216000000000 ;
-            anyTissueSettings *ts = FindTissueSettings("epidermis");
+            anyTissueSettings *ts = scene::FindTissueSettings("epidermis");
             nc->tissue = ts;
             nc->pos += anyVector(0,c->r,0);
             c->pos_h1.x = c->pos_h2.x = nc->pos_h1.x = nc->pos_h2.x = -1000000000;
-            AddCell(nc);
+            scene::AddCell(nc);
         }
     }else if (SimulationSettings.sim_phases & sat::spMitosis
         && SimulationSettings.step > 1  //< pressures are calculated in steps 0 & 1
@@ -264,7 +266,7 @@ void GrowCell(anyCell *c)
 
         // shrink cell...
         c->r *= 0.79;
-        SetCellMass(c);
+        scene::SetCellMass(c);
 
         // change age...
         c->age = 0;
@@ -284,7 +286,7 @@ void GrowCell(anyCell *c)
            && (rand() % 100000 < cos)
         ){
 
-            anyTissueSettings *ts = FindTissueSettings("melanoma1");
+            anyTissueSettings *ts = scene::FindTissueSettings("melanoma1");
             nc->tissue = ts;
             mutation = false;
         }
@@ -294,7 +296,7 @@ void GrowCell(anyCell *c)
         nc->pos -= d;
         c->pos_h1.x = c->pos_h2.x = nc->pos_h1.x = nc->pos_h2.x = -1000000000;
 
-        AddCell(nc);
+        scene::AddCell(nc);
     }
 
     // tissue change...
@@ -322,7 +324,7 @@ void GrowCell(anyCell *c)
             c->r += c->tissue->cell_grow_speed*SimulationSettings.time_step;
             if (c->r > tissue->cell_r)
                 c->r = tissue->cell_r;
-            SetCellMass(c);
+            scene::SetCellMass(c);
         }
         break;
     case sat::csApoptosis:
@@ -341,7 +343,7 @@ void GrowCell(anyCell *c)
             c->r -= tissue->cell_shrink_speed*SimulationSettings.time_step;
             if (c->r < tissue->dead_r)
                 c->r = tissue->dead_r;
-            SetCellMass(c);
+            scene::SetCellMass(c);
         }
         break;
     default:
@@ -368,11 +370,11 @@ void GrowAllCells()
         int first_cell = 0;
         for (int box_id = 0; box_id < SimulationSettings.no_boxes; box_id++)
         {
-            int no_cells = Cells[first_cell].no_cells_in_box;
+            int no_cells = scene::Cells[first_cell].no_cells_in_box;
             for (int i = 0; i < no_cells; i++)
                 // grow only active cells...
-                if (Cells[first_cell + i].state != sat::csRemoved)
-                    GrowCell(Cells + first_cell + i);
+                if (scene::Cells[first_cell + i].state != sat::csRemoved)
+                    GrowCell(scene::Cells + first_cell + i);
 
             first_cell += SimulationSettings.max_cells_per_box;
         }
@@ -391,12 +393,12 @@ void UpdateTubes()
 
     // reset boxes...
     for (int i = 0; i < SimulationSettings.no_boxes; i++)
-        BoxedTubes[i].no_tubes = 0;
+        scene::BoxedTubes[i].no_tubes = 0;
 
     // loop over all tubes...
-    for (int i = 0; i < NoTubeChains; i++)
+    for (int i = 0; i < scene::NoTubeChains; i++)
     {
-        anyTube *v = TubeChains[i];
+        anyTube *v = scene::TubeChains[i];
         while (v)
         {
             // assign to box...
@@ -440,8 +442,8 @@ void UpdateTubes()
                         for (int box_z = box_z_1; box_z <= box_z_2; box_z++)
                         {
                     int box_id = BOX_ID(box_x, box_y, box_z);
-                    if (BoxedTubes[box_id].no_tubes < SimulationSettings.max_cells_per_box)
-                        BoxedTubes[box_id].tubes[BoxedTubes[box_id].no_tubes++] = v;
+                    if (scene::BoxedTubes[box_id].no_tubes < SimulationSettings.max_cells_per_box)
+                        scene::BoxedTubes[box_id].tubes[scene::BoxedTubes[box_id].no_tubes++] = v;
                     cnt++;
                 }
             }
@@ -473,39 +475,39 @@ void RearrangeCells()
         for (int box_y = 0; box_y < SimulationSettings.no_boxes_y; box_y++)
             for (int box_x = 0; box_x < SimulationSettings.no_boxes_x; box_x++, box_id++)
             {
-                int no_cells = Cells[first_cell].no_cells_in_box;
+                int no_cells = scene::Cells[first_cell].no_cells_in_box;
                 if (no_cells > SimulationSettings.max_max_cells_per_box)
                     SimulationSettings.max_max_cells_per_box = no_cells;
                 for (int i = 0; i < no_cells; i++)
                 {
                     // promote cell?...
-                    if (Cells[first_cell + i].state == sat::csAdded)
-                        Cells[first_cell + i].state = sat::csAlive;
+                    if (scene::Cells[first_cell + i].state == sat::csAdded)
+                        scene::Cells[first_cell + i].state = sat::csAlive;
                     // remove cell?
-                    else if (Cells[first_cell + i].state == sat::csRemoved)
+                    else if (scene::Cells[first_cell + i].state == sat::csRemoved)
                     {
                         // remove cell...
-                        Cells[first_cell + i].tissue->no_cells[0]--;
+                        scene::Cells[first_cell + i].tissue->no_cells[0]--;
                         if (i != no_cells - 1)
-                            Cells[first_cell + i] = Cells[first_cell + no_cells - 1];
-                        Cells[first_cell].no_cells_in_box = no_cells - 1;
+                            scene::Cells[first_cell + i] = scene::Cells[first_cell + no_cells - 1];
+                        scene::Cells[first_cell].no_cells_in_box = no_cells - 1;
                         i--;
                         no_cells--;
                         continue;
                     }
 
                     // move to other box?...
-                    if (floor((Cells[first_cell + i].pos.x - SimulationSettings.comp_box_from.x)/SimulationSettings.box_size) != box_x
-                        || floor((Cells[first_cell + i].pos.y - SimulationSettings.comp_box_from.y)/SimulationSettings.box_size) != box_y
-                        || floor((Cells[first_cell + i].pos.z - SimulationSettings.comp_box_from.z)/SimulationSettings.box_size) != box_z)
+                    if (floor((scene::Cells[first_cell + i].pos.x - SimulationSettings.comp_box_from.x)/SimulationSettings.box_size) != box_x
+                        || floor((scene::Cells[first_cell + i].pos.y - SimulationSettings.comp_box_from.y)/SimulationSettings.box_size) != box_y
+                        || floor((scene::Cells[first_cell + i].pos.z - SimulationSettings.comp_box_from.z)/SimulationSettings.box_size) != box_z)
                     {
                         // add cell to proper box...
-                        AddCell(Cells + first_cell + i);
+                        scene::AddCell(scene::Cells + first_cell + i);
 
-                        Cells[first_cell + i].tissue->no_cells[0]--;
+                        scene::Cells[first_cell + i].tissue->no_cells[0]--;
                         if (i != no_cells - 1)
-                            Cells[first_cell + i] = Cells[first_cell + no_cells - 1];
-                        Cells[first_cell].no_cells_in_box = no_cells - 1;
+                            scene::Cells[first_cell + i] = scene::Cells[first_cell + no_cells - 1];
+                        scene::Cells[first_cell].no_cells_in_box = no_cells - 1;
                         i--;
                         no_cells--;
                         continue;
@@ -526,15 +528,15 @@ void ConnectTubeChains()
     StartTimer(TimerConnectTubeChainsId);
 
     // find all tubes which start in last tube in the other chain...
-    for (int i = 0; i < NoTubeChains; i++)
+    for (int i = 0; i < scene::NoTubeChains; i++)
     {
-        anyTube *vl = FindLastTube(TubeChains[i]);
+        anyTube *vl = scene::FindLastTube(scene::TubeChains[i]);
 
         // case #1...
         if (vl->top && !vl->top->next && !vl->top->top)
         {
             // connect at tip...
-            AddTubesToMerge(vl, vl->top);
+            scene::AddTubesToMerge(vl, vl->top);
 
             // disconnect at current position...
             vl->top->jab = 0;
@@ -542,14 +544,14 @@ void ConnectTubeChains()
         }
 
         // case #2...
-        if (TubeChains[i]->base && !TubeChains[i]->base->next && !TubeChains[i]->base->top)
+        if (scene::TubeChains[i]->base && !scene::TubeChains[i]->base->next && !scene::TubeChains[i]->base->top)
         {
-            TubeChains[i]->base->next = TubeChains[i];
-            TubeChains[i]->base->fork = 0;
-            TubeChains[i]->prev = TubeChains[i]->base;
-            TubeChains[i]->base = 0;
+            scene::TubeChains[i]->base->next = scene::TubeChains[i];
+            scene::TubeChains[i]->base->fork = 0;
+            scene::TubeChains[i]->prev = scene::TubeChains[i]->base;
+            scene::TubeChains[i]->base = 0;
 
-            TubeChains[i] = TubeChains[--NoTubeChains];
+            scene::TubeChains[i] = scene::TubeChains[--scene::NoTubeChains];
             i--;
         }
     }
@@ -786,13 +788,13 @@ void cell_cell_forces_box2(int box1_first_cell, int box1_no_cells, int box2_x, i
 
     int box2_box_id = BOX_ID(box2_x, box2_y, box2_z);
     int box2_first_cell = box2_box_id*SimulationSettings.max_cells_per_box;
-    int box2_no_cells = Cells[box2_first_cell].no_cells_in_box;
+    int box2_no_cells = scene::Cells[box2_first_cell].no_cells_in_box;
 
     if (!box2_no_cells) return;
 
     for (int i = 0; i < box1_no_cells; i++)
         for (int j = 0; j < box2_no_cells; j++)
-            cell_cell_force(Cells + box1_first_cell + i, Cells + box2_first_cell + j);
+            cell_cell_force(scene::Cells + box1_first_cell + i, scene::Cells + box2_first_cell + j);
 }
 
 
@@ -812,14 +814,14 @@ void CellCellForces()
         for (int box_y = 0; box_y < SimulationSettings.no_boxes_y; box_y++)
             for (int box_x = 0; box_x < SimulationSettings.no_boxes_x; box_x++, box_id++)
             {
-                no_cells = Cells[first_cell].no_cells_in_box;
+                no_cells = scene::Cells[first_cell].no_cells_in_box;
 
                 if (no_cells)
                 {
                     // inner-box forces...
                     for (int i = 0; i < no_cells - 1; i++)
                         for (int j = i + 1; j < no_cells; j++)
-                            cell_cell_force(Cells + first_cell + i, Cells + first_cell + j);
+                            cell_cell_force(scene::Cells + first_cell + i, scene::Cells + first_cell + j);
 
                     // inter-box forces...
                     // (+1, 0, 0)...
@@ -1017,7 +1019,7 @@ void CellBarrierForces()
     {
         StartTimer(TimerCellBarrierForcesId);
 
-        anyBarrier *b = FirstBarrier;
+        anyBarrier *b = scene::FirstBarrier;
 
         while (b)
         {
@@ -1025,15 +1027,15 @@ void CellBarrierForces()
             int first_cell = 0;
             for (int box_id = 0; box_id < SimulationSettings.no_boxes; box_id++)
             {
-                int no_cells = Cells[first_cell].no_cells_in_box;
+                int no_cells = scene::Cells[first_cell].no_cells_in_box;
                 for (int i = 0; i < no_cells; i++)
                     // grow only active cells...
-                    if (Cells[first_cell + i].state != sat::csRemoved)
+                    if (scene::Cells[first_cell + i].state != sat::csRemoved)
                     {
                     if (b->type == sat::btIn)
-                        cell_barrier_in_force(b, Cells + first_cell + i);
+                        cell_barrier_in_force(b, scene::Cells + first_cell + i);
                     else
-                        cell_barrier_out_force(b, Cells + first_cell + i);
+                        cell_barrier_out_force(b, scene::Cells + first_cell + i);
                 }
 
                 first_cell += SimulationSettings.max_cells_per_box;
@@ -1053,7 +1055,7 @@ void TissueProperties()
 {
     StartTimer(TimerTissuePropertiesId);
 
-    anyTissueSettings *ts = FirstTissueSettings;
+    anyTissueSettings *ts = scene::FirstTissueSettings;
 
     // reset pressures...
     while (ts)
@@ -1067,18 +1069,18 @@ void TissueProperties()
     int first_cell = 0;
     for (int box_id = 0; box_id < SimulationSettings.no_boxes; box_id++)
     {
-        int no_cells = Cells[first_cell].no_cells_in_box;
+        int no_cells = scene::Cells[first_cell].no_cells_in_box;
         for (int i = 0; i < no_cells; i++)
-            if (Cells[first_cell + i].state != sat::csRemoved)
+            if (scene::Cells[first_cell + i].state != sat::csRemoved)
             {
-               Cells[first_cell + i].tissue->pressure_sum += Cells[first_cell + i].pressure_avg;
+               scene::Cells[first_cell + i].tissue->pressure_sum += scene::Cells[first_cell + i].pressure_avg;
             }
         first_cell += SimulationSettings.max_cells_per_box;
     }
 
 
     // calculate average pressures...
-    ts = FirstTissueSettings;
+    ts = scene::FirstTissueSettings;
     while (ts)
     {
         if (ts->no_cells[0] > 0)
@@ -1331,7 +1333,7 @@ void tube_tube_force(anyTube *v1, anyTube *v2)
         if (!v1->next && !v1->top && !v2->next && !v2->top)
         {
             if ((v1->pos2 - v2->pos2).length2() < SimulationSettings.force_r_cut2)
-                AddTubesToMerge(v1, v2);
+                scene::AddTubesToMerge(v1, v2);
         }
 
         // tube connecting (case #2 - top->middle)
@@ -1374,9 +1376,9 @@ void TubeTubeInChainsForces()
   Calculates forces between joined tubes.
 */
 {
-    for (int i = 0; i < NoTubeChains; i++)
+    for (int i = 0; i < scene::NoTubeChains; i++)
     {
-        anyTube *v = TubeChains[i];
+        anyTube *v = scene::TubeChains[i];
         while (v)
         {
             if (v->next)
@@ -1404,12 +1406,12 @@ void TubeTubeOutChainsForces()
             for (int box_x = 0; box_x < SimulationSettings.no_boxes_x; box_x++, box_id++)
             {
                 // loop over all pairs of tubes in box...
-                for (int i = 0; i < BoxedTubes[box_id].no_tubes - 1; i++)
-                    for (int j = i + 1; j < BoxedTubes[box_id].no_tubes; j++)
+                for (int i = 0; i < scene::BoxedTubes[box_id].no_tubes - 1; i++)
+                    for (int j = i + 1; j < scene::BoxedTubes[box_id].no_tubes; j++)
                     {
-                        v1 = BoxedTubes[box_id].tubes[i];
-                        v2 = BoxedTubes[box_id].tubes[j];
-                        if (!TubesJoined(v1, v2) && box_x == MAX(v1->nx, v2->nx) && box_y == MAX(v1->ny, v2->ny) && box_z == MAX(v1->nz, v2->nz))
+                        v1 = scene::BoxedTubes[box_id].tubes[i];
+                        v2 = scene::BoxedTubes[box_id].tubes[j];
+                        if (!scene::TubesJoined(v1, v2) && box_x == MAX(v1->nx, v2->nx) && box_y == MAX(v1->ny, v2->ny) && box_z == MAX(v1->nz, v2->nz))
                             tube_tube_force(v1, v2);
                     }
     }
@@ -1440,9 +1442,9 @@ void TubeLengthForces()
   Keeps defined length of all tubes.
 */
 {
-    for (int i = 0; i < NoTubeChains; i++)
+    for (int i = 0; i < scene::NoTubeChains; i++)
     {
-        anyTube *v = TubeChains[i];
+        anyTube *v = scene::TubeChains[i];
         while (v)
         {
             tube_length_force(v);
@@ -1535,9 +1537,9 @@ void TubeCellForces()
         StartTimer(TimerTubeCellForcesId);
 
         // loop for every tube...
-        for (int i = 0; i < NoTubeChains; i++)
+        for (int i = 0; i < scene::NoTubeChains; i++)
         {
-            anyTube *v = TubeChains[i];
+            anyTube *v = scene::TubeChains[i];
             while (v)
             {
                 // corner boxes...
@@ -1562,12 +1564,12 @@ void TubeCellForces()
                             {
                                 // loop over all particles in box...
                                 int first_cell = BOX_ID(x, y, z)*SimulationSettings.max_cells_per_box;
-                                int no_cells = Cells[first_cell].no_cells_in_box;
+                                int no_cells = scene::Cells[first_cell].no_cells_in_box;
                                 for (int j = 0; j < no_cells; j++)
                                 // only active cells...
-                                if (Cells[first_cell + j].state != sat::csRemoved)
+                                if (scene::Cells[first_cell + j].state != sat::csRemoved)
                                 {
-                                    tube_cell_force(v, Cells + first_cell + j);
+                                    tube_cell_force(v, scene::Cells + first_cell + j);
                                 }
                             }
                 v = v->next;
@@ -1661,10 +1663,10 @@ void GrowTube(anyTube *v)
         anyVector mid_point = (v->pos1 + v->pos2)*0.5;
         v2->pos1 = v->pos2 = mid_point;
         v2->length = v->length = v->length*0.5;
-        SetTubeMass(v);
+        scene::SetTubeMass(v);
         v2->one_by_mass = v->one_by_mass;
 
-        AddTube(v2, false, false);
+        scene::AddTube(v2, false, false);
 
         // linkage...
         v->next = v2;
@@ -1714,10 +1716,10 @@ void GrowTube(anyTube *v)
 
         v2->length = v->final_length*0.1;
         v2->r = v->final_r*0.5;
-        SetTubeMass(v2);
+        scene::SetTubeMass(v2);
         //v2->one_by_mass *= 10;
 
-        AddTube(v2, false, true);
+        scene::AddTube(v2, false, true);
 
         // linkage...
         v->fork = v2;
@@ -1745,7 +1747,7 @@ void GrowTube(anyTube *v)
             v->length += TubularSystemSettings.lengthening_speed*SimulationSettings.time_step;
             if (v->length > v->final_length)
                 v->length = v->final_length;
-            SetTubeMass(v);
+            scene::SetTubeMass(v);
         }
 
         // thickening...
@@ -1754,7 +1756,7 @@ void GrowTube(anyTube *v)
             v->r += TubularSystemSettings.thickening_speed*SimulationSettings.time_step;
             if (v->r > v->final_r)
                 v->r = v->final_r;
-            SetTubeMass(v);
+            scene::SetTubeMass(v);
         }
 
         break;
@@ -1788,9 +1790,9 @@ void GrowAllTubes()
     {
         StartTimer(TimerTubeGrowId);
 
-        for (int i = 0; i < NoTubeChains; i++)
+        for (int i = 0; i < scene::NoTubeChains; i++)
         {
-            anyTube *v = TubeChains[i];
+            anyTube *v = scene::TubeChains[i];
             while (v)
             {
                 if (v->state != sat::csAdded)
@@ -1810,10 +1812,10 @@ void CopyConcentrations()
     int first_cell = 0;
     for (int box_id = 0; box_id < SimulationSettings.no_boxes; box_id++)
     {
-        int no_cells = Cells[first_cell].no_cells_in_box;
+        int no_cells = scene::Cells[first_cell].no_cells_in_box;
         for (int i = 0; i < no_cells; i++)
         {
-            anyCell &currentCell = Cells[first_cell + i];
+            anyCell &currentCell = scene::Cells[first_cell + i];
 
             for (int k = 0; k < sat::dsLast; k++)
               currentCell.concentrations[k][conc_step_prev()] = currentCell.concentrations[k][conc_step_current()];
@@ -1833,10 +1835,10 @@ void ResetForces()
     int first_cell = 0;
     for (int box_id = 0; box_id < SimulationSettings.no_boxes; box_id++)
     {
-        int no_cells = Cells[first_cell].no_cells_in_box;
+        int no_cells = scene::Cells[first_cell].no_cells_in_box;
         for (int i = 0; i < no_cells; i++)
         {
-            anyCell& currentCell = Cells[first_cell + i];
+            anyCell& currentCell = scene::Cells[first_cell + i];
             currentCell.force.set(0, 0, 0);
             currentCell.nei_cnt[sat::ttNormal] = currentCell.nei_cnt[sat::ttTumor] = 0;
         }
@@ -1844,9 +1846,9 @@ void ResetForces()
     }
 
     // tubes...
-    for (int i = 0; i < NoTubeChains; i++)
+    for (int i = 0; i < scene::NoTubeChains; i++)
     {
-        anyTube *v = TubeChains[i];
+        anyTube *v = scene::TubeChains[i];
         while (v)
         {
             v->force1.set(0, 0, 0);
@@ -1870,10 +1872,10 @@ void UpdatePressures()
     int first_cell = 0;
     for (int box_id = 0; box_id < SimulationSettings.no_boxes; box_id++)
     {
-        int no_cells = Cells[first_cell].no_cells_in_box;
+        int no_cells = scene::Cells[first_cell].no_cells_in_box;
         for (int i = 0; i < no_cells; i++)
         {
-            anyCell &currentCell = Cells[first_cell + i];
+            anyCell &currentCell = scene::Cells[first_cell + i];
             /* Pressure is counted from forces and should conform following conditions:
             * -when system is in stable state, pressure should have similiar values in all cells
             * -when pressure is not equall, system should move to position in which it will be equall
@@ -1895,9 +1897,9 @@ void UpdatePressures()
     }
 
     // tubes...
-    for (int i = 0; i < NoTubeChains; i++)
+    for (int i = 0; i < scene::NoTubeChains; i++)
     {
-        anyTube *v = TubeChains[i];
+        anyTube *v = scene::TubeChains[i];
         while (v)
         {
             if (SimulationSettings.dimensions == 3)
@@ -1920,9 +1922,9 @@ void RemoveTubes()
 {
     StartTimer(TimerRemoveTubesId);
 
-    for (int i = 0; i < NoTubeChains; i++)
+    for (int i = 0; i < scene::NoTubeChains; i++)
     {
-        anyTube *v = TubeChains[i];
+        anyTube *v = scene::TubeChains[i];
         while (v)
         {
             if (v->state == sat::csRemoved)
@@ -1937,12 +1939,12 @@ void RemoveTubes()
                 else
                 {
                     // first in chain...
-                    TubeChains[i] = TubeChains[--NoTubeChains];
+                    scene::TubeChains[i] = scene::TubeChains[--scene::NoTubeChains];
                     i--;
                 }
 
                 delete v;
-                NoTubes--;
+                scene::NoTubes--;
                 break;
             }
             v = v->next;
@@ -1960,9 +1962,9 @@ void BloodFlow()
         StartTimer(TimerBloodFlowId);
 
         // pressure recalculation...
-        for (int i = 0; i < NoTubeChains; i++)
+        for (int i = 0; i < scene::NoTubeChains; i++)
         {
-            anyTube *v = TubeChains[i];
+            anyTube *v = scene::TubeChains[i];
             while (v)
             {
                 if (!v->fixed_blood_pressure)
@@ -2012,9 +2014,9 @@ void BloodFlow()
 
 
 
-        for (int i = 0; i < NoTubeChains; i++)
+        for (int i = 0; i < scene::NoTubeChains; i++)
         {
-            anyTube *v = TubeChains[i];
+            anyTube *v = scene::TubeChains[i];
             while (v)
             {
                 real p1 = 0, p2 = 0;
@@ -2098,7 +2100,7 @@ void TimeStep()
     ConnectTubeChains();
 
     // merge tube chains..., timer: TimerMergeTubesId
-    MergeTubes();
+    scene::MergeTubes();
 
     // update pressures..., timer: TimerUpdatePressuresId
     UpdatePressures();

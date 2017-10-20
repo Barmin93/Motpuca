@@ -151,7 +151,7 @@ protected:
         {
             MainWindowPtr->selected_object->scale_event(event->delta(), MainWindowPtr->X_checked(), MainWindowPtr->Y_checked(), MainWindowPtr->Z_checked());
             MainWindowPtr->display_properties();
-            UpdateSimulationBox();
+            scene::UpdateSimulationBox();
             SaveNeeded(true);
         }
         else

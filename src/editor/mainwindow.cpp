@@ -17,8 +17,13 @@
 #include "simulation.h"
 #include "timers.h"
 #include "statistics.h"
+#include "scene.h"
 
-
+#include "anytube.h"
+#include "anybarrier.h"
+#include "anycellblock.h"
+#include "anytubebundle.h"
+#include "anytubeline.h"
 
 MainWindow *MainWindowPtr = 0;
 
@@ -245,12 +250,12 @@ void MainWindow::load_scene(const char *fname)
 {
     try
     {
-        DeallocSimulation();
-        DeallocateCellBlocks();
-        DeallocateTubeLines();
-        DeallocateTubeBundles();
-        DeallocateTissueSettings();
-        DeallocateBarriers();
+        scene::DeallocSimulation();
+        scene::DeallocateCellBlocks();
+        scene::DeallocateTubeLines();
+        scene::DeallocateTubeBundles();
+        scene::DeallocateTissueSettings();
+        scene::DeallocateBarriers();
         DeallocateDefinitions();
 
         SimulationSettings.reset();
@@ -370,13 +375,13 @@ void MainWindow::run_simulation()
         }
 
         if (SimulationSettings.save_povray && SimulationSettings.step % SimulationSettings.save_povray == 0)
-            SavePovRay(0, true);
+            scene::SavePovRay(0, true);
 
         if (SimulationSettings.save_ag && SimulationSettings.step % SimulationSettings.save_ag == 0)
         {
             char fname[P_MAX_PATH];
             snprintf(fname, P_MAX_PATH, "%sstep_%08d.ag", GlobalSettings.output_dir, SimulationSettings.step);
-            SaveAG(fname, true);
+            scene::SaveAG(fname, true);
         }
 
         if (!get_run_repaint() && t.elapsed() > 1 + 990*!(ui->checkBox_slow->isChecked()))
@@ -497,11 +502,11 @@ void MainWindow::on_pushButton_gen_blocks_clicked()
     try
     {
         if (!GlobalSettings.simulation_allocated)
-            AllocSimulation();
+            scene::AllocSimulation();
 
-        GenerateTubesInAllTubeBundles();
-        GenerateTubesInAllTubeLines();
-        GenerateCellsInAllBlocks();
+        scene::GenerateTubesInAllTubeBundles();
+        scene::GenerateTubesInAllTubeLines();
+        scene::GenerateCellsInAllBlocks();
     }
     catch (Error *err)
     {
@@ -570,7 +575,7 @@ void MainWindow::display_statistics()
     ui->textBrowser_stats->append(tr("STATISTICS"));
     ui->textBrowser_stats->append("");
 
-    anyTissueSettings *ts = FirstTissueSettings;
+    anyTissueSettings *ts = scene::FirstTissueSettings;
 
     // global data...
     ui->textBrowser_stats->append(tr("Time: ") + SecToString(SimulationSettings.time));
@@ -599,13 +604,13 @@ void MainWindow::display_statistics()
 
     // tubes...
     ui->textBrowser_stats->append("");
-    ui->textBrowser_stats->append(QString("<b>") + MODEL_TUBECHAIN_SHORTNAME_PL + QString("</b>") + ": " + QString::number(NoTubeChains));
-    ui->textBrowser_stats->append(QString("<b>") + MODEL_TUBE_SHORTNAME_PL + QString("</b>") + ": " + QString::number(NoTubes));
+    ui->textBrowser_stats->append(QString("<b>") + MODEL_TUBECHAIN_SHORTNAME_PL + QString("</b>") + ": " + QString::number(scene::NoTubeChains));
+    ui->textBrowser_stats->append(QString("<b>") + MODEL_TUBE_SHORTNAME_PL + QString("</b>") + ": " + QString::number(scene::NoTubes));
 
     // global...
     ui->textBrowser_stats->append("");
     ui->textBrowser_stats->append(QString("<b>") + tr("totals") + QString("</b>"));
-    ui->textBrowser_stats->append(tr("  cells: ") + QString::number(no_cells) + " + " + QString::number(NoTubes));
+    ui->textBrowser_stats->append(tr("  cells: ") + QString::number(no_cells) + " + " + QString::number(scene::NoTubes));
     if (no_cells > 0)
         ui->textBrowser_stats->append(tr("  pressure: ") + QString::number(pressure_sum/no_cells, 'g', 3));
     ui->textBrowser_stats->append(tr("  max cells in box: ") + QString::number(SimulationSettings.max_max_cells_per_box) +
@@ -654,7 +659,7 @@ bool MainWindow::on_pushButton_SaveAs_clicked()
         if (!dialog.exec())
             return false;
 
-        SaveAG(dialog.selectedFiles().at(0).toLatin1(), true);
+        scene::SaveAG(dialog.selectedFiles().at(0).toLatin1(), true);
     }
     catch (Error *err)
     {
@@ -684,7 +689,7 @@ void MainWindow::on_pushButton_PovRay_Save_clicked()
         if (!dialog.exec())
             return;
 
-        SavePovRay(dialog.selectedFiles().at(0).toLatin1(), false);
+        scene::SavePovRay(dialog.selectedFiles().at(0).toLatin1(), false);
     }
     catch (Error *err)
     {
@@ -695,7 +700,7 @@ void MainWindow::on_pushButton_PovRay_Save_clicked()
 
 void MainWindow::on_pushButton_VTK_Save_clicked()
 {
-    SaveVTK();
+    scene::SaveVTK();
 }
 
 
@@ -730,7 +735,7 @@ void MainWindow::display_tree_objects(anyEditable *o)
 
 
     // barriers...
-    anyBarrier *b = FirstBarrier;
+    anyBarrier *b = scene::FirstBarrier;
     int cnt = 0;
     int cnt_all = 0;
     while (b)
@@ -747,7 +752,7 @@ void MainWindow::display_tree_objects(anyEditable *o)
     tree_barriers->setHidden(!cnt);
 
     // tissues...
-    anyTissueSettings *ts = FirstTissueSettings;
+    anyTissueSettings *ts = scene::FirstTissueSettings;
     cnt = 0;
     while (ts)
     {
@@ -763,7 +768,7 @@ void MainWindow::display_tree_objects(anyEditable *o)
     tree_tissues->setHidden(!cnt);
 
     // cell blocks...
-    anyCellBlock *cb = FirstCellBlock;
+    anyCellBlock *cb = scene::FirstCellBlock;
     cnt = 0;
     while (cb)
     {
@@ -782,7 +787,7 @@ void MainWindow::display_tree_objects(anyEditable *o)
     tree_blocks->setHidden(!cnt);
 
     // tube bundles...
-    anyTubeBundle *vb = FirstTubeBundle;
+    anyTubeBundle *vb = scene::FirstTubeBundle;
     cnt = 0;
     while (vb)
     {
@@ -798,7 +803,7 @@ void MainWindow::display_tree_objects(anyEditable *o)
     tree_bundles->setHidden(!cnt);
 
     // tube lines...
-    anyTubeLine *vl = FirstTubeLine;
+    anyTubeLine *vl = scene::FirstTubeLine;
     cnt = 0;
     while (vl)
     {
@@ -1029,16 +1034,16 @@ void MainWindow::slot_set_buttons()
 {
     // running simulation...
     int no_cells = 0;
-    anyTissueSettings *ts = FirstTissueSettings;
+    anyTissueSettings *ts = scene::FirstTissueSettings;
     while (ts)
     {
         no_cells += ts->no_cells[0];
         ts = ts->next;
     }
 
-    ui->pushButton_run->setEnabled(no_cells + NoTubes > 0 && !simulation_running);
-    ui->pushButton_run_gpu->setEnabled(no_cells + NoTubes > 0 && !simulation_running);
-    ui->pushButton_step->setEnabled(no_cells + NoTubes > 0 && !simulation_running);
+    ui->pushButton_run->setEnabled(no_cells + scene::NoTubes > 0 && !simulation_running);
+    ui->pushButton_run_gpu->setEnabled(no_cells + scene::NoTubes > 0 && !simulation_running);
+    ui->pushButton_step->setEnabled(no_cells + scene::NoTubes > 0 && !simulation_running);
     ui->pushButton_stop->setEnabled(simulation_running);
 
     ui->pushButton_gen_blocks->setEnabled(!simulation_running);
@@ -1298,7 +1303,7 @@ void MainWindow::on_tabWidget_currentChanged(int index)
         char fname[P_MAX_PATH];
         snprintf(fname, P_MAX_PATH, "%sscene.tmp", GlobalSettings.temp_dir);
 
-        SaveAG(fname, true);
+        scene::SaveAG(fname, true);
 
         ui->textEdit_src->clear();
 //        QFile f2(fname);

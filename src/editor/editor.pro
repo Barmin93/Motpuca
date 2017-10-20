@@ -26,7 +26,18 @@ HEADERS += mainwindow.h \
     glmodel.h \
     openglstaff.h \
     glshaderprogram.h \
-    anytube.h
+    anytube.h \
+    anycell.h \
+    anyboundingbox.h \
+    anyeditabledialog.h \
+    anyeditable.h \
+    anytissuesettings.h \
+    anycellblock.h \
+    anybarrier.h \
+    anytubebundle.h \
+    anytubeline.h \
+    anytubebox.h \
+    anytubemerge.h
 SOURCES += mainwindow.cpp \
     glwidget.cpp \
     main.cpp \
@@ -43,7 +54,16 @@ SOURCES += mainwindow.cpp \
     parser.cpp \
     glmodel.cpp \
     glshaderprogram.cpp \
-    anytube.cpp
+    anytube.cpp \
+    anycell.cpp \
+    anyboundingbox.cpp \
+    anyeditabledialog.cpp \
+    anyeditable.cpp \
+    anytissuesettings.cpp \
+    anycellblock.cpp \
+    anybarrier.cpp \
+    anytubebundle.cpp \
+    anytubeline.cpp
 FORMS += mainwindow.ui \
     dialogEditable.ui \
     dialogGlobals.ui \

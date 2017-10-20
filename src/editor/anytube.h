@@ -3,6 +3,11 @@
 
 #include "const.h"
 #include "vector.h"
+#include "anyeditable.h"
+#include "log.h"
+#include "model.h"
+#include "scene.h"
+#include "types.h"
 
 class anyTube
 /**
@@ -78,23 +83,6 @@ public:
         return p;
     }
 
-};
-
-
-class anyTubeBox
-{
-public:
-    int no_tubes;
-    anyTube **tubes;
-
-    anyTubeBox(): no_tubes(0), tubes(0) {}
-};
-
-
-class anyTubeMerge
-{
-public:
-    anyTube *t1, *t2;
 };
 
 #endif // ANYTUBE_H

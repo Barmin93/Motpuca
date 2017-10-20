@@ -8,3 +8,4 @@ anyCell::anyCell() : tissue(0), pos(0, 0, 0), pos_h1(-1000000000, 0, 0), pos_h2(
         concentrations[i][0] = concentrations[i][1] = 0;
     nei_cnt[sat::ttNormal] = nei_cnt[sat::ttTumor] = 0;
 }
+

@@ -7,6 +7,12 @@
 #include "color.h"
 #include "glmodel.h"
 
+#include "anytube.h"
+#include "anycellblock.h"
+#include "anybarrier.h"
+#include "anytubebundle.h"
+#include "anytubeline.h"
+
 void GLWidget::initializeGL()
 /**
   OpenGL initialization.
@@ -235,7 +241,7 @@ void GLWidget::draw_all_barriers()
   Draws all barriers.
 */
 {
-    anyBarrier *b = FirstBarrier;
+    anyBarrier *b = scene::FirstBarrier;
     while (b)
     {
         draw_barrier(b, MainWindowPtr->is_object_selected(b));
@@ -268,7 +274,7 @@ void GLWidget::draw_all_cell_blocks()
   Draws boundary of all cell blocks.
 */
 {
-    anyCellBlock *b = FirstCellBlock;
+    anyCellBlock *b = scene::FirstCellBlock;
     while (b)
     {
         draw_cell_block(b, MainWindowPtr->is_object_selected(b));
@@ -300,7 +306,7 @@ void GLWidget::draw_all_tube_lines()
   Draws boundary of all tube lines.
 */
 {
-    anyTubeLine *vl = FirstTubeLine;
+    anyTubeLine *vl = scene::FirstTubeLine;
     while (vl)
     {
         draw_tube_line(vl, MainWindowPtr->is_object_selected(vl));
@@ -314,7 +320,7 @@ void GLWidget::draw_all_tube_bundles()
   Draws boundary of all tube bundles.
 */
 {
-    anyTubeBundle *vb = FirstTubeBundle;
+    anyTubeBundle *vb = scene::FirstTubeBundle;
     while (vb)
     {
         draw_tube_bundle(vb, MainWindowPtr->is_object_selected(vb));
@@ -351,7 +357,7 @@ void GLWidget::draw_all_boxes(bool clip)
         for (int box_y = 0; box_y < SimulationSettings.no_boxes_y; box_y++)
             for (int box_x = 0; box_x < SimulationSettings.no_boxes_x; box_x++, box_id++)
             {
-                int no_cells = Cells[first_cell].no_cells_in_box + 1;
+                int no_cells = scene::Cells[first_cell].no_cells_in_box + 1;
                 anyVector box_center = anyVector(box_x, box_y, box_z)*SimulationSettings.box_size + SimulationSettings.comp_box_from +
                         anyVector(SimulationSettings.box_size/2, SimulationSettings.box_size/2, SimulationSettings.box_size/2);
 
@@ -494,14 +500,14 @@ void GLWidget::draw_all_cells(bool clip)
  Draws all cells.
 */
 {
-    if (!Cells) return;
+    if (!scene::Cells) return;
 
     // calculate number of cells...
     int total_no_cells = 0;
     int first_cell = 0;
     for (int box_id = 0; box_id < SimulationSettings.no_boxes; box_id++)
     {
-        total_no_cells += Cells[first_cell].no_cells_in_box;
+        total_no_cells += scene::Cells[first_cell].no_cells_in_box;
         first_cell += SimulationSettings.max_cells_per_box;
     }
     if (!total_no_cells)
@@ -524,20 +530,20 @@ void GLWidget::draw_all_cells(bool clip)
     cell_instance_to_draw_cnt = 0;
     for (int box_id = 0; box_id < SimulationSettings.no_boxes; box_id++)
     {
-        int no_cells = Cells[first_cell].no_cells_in_box;
+        int no_cells = scene::Cells[first_cell].no_cells_in_box;
         for (int i = 0; i < no_cells; i++)
             // draw only active cells...
-            if (Cells[first_cell + i].state != sat::csRemoved)
+            if (scene::Cells[first_cell + i].state != sat::csRemoved)
             {
-                p_avg += Cells[first_cell + i].pressure_avg;
+                p_avg += scene::Cells[first_cell + i].pressure_avg;
                 p_cnt++;
                 if (!clip ||
-                        Cells[first_cell + i].pos.x*VisualSettings.clip_plane[0] +
-                        Cells[first_cell + i].pos.y*VisualSettings.clip_plane[1] +
-                        Cells[first_cell + i].pos.z*VisualSettings.clip_plane[2] +
+                        scene::Cells[first_cell + i].pos.x*VisualSettings.clip_plane[0] +
+                        scene::Cells[first_cell + i].pos.y*VisualSettings.clip_plane[1] +
+                        scene::Cells[first_cell + i].pos.z*VisualSettings.clip_plane[2] +
                         VisualSettings.clip_plane[3] > 0
                         )
-                    draw_cell(Cells + first_cell + i, pressure_min, pressure_max);
+                    draw_cell(scene::Cells + first_cell + i, pressure_min, pressure_max);
             }
 
         first_cell += SimulationSettings.max_cells_per_box;
@@ -659,9 +665,9 @@ void GLWidget::draw_all_tubes()
  Draws all tubes.
 */
 {
-    for (int i = 0; i < NoTubeChains; i++)
+    for (int i = 0; i < scene::NoTubeChains; i++)
     {
-        anyTube *v = TubeChains[i];
+        anyTube *v = scene::TubeChains[i];
         while (v)
         {
             draw_tube(v);
@@ -765,7 +771,7 @@ void GLWidget::draw_legend()
     if (color_mode & COLOR_MODE_TISSUE_COLOR)
     {
         // tissue colors...
-        anyTissueSettings *ts = FirstTissueSettings;
+        anyTissueSettings *ts = scene::FirstTissueSettings;
         int ts_cnt = 0;
         while (ts)
         {
@@ -898,7 +904,7 @@ void GLWidget::selected_object_move(QMouseEvent *event)
         MainWindowPtr->selected_object->rotation_event(VisualSettings.v_matrix*d, MainWindowPtr->X_checked(), MainWindowPtr->Y_checked(), MainWindowPtr->Z_checked());
     }
 
-    UpdateSimulationBox();
+    scene::UpdateSimulationBox();
     SaveNeeded(true);
 }
 

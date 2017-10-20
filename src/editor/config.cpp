@@ -492,6 +492,114 @@ void SaveNeeded(bool needed)
     GlobalSettings.save_needed = needed;
     MainWindowPtr->set_save_needed(needed);
 }
+
+
+void ParseSimulationSettings(FILE *f)
+/**
+  Parses global simulation settings.
+
+  \param f -- input file
+*/
+{
+    // get '{'...
+    GetNextToken(f, false);
+    if (Token.type != TT_Symbol || Token.symbol != '{')
+        throw new Error(__FILE__, __LINE__, "Bad block start ('{' expected)", TokenToString(Token), ParserFile, ParserLine);
+
+    // parse...
+    while (23)
+    {
+        GetNextToken(f, false);
+
+        if (Token.type == TT_Ident)
+            ParseSimulationSettingsValue(f);
+
+        // end of 'tissue' body?...
+        else if (Token.type == TT_Symbol && Token.symbol == '}')
+            break;
+
+        // end of input file?...
+        else if (Token.type == TT_Eof)
+            throw new Error(__FILE__, __LINE__, "Unexpected end of file", TokenToString(Token), ParserFile, ParserLine);
+
+        else
+            throw new Error(__FILE__, __LINE__, "Unexpected token (not string)", TokenToString(Token), ParserFile, ParserLine);
+    }
+
+    SimulationSettings.calculate_derived_values();
+}
+
+
+void ParseTubularSystemSettings(FILE *f)
+/**
+  Parses tubular system settings.
+
+  \param f -- input file
+*/
+{
+    // get '{'...
+    GetNextToken(f, false);
+    if (Token.type != TT_Symbol || Token.symbol != '{')
+        throw new Error(__FILE__, __LINE__, "Bad block start ('{' expected)", TokenToString(Token), ParserFile, ParserLine);
+
+    // parse...
+    while (23)
+    {
+        GetNextToken(f, false);
+
+        if (Token.type == TT_Ident)
+            ParseTubularSystemSettingsValue(f);
+
+        // end of 'TubularSystemSettings' body?...
+        else if (Token.type == TT_Symbol && Token.symbol == '}')
+            break;
+
+        // end of input file?...
+        else if (Token.type == TT_Eof)
+            throw new Error(__FILE__, __LINE__, "Unexpected end of file", TokenToString(Token), ParserFile, ParserLine);
+
+        else
+            throw new Error(__FILE__, __LINE__, "Unexpected token (not string)", TokenToString(Token), ParserFile, ParserLine);
+    }
+}
+
+
+void ParseVisualSettings(FILE *f)
+/**
+  Parses global visual settings.
+
+  \param f -- input file
+*/
+{
+    // get '{'...
+    GetNextToken(f, false);
+    if (Token.type != TT_Symbol || Token.symbol != '{')
+        throw new Error(__FILE__, __LINE__, "Bad block start ('{' expected)", TokenToString(Token), ParserFile, ParserLine);
+
+    // parse...
+    while (23)
+    {
+        GetNextToken(f, false);
+
+        if (Token.type == TT_Ident)
+            ParseVisualSettingsValue(f);
+
+        // end of 'tissue' body?...
+        else if (Token.type == TT_Symbol && Token.symbol == '}')
+            break;
+
+        // end of input file?...
+        else if (Token.type == TT_Eof)
+            throw new Error(__FILE__, __LINE__, "Unexpected end of file", TokenToString(Token), ParserFile, ParserLine);
+
+        else
+            throw new Error(__FILE__, __LINE__, "Unexpected token (not string)", TokenToString(Token), ParserFile, ParserLine);
+    }
+
+    VisualSettings.comp_light_dir();
+}
+
+
 #endif
 
 
