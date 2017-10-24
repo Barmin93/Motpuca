@@ -15,6 +15,22 @@
 #include <map>
 #include <iostream>
 #include <string>
+#include "types.h"
+
+namespace c{
+    // kernel radius (promien odciecia)
+    const real H                = 0.03125f; //def = 0.03125f
+    const real gasStiffness     = 20.0f; // incompressibility can only be obtained as k -> infinity.   [N*m/kg]
+    const real restDensity      = 200.0f; //115.f   [kg/m^3]
+    const real particleMass     = 0.0018f; // m = ρ*(0.66*H)^3   [kg]
+    const real viscosity        = 20.0f; //0.005f; def = 1.5f  // [N*s / m^2]
+    const real surfaceTension   = 0.25f;
+    const real interfaceTension = 0.15f;
+    const real surfaceThreshold = 0.00001f;
+    const real gravityAcc       = -9.80665f;
+    const real PIf = 3.14159265358979323846f;
+
+}
 
 namespace sat {
     enum CellState { csAdded, csRemoved, csAlive, csHypoxia, csApoptosis, csNecrosis, csLast };  ///< states of cell. csAdded and csRemoved must be at the beginnig
