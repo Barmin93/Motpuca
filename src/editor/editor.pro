@@ -73,6 +73,8 @@ win32:RC_FILE = editor.rc
 QMAKE_CFLAGS_RELEASE = -O3
 QMAKE_CXXFLAGS_RELEASE = -O3
 QMAKE_CXXFLAGS_WARN_OFF -= -Wunused-parameter
+QMAKE_CXXFLAGS+= -fopenmp
+QMAKE_LFLAGS +=  -fopenmp
 
 OTHER_FILES +=
 

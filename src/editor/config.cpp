@@ -8,9 +8,7 @@
 #include "log.h"
 #include "parser.h"
 
-#ifdef QT_CORE_LIB
 #include "mainwindow.h"
-#endif
 
 
 anyGlobalSettings GlobalSettings;               ///< global settings

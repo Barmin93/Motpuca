@@ -5,6 +5,8 @@
 
 #include "log.h"
 #include "timers.h"
+#include <QTextStream>
+QTextStream out(stdout);
 
 
 static struct timeb ProgramStart = {0,0,0,0};  ///< Time of program start in seconds and milliseconds (set by first call to Time())

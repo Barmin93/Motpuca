@@ -10,7 +10,8 @@
 #include "../editor/simulation.h"
 #include "../editor/statistics.h"
 #include "../editor/model.h"
-
+#include "../editor/mainwindow.h"
+#include "../editor/log.h"
 
 #define PROG_DIR_WIN "/Desktop/Motpuca"
 #define PROG_DIR_WIN_DBG "/Desktop/Motpuca"
@@ -41,12 +42,12 @@ bool load_scene(const char *fname, const char *directory)
     setup_directories(directory);
     try
     {
-        DeallocSimulation();
-        DeallocateCellBlocks();
-        DeallocateTubeLines();
-        DeallocateTubeBundles();
-        DeallocateTissueSettings();
-        DeallocateBarriers();
+        scene::DeallocSimulation();
+        scene::DeallocateCellBlocks();
+        scene::DeallocateTubeLines();
+        scene::DeallocateTubeBundles();
+        scene::DeallocateTissueSettings();
+        scene::DeallocateBarriers();
         DeallocateDefinitions();
 
         SimulationSettings.reset();
@@ -72,11 +73,11 @@ void generate_scene()
     try
     {
         if (!GlobalSettings.simulation_allocated)
-            AllocSimulation();
+            scene::AllocSimulation();
 
-        GenerateTubesInAllTubeBundles();
-        GenerateTubesInAllTubeLines();
-        GenerateCellsInAllBlocks();
+        scene::GenerateTubesInAllTubeBundles();
+        scene::GenerateTubesInAllTubeLines();
+        scene::GenerateCellsInAllBlocks();
     }
     catch (Error *err)
     {
@@ -90,14 +91,14 @@ void display_statistics()
     printf("Step: %d; Time: %s", SimulationSettings.step, SecToString(SimulationSettings.time));
 
     // loop over all tissues...
-    anyTissueSettings *ts = FirstTissueSettings;
+    anyTissueSettings *ts = scene::FirstTissueSettings;
     while (ts)
     {
         printf("; %s: %d", ts->name, ts->no_cells[0]);
         ts = ts->next;
     }
 
-    printf("; %s: %d (%d)\n", MODEL_TUBE_SHORTNAME_PL_PCHAR, NoTubes, NoTubeChains);
+    printf("; %s: %d (%d)\n", MODEL_TUBE_SHORTNAME_PL_PCHAR, scene::NoTubes, scene::NoTubeChains);
 }
 
 
@@ -128,8 +129,8 @@ int main(int argc, char **argv)
 {
     printf("%s, %d.%d.%d\n", APP_NAME, MOTPUCA_VERSION, MOTPUCA_SUBVERSION, MOTPUCA_RELEASE);
 
-    GlobalSettings.run_env = reDebug;
-    GlobalSettings.debug = (GlobalSettings.run_env != reProduction);
+    GlobalSettings.run_env = sat::reDebug;
+    GlobalSettings.debug = (GlobalSettings.run_env != sat::reProduction);
 
 
 
@@ -170,12 +171,12 @@ int main(int argc, char **argv)
             }
 
             if (SimulationSettings.save_povray && SimulationSettings.step % SimulationSettings.save_povray == 0)
-                SavePovRay(0, true);
+                scene::SavePovRay(0, true);
             if (SimulationSettings.save_ag && SimulationSettings.step % SimulationSettings.save_ag == 0)
             {
                 char fname[P_MAX_PATH];
                 snprintf(fname, P_MAX_PATH, "%sstep_%08d.ag", GlobalSettings.output_dir, SimulationSettings.step);
-                SaveAG(fname, true);
+                scene::SaveAG(fname, true);
             }
 
         }
@@ -185,7 +186,7 @@ int main(int argc, char **argv)
         {
             char fname[P_MAX_PATH];
             snprintf(fname, P_MAX_PATH, "%sstep_%08d.ag", GlobalSettings.output_dir, SimulationSettings.step);
-            SaveAG(fname, true);
+            scene::SaveAG(fname, true);
         }
     }
     catch (Error *err)

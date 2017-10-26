@@ -1,11 +1,6 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#ifdef QT_CORE_LIB
-#include <QObject>
-#include <QTextBrowser>
-#endif
-
 #include "model.h"
 #include "types.h"
 #include "vector.h"
@@ -24,10 +19,6 @@
 #include "anytubemerge.h"
 #include "anytubebox.h"
 
-#ifdef QT_CORE_LIB
-#include "columnresizer.h"
-#include "ui_dialogEditable.h"
-#endif
 
 class anyCellBlock;
 class anyBarrier;
