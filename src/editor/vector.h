@@ -25,6 +25,7 @@ public:
     void set(real _x = 0, real _y = 0, real _z = 0);
     anyVector operator-(anyVector const &v) const;
     anyVector operator*(real n) const;
+    anyVector operator/(real n) const;
     anyVector operator*(anyVector const &v) const;
     void operator*=(real n);
     bool operator==(anyVector const &v) const;

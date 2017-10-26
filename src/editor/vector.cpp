@@ -66,6 +66,11 @@ anyVector anyVector::operator*(real n) const
     return anyVector(n*x, n*y, n*z);
 }
 
+anyVector anyVector::operator/(real n) const
+{
+    return anyVector(x/n, y/n, z/n);
+}
+
 anyVector anyVector::operator*(anyVector const &v) const
 {
     return anyVector(y*v.z - z*v.y, z*v.x - x*v.z, x*v.y - y*v.x);

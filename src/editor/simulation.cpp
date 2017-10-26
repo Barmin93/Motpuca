@@ -63,57 +63,57 @@ and tend to be at their highest levels in S and at their lowest near mitosis.
 
 
 // SPH kernel functions
-//real W_poly6(real r_sq, real h_sq, real h)
-//{
-//    static real coefficient = 315.0f / (64.0f*c::PIf*pow(h, 9));
+real W_poly6(real r_sq, real h_sq, real h)
+{
+    static real coefficient = 315.0f / (64.0f*c::PIf*pow(h, 9));
 
-//    return coefficient * pow(h_sq - r_sq, 3);
-//}
+    return coefficient * pow(h_sq - r_sq, 3);
+}
 
-//anyVector GradW_poly6(real r, real h)
-//{
-//    static real coefficient = -945.0f / (32.0f*c::PIf*pow(h, 9));
+anyVector GradW_poly6(real r, real h)
+{
+    static real coefficient = -945.0f / (32.0f*c::PIf*pow(h, 9));
 
-//    return anyVector(coefficient * pow(pow(h, 2) - pow(r, 2), 2));// * r
-//}
+    return anyVector(coefficient * pow(pow(h, 2) - pow(r, 2), 2));// * r
+}
 
-//// do surface tension color field
-//real LapW_poly6(real r, real h)
-//{
-//    static real coefficient = -945.0f / (32.0f*c::PIf*pow(h, 9));
+// do surface tension color field
+real LapW_poly6(real r, real h)
+{
+    static real coefficient = -945.0f / (32.0f*c::PIf*pow(h, 9));
 
-//    return coefficient * (pow(h, 2) - pow(r, 2)) * (3.0f*pow(h, 2) - 7.0f*pow(r, 2));
-//}
+    return coefficient * (pow(h, 2) - pow(r, 2)) * (3.0f*pow(h, 2) - 7.0f*pow(r, 2));
+}
 
-//anyVector GradW_spiky(real r, real h)
-//{
-//    static real coefficient = -45.0f / (c::PIf*pow(h, 6));
+anyVector GradW_spiky(real r, real h)
+{
+    static real coefficient = -45.0f / (c::PIf*pow(h, 6));
 
-//    return anyVector(coefficient * pow((h - r), 2) / r);
-//}
+    return anyVector(coefficient * pow((h - r), 2) / r);
+}
 
-//real LapW_viscosity(real r, real h)
-//{
-//    static real coefficient = 45.0f / (c::PIf*pow(h, 6));
+real LapW_viscosity(real r, real h)
+{
+    static real coefficient = 45.0f / (c::PIf*pow(h, 6));
 
-//    return coefficient * (h - r);
-//}
+    return coefficient * (h - r);
+}
 
-//anyVector Grad_BicubicSpline(anyVector x, real h)
-//{
-//    auto const r = anyVector(x);
-//    auto const q = r / h;
-//    auto coefficient = 6.0f * (8.0f/c::PIf) / pow(h, 3);
+anyVector Grad_BicubicSpline(anyVector x, real h)
+{
+    auto const r = x.length();
+    auto const q = r / h;
+    auto coefficient = 6.0f * (8.0f/c::PIf) / pow(h, 3);
 
-//    if(0.0f <= q && q <= 0.5f)
-//        coefficient *= 3.0f * pow(q, 2) - 2.0f * q;
-//    else if(0.5f < q && q <= 1.0f)
-//        coefficient *= -1.0f * pow(1.0f - q, 2);
-//    else
-//        coefficient *= 0.0f;
-
-//    return anyVector(coefficient) * anyVector::normalize() / h;
-//}
+    if(0.0f <= q && q <= 0.5f)
+        coefficient *= 3.0f * pow(q, 2) - 2.0f * q;
+    else if(0.5f < q && q <= 1.0f)
+        coefficient *= -1.0f * pow(1.0f - q, 2);
+    else
+        coefficient *= 0.0f;
+    x.normalize();
+    return anyVector(coefficient) * x / h;
+}
 
 
 inline
