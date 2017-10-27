@@ -111,6 +111,103 @@ anyVector Grad_BicubicSpline(anyVector x, real h)
 }
 
 
+static
+void cell_density(anyCell *particle_i, anyCell *particle_j)
+/**
+  Calculate density of a cell based on densities of its neighbors
+
+  \param particle_i -- pointer to first cell; for which we calculate density
+  \param particle_j -- pointer to second cell
+*/
+{
+    const real h_sq = c::H*c::H;
+
+    anyVector rVec = particle_i->pos - particle_j->pos;
+    real r_sq = rVec.dot(rVec);
+    real r = sqrt(r_sq);
+
+    if (r > c::H)
+    {
+        return;
+    }
+    particle_i->density += W_poly6(r_sq, h_sq, c::H);
+}
+
+static
+void cell_density_box2(int box1_first_cell, int box1_no_cells, int box2_x, int box2_y, int box2_z)
+/**
+  Calculates density of cell, when its neighbors is in different box
+
+  \param box1_first_cell -- index of first cell of first box
+  \param box1_no_cells -- number of cells in first box
+  \param box2_x -- x of second box
+  \param box2_y -- y of second box
+  \param box2_z -- z of second box
+*/
+{
+    if (!VALID_BOX(box2_x, box2_y, box2_z))
+        return;
+
+    int box2_box_id = BOX_ID(box2_x, box2_y, box2_z);
+    int box2_first_cell = box2_box_id*SimulationSettings.max_cells_per_box;
+    int box2_no_cells = scene::Cells[box2_first_cell].no_cells_in_box;
+
+    if (!box2_no_cells) return;
+
+    for (int i = 0; i < box1_no_cells; i++)
+        for (int j = 0; j < box2_no_cells; j++)
+            cell_density(scene::Cells + box1_first_cell + i, scene::Cells + box2_first_cell + j);
+}
+
+void CalculateCellsDensities(){
+    StartTimer(TimerDensitiesId);
+
+
+    // calculate density
+    int box_id = 0;
+    int first_cell = 0;
+    int no_cells;
+
+    #pragma omp for schedule(static)
+    for (int box_z = 0; box_z < SimulationSettings.no_boxes_z; box_z++)
+        for (int box_y = 0; box_y < SimulationSettings.no_boxes_y; box_y++)
+            for (int box_x = 0; box_x < SimulationSettings.no_boxes_x; box_x++, box_id++)
+            {
+                no_cells = scene::Cells[first_cell].no_cells_in_box;
+
+                if (no_cells)
+                {
+                    // inner-box forces...
+                    for (int i = 0; i < no_cells - 1; i++)
+                        for (int j = i + 1; j < no_cells; j++)
+                            cell_density(scene::Cells + first_cell + i, scene::Cells + first_cell + j);
+
+                    // inter-box forces...
+                    // (+1, 0, 0)...
+                    cell_density_box2(first_cell, no_cells, box_x + 1, box_y, box_z);
+
+                    // (+1, +1, 0)...
+                    cell_density_box2(first_cell, no_cells, box_x + 1, box_y + 1, box_z);
+
+                    // (0, +1, 0)...
+                    cell_density_box2(first_cell, no_cells, box_x, box_y + 1, box_z);
+
+                    // (-1, +1, 0)...
+                    cell_density_box2(first_cell, no_cells, box_x - 1, box_y + 1, box_z);
+
+                    if (box_z < SimulationSettings.no_boxes_z - 1)
+                        for (int dx = -1; dx <= 1; dx++)
+                            for (int dy = -1; dy <= 1; dy++)
+                                // (dx, dy, +1)...
+                                cell_density_box2(first_cell, no_cells, box_x + dx, box_y + dy, box_z + 1);
+                }
+                first_cell += SimulationSettings.max_cells_per_box;
+            }
+
+    StopTimer(TimerDensitiesId);
+
+}
+
 inline
 void change_cell_state(anyCell *c, sat::CellState new_state)
 /**

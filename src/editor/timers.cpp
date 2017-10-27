@@ -19,6 +19,7 @@ int   TimerTubeUpdateId;        ///< tube array rearangement
 int   TimerResetForcesId;       ///< id of reset forces timer
 int   TimerCellCellForcesId;    ///< cell-cell forces calculation timer
 int   TimerCellBarrierForcesId; ///< cell-barrier forces calculation timer
+int   TimerDensitiesId;         ///< cell density calculation timer
 int   TimerTubeTubeForcesId;    ///< tube-tube forces
 int   TimerTubeCellForcesId;    ///< tube-cell forces
 int   TimerCellGrowId;          ///< cell growing timer
@@ -45,6 +46,7 @@ void DefineAllTimers()
     TimerCellBarrierForcesId = DefineTimer("CellBarrierForces", TimerSimulationId);
     TimerTubeTubeForcesId = DefineTimer("TubeTubeForces", TimerSimulationId);
     TimerTubeCellForcesId = DefineTimer("TubeCellForces", TimerSimulationId);
+    TimerDensitiesId = DefineTimer("Densities Calculation", TimerSimulationId);
     TimerCellGrowId = DefineTimer("GrowAllCells", TimerSimulationId);
     TimerTubeGrowId = DefineTimer("GrowAllTubes", TimerSimulationId);
     TimerRearangeId = DefineTimer("RearangeCells", TimerSimulationId);

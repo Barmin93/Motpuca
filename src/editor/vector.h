@@ -18,6 +18,7 @@ public:
     anyVector(real _x);
     real length2() const;
     real length() const;
+    real dot (anyVector const &v);
     void normalize();
     anyVector operator+(anyVector const &v) const;
     void operator+=(anyVector const &v);

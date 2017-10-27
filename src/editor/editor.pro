@@ -37,7 +37,11 @@ HEADERS += mainwindow.h \
     anytubebundle.h \
     anytubeline.h \
     anytubebox.h \
-    anytubemerge.h
+    anytubemerge.h \
+    anyglobalsettings.h \
+    anyvisualsettings.h \
+    anysimulationsettings.h \
+    anytubularsystemsettings.h
 SOURCES += mainwindow.cpp \
     glwidget.cpp \
     main.cpp \
@@ -63,7 +67,11 @@ SOURCES += mainwindow.cpp \
     anycellblock.cpp \
     anybarrier.cpp \
     anytubebundle.cpp \
-    anytubeline.cpp
+    anytubeline.cpp \
+    anyglobalsettings.cpp \
+    anyvisualsettings.cpp \
+    anysimulationsettings.cpp \
+    anytubularsystemsettings.cpp
 FORMS += mainwindow.ui \
     dialogEditable.ui \
     dialogGlobals.ui \

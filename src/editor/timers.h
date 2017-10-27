@@ -11,6 +11,7 @@ extern int TimerCellBarrierForcesId;
 extern int TimerTubeTubeForcesId;
 extern int TimerTubeCellForcesId;
 extern int TimerCellGrowId;
+extern int TimerDensitiesId;
 extern int TimerTubeGrowId;
 extern int TimerRearangeId;
 extern int TimerRemoveTubesId;

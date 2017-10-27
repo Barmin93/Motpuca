@@ -94,148 +94,6 @@ void SaveSimulationSettings_ag(FILE *f, anySimulationSettings const *ss)
 }
 
 
-void ParseVisualSettingsValue(FILE *f)
-/**
-  Parses 'visual' block.
-
-  \param f -- input file
-*/
- {
-    anyToken tv;
-
-    // store value name...
-    tv = Token;
-
-    // get '='...
-    GetNextToken(f, false);
-    if (Token.type != TT_Symbol || Token.symbol != '=')
-        throw new Error(__FILE__, __LINE__, "Syntax error ('=' expected)", TokenToString(Token), ParserFile, ParserLine);
-
-    // get value...
-    GetNextToken(f, true);
-
-    // assign value...
-    if (0) ;
-    PARSE_VALUE_INT(VisualSettings, window_width)
-    PARSE_VALUE_INT(VisualSettings, window_height)
-
-    PARSE_VALUE_COLOR(VisualSettings, bkg_color)
-    PARSE_VALUE_COLOR(VisualSettings, axis_x_color)
-    PARSE_VALUE_COLOR(VisualSettings, axis_y_color)
-    PARSE_VALUE_COLOR(VisualSettings, axis_z_color)
-    PARSE_VALUE_COLOR(VisualSettings, comp_box_color)
-    PARSE_VALUE_COLOR(VisualSettings, in_barrier_color)
-    PARSE_VALUE_COLOR(VisualSettings, out_barrier_color)
-    PARSE_VALUE_COLOR(VisualSettings, selection_color)
-
-    PARSE_VALUE_COLOR(VisualSettings, cell_alive_color)
-    PARSE_VALUE_COLOR(VisualSettings, cell_hypoxia_color)
-    PARSE_VALUE_COLOR(VisualSettings, cell_apoptosis_color)
-    PARSE_VALUE_COLOR(VisualSettings, cell_necrosis_color)
-    PARSE_VALUE_COLOR(VisualSettings, tube_color)
-
-    PARSE_VALUE_COLOR(VisualSettings, clip_plane_color)
-    PARSE_VALUE_COLOR(VisualSettings, navigator_color)
-    PARSE_VALUE_COLOR(VisualSettings, boxes_color)
-    PARSE_VALUE_VECTOR(VisualSettings, light_dir)
-
-  else
-      throw new Error(__FILE__, __LINE__, "Unknown token in 'visual'", TokenToString(tv), ParserFile, ParserLine);
- }
-
-
-void ParseSimulationSettingsValue(FILE *f)
-/**
-  Parses 'simulation' block.
-
-  \param f -- input file
-*/
- {
-    anyToken tv;
-
-    // store value name...
-    tv = Token;
-
-    // get '='...
-    GetNextToken(f, false);
-    if (Token.type != TT_Symbol || Token.symbol != '=')
-        throw new Error(__FILE__, __LINE__, "Syntax error ('=' expected)", TokenToString(Token), ParserFile, ParserLine);
-
-    // get value...
-    GetNextToken(f, true);
-
-    // assign value...
-    if (0) ;
-    PARSE_VALUE_INT(SimulationSettings, dimensions)
-    PARSE_VALUE_INT(SimulationSettings, sim_phases)
-    PARSE_VALUE_REAL(SimulationSettings, time_step)
-    PARSE_VALUE_REAL(SimulationSettings, stop_time)
-    PARSE_VALUE_REAL(SimulationSettings, time)
-    PARSE_VALUE_VECTOR(SimulationSettings, comp_box_from)
-    PARSE_VALUE_VECTOR(SimulationSettings, comp_box_to)
-    PARSE_VALUE_REAL(SimulationSettings, box_size)
-    PARSE_VALUE_INT(SimulationSettings, max_cells_per_box)
-    PARSE_VALUE_REAL(SimulationSettings, force_r_cut)
-    PARSE_VALUE_INT(SimulationSettings, max_tube_chains)
-    PARSE_VALUE_INT(SimulationSettings, max_tube_merge)
-
-    PARSE_VALUE_INT(SimulationSettings, save_statistics)
-    PARSE_VALUE_INT(SimulationSettings, save_povray)
-    PARSE_VALUE_INT(SimulationSettings, save_ag)
-
-    PARSE_VALUE_INT(SimulationSettings, graph_sampling)
-
-    PARSE_VALUE_REAL_N(SimulationSettings, diffusion_coeff[sat::dsO2], diffusion_coeff_o2)
-    PARSE_VALUE_REAL_N(SimulationSettings, diffusion_coeff[sat::dsTAF], diffusion_coeff_taf)
-    PARSE_VALUE_REAL_N(SimulationSettings, diffusion_coeff[sat::dsPericytes], diffusion_coeff_pericytes)
-
-    else
-        throw new Error(__FILE__, __LINE__, "Unknown token in 'simulation'", TokenToString(tv), ParserFile, ParserLine);
- }
-
-
-void ParseTubularSystemSettingsValue(FILE *f)
-/**
-  Parses 'TubularSystem' block.
-
-  \param f -- input file
-*/
- {
-    anyToken tv;
-
-    // store value name...
-    tv = Token;
-
-    // get '='...
-    GetNextToken(f, false);
-    if (Token.type != TT_Symbol || Token.symbol != '=')
-        throw new Error(__FILE__, __LINE__, "Syntax error ('=' expected)", TokenToString(Token), ParserFile, ParserLine);
-
-    // get value...
-    GetNextToken(f, true);
-
-    // assign value...
-    if (0) ;
-    PARSE_VALUE_REAL(TubularSystemSettings, force_chain_attr_factor)
-    PARSE_VALUE_REAL(TubularSystemSettings, force_length_keep_factor)
-    PARSE_VALUE_REAL(TubularSystemSettings, force_angle_factor)
-    PARSE_VALUE_REAL(TubularSystemSettings, force_rep_factor)
-    PARSE_VALUE_REAL(TubularSystemSettings, force_atr1_factor)
-    PARSE_VALUE_REAL(TubularSystemSettings, force_atr2_factor)
-    PARSE_VALUE_REAL(TubularSystemSettings, density)
-    PARSE_VALUE_REAL(TubularSystemSettings, o2_production)
-    PARSE_VALUE_REAL(TubularSystemSettings, lengthening_speed)
-    PARSE_VALUE_REAL(TubularSystemSettings, thickening_speed)
-    PARSE_VALUE_REAL(TubularSystemSettings, minimum_interphase_time)
-    PARSE_VALUE_REAL(TubularSystemSettings, TAFtrigger)
-    PARSE_VALUE_REAL(TubularSystemSettings, minimum_blood_flow)
-    PARSE_VALUE_REAL(TubularSystemSettings, time_to_degradation)
-
-    else
-        throw new Error(__FILE__, __LINE__, "Unknown token in 'TubularSystem'", TokenToString(tv), ParserFile, ParserLine);
- }
-
-
 void SaveTubularSystemSettings_ag(FILE *f, anyTubularSystemSettings const *vs)
 /**
   Saves tubular network settings to *.ag file.
@@ -596,6 +454,148 @@ void ParseVisualSettings(FILE *f)
 
     VisualSettings.comp_light_dir();
 }
+
+
+void ParseVisualSettingsValue(FILE *f)
+/**
+  Parses 'visual' block.
+
+  \param f -- input file
+*/
+ {
+    anyToken tv;
+
+    // store value name...
+    tv = Token;
+
+    // get '='...
+    GetNextToken(f, false);
+    if (Token.type != TT_Symbol || Token.symbol != '=')
+        throw new Error(__FILE__, __LINE__, "Syntax error ('=' expected)", TokenToString(Token), ParserFile, ParserLine);
+
+    // get value...
+    GetNextToken(f, true);
+
+    // assign value...
+    if (0) ;
+    PARSE_VALUE_INT(VisualSettings, window_width)
+    PARSE_VALUE_INT(VisualSettings, window_height)
+
+    PARSE_VALUE_COLOR(VisualSettings, bkg_color)
+    PARSE_VALUE_COLOR(VisualSettings, axis_x_color)
+    PARSE_VALUE_COLOR(VisualSettings, axis_y_color)
+    PARSE_VALUE_COLOR(VisualSettings, axis_z_color)
+    PARSE_VALUE_COLOR(VisualSettings, comp_box_color)
+    PARSE_VALUE_COLOR(VisualSettings, in_barrier_color)
+    PARSE_VALUE_COLOR(VisualSettings, out_barrier_color)
+    PARSE_VALUE_COLOR(VisualSettings, selection_color)
+
+    PARSE_VALUE_COLOR(VisualSettings, cell_alive_color)
+    PARSE_VALUE_COLOR(VisualSettings, cell_hypoxia_color)
+    PARSE_VALUE_COLOR(VisualSettings, cell_apoptosis_color)
+    PARSE_VALUE_COLOR(VisualSettings, cell_necrosis_color)
+    PARSE_VALUE_COLOR(VisualSettings, tube_color)
+
+    PARSE_VALUE_COLOR(VisualSettings, clip_plane_color)
+    PARSE_VALUE_COLOR(VisualSettings, navigator_color)
+    PARSE_VALUE_COLOR(VisualSettings, boxes_color)
+    PARSE_VALUE_VECTOR(VisualSettings, light_dir)
+
+  else
+      throw new Error(__FILE__, __LINE__, "Unknown token in 'visual'", TokenToString(tv), ParserFile, ParserLine);
+ }
+
+
+void ParseSimulationSettingsValue(FILE *f)
+/**
+  Parses 'simulation' block.
+
+  \param f -- input file
+*/
+ {
+    anyToken tv;
+
+    // store value name...
+    tv = Token;
+
+    // get '='...
+    GetNextToken(f, false);
+    if (Token.type != TT_Symbol || Token.symbol != '=')
+        throw new Error(__FILE__, __LINE__, "Syntax error ('=' expected)", TokenToString(Token), ParserFile, ParserLine);
+
+    // get value...
+    GetNextToken(f, true);
+
+    // assign value...
+    if (0) ;
+    PARSE_VALUE_INT(SimulationSettings, dimensions)
+    PARSE_VALUE_INT(SimulationSettings, sim_phases)
+    PARSE_VALUE_REAL(SimulationSettings, time_step)
+    PARSE_VALUE_REAL(SimulationSettings, stop_time)
+    PARSE_VALUE_REAL(SimulationSettings, time)
+    PARSE_VALUE_VECTOR(SimulationSettings, comp_box_from)
+    PARSE_VALUE_VECTOR(SimulationSettings, comp_box_to)
+    PARSE_VALUE_REAL(SimulationSettings, box_size)
+    PARSE_VALUE_INT(SimulationSettings, max_cells_per_box)
+    PARSE_VALUE_REAL(SimulationSettings, force_r_cut)
+    PARSE_VALUE_INT(SimulationSettings, max_tube_chains)
+    PARSE_VALUE_INT(SimulationSettings, max_tube_merge)
+
+    PARSE_VALUE_INT(SimulationSettings, save_statistics)
+    PARSE_VALUE_INT(SimulationSettings, save_povray)
+    PARSE_VALUE_INT(SimulationSettings, save_ag)
+
+    PARSE_VALUE_INT(SimulationSettings, graph_sampling)
+
+    PARSE_VALUE_REAL_N(SimulationSettings, diffusion_coeff[sat::dsO2], diffusion_coeff_o2)
+    PARSE_VALUE_REAL_N(SimulationSettings, diffusion_coeff[sat::dsTAF], diffusion_coeff_taf)
+    PARSE_VALUE_REAL_N(SimulationSettings, diffusion_coeff[sat::dsPericytes], diffusion_coeff_pericytes)
+
+    else
+        throw new Error(__FILE__, __LINE__, "Unknown token in 'simulation'", TokenToString(tv), ParserFile, ParserLine);
+ }
+
+
+void ParseTubularSystemSettingsValue(FILE *f)
+/**
+  Parses 'TubularSystem' block.
+
+  \param f -- input file
+*/
+ {
+    anyToken tv;
+
+    // store value name...
+    tv = Token;
+
+    // get '='...
+    GetNextToken(f, false);
+    if (Token.type != TT_Symbol || Token.symbol != '=')
+        throw new Error(__FILE__, __LINE__, "Syntax error ('=' expected)", TokenToString(Token), ParserFile, ParserLine);
+
+    // get value...
+    GetNextToken(f, true);
+
+    // assign value...
+    if (0) ;
+    PARSE_VALUE_REAL(TubularSystemSettings, force_chain_attr_factor)
+    PARSE_VALUE_REAL(TubularSystemSettings, force_length_keep_factor)
+    PARSE_VALUE_REAL(TubularSystemSettings, force_angle_factor)
+    PARSE_VALUE_REAL(TubularSystemSettings, force_rep_factor)
+    PARSE_VALUE_REAL(TubularSystemSettings, force_atr1_factor)
+    PARSE_VALUE_REAL(TubularSystemSettings, force_atr2_factor)
+    PARSE_VALUE_REAL(TubularSystemSettings, density)
+    PARSE_VALUE_REAL(TubularSystemSettings, o2_production)
+    PARSE_VALUE_REAL(TubularSystemSettings, lengthening_speed)
+    PARSE_VALUE_REAL(TubularSystemSettings, thickening_speed)
+    PARSE_VALUE_REAL(TubularSystemSettings, minimum_interphase_time)
+    PARSE_VALUE_REAL(TubularSystemSettings, TAFtrigger)
+    PARSE_VALUE_REAL(TubularSystemSettings, minimum_blood_flow)
+    PARSE_VALUE_REAL(TubularSystemSettings, time_to_degradation)
+
+    else
+        throw new Error(__FILE__, __LINE__, "Unknown token in 'TubularSystem'", TokenToString(tv), ParserFile, ParserLine);
+ }
 
 
 #endif

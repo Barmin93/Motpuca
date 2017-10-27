@@ -34,7 +34,7 @@ public:
     int  nei_cnt[2];           ///< number of neighbouring cells (0 - normal, 1 - tumor)
     real time_to_necrosis;     ///< individual time to necrosis (in hypoxia or apoptosis)
     real concentrations[sat::dsLast][2];
-
+    real density;
     bool mark;                 ///< marker (for debugging)
 
     anyCell();
