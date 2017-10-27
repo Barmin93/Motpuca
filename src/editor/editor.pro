@@ -41,7 +41,8 @@ HEADERS += mainwindow.h \
     anyglobalsettings.h \
     anyvisualsettings.h \
     anysimulationsettings.h \
-    anytubularsystemsettings.h
+    anytubularsystemsettings.h \
+    anyglobalsdialog.h
 SOURCES += mainwindow.cpp \
     glwidget.cpp \
     main.cpp \
@@ -71,7 +72,8 @@ SOURCES += mainwindow.cpp \
     anyglobalsettings.cpp \
     anyvisualsettings.cpp \
     anysimulationsettings.cpp \
-    anytubularsystemsettings.cpp
+    anytubularsystemsettings.cpp \
+    anyglobalsdialog.cpp
 FORMS += mainwindow.ui \
     dialogEditable.ui \
     dialogGlobals.ui \
