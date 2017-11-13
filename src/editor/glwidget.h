@@ -110,7 +110,7 @@ protected:
     void draw_all_boxes(bool clip);
     void draw_cell_block(anyCellBlock const *b, bool selected);
     void draw_all_cell_blocks();
-    void draw_cell(anyCell const *c, real p_min, real p_max);
+    void draw_cell(anyCell const *c, float p_min, float p_max);
     void draw_all_cells(bool clip);
     void draw_cylinder(anyVector const &p1, anyVector const &p2, float r, const anyColor &color);
     void draw_tube(anyTube *v);

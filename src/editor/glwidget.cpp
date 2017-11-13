@@ -381,7 +381,7 @@ void GLWidget::draw_all_boxes(bool clip)
 }
 
 
-void GLWidget::draw_cell(anyCell const *c, real /*p_min*/, real /*p_max*/)
+void GLWidget::draw_cell(anyCell const *c, float /*p_min*/, float /*p_max*/)
 /**
  Draws cell.
 
@@ -419,8 +419,8 @@ void GLWidget::draw_cell(anyCell const *c, real /*p_min*/, real /*p_max*/)
     // pressure...
     if (color_mode & COLOR_MODE_PRESSURE)
     {
-        real pr = c->pressure_prev;
-        real p;
+        float pr = c->pressure_prev;
+        float p;
         if (pressure_max == pressure_min)
             color.add(0.5, 0.5, 0.5);
         else
@@ -441,8 +441,8 @@ void GLWidget::draw_cell(anyCell const *c, real /*p_min*/, real /*p_max*/)
     // O2 concentration...
     if (color_mode & COLOR_MODE_O2)
     {
-        real pr = c->concentrations[sat::dsO2][!(SimulationSettings.step % 2)];
-        real p;
+        float pr = c->concentrations[sat::dsO2][!(SimulationSettings.step % 2)];
+        float p;
         if (pr < 0)
             p = 0;
         else if (pr > 1)
@@ -455,8 +455,8 @@ void GLWidget::draw_cell(anyCell const *c, real /*p_min*/, real /*p_max*/)
     // TAF concentration...
     if (color_mode & COLOR_MODE_TAF)
     {
-        real pr = c->concentrations[sat::dsTAF][!(SimulationSettings.step % 2)];
-        real p;
+        float pr = c->concentrations[sat::dsTAF][!(SimulationSettings.step % 2)];
+        float p;
         if (pr < 0)
             p = 0;
         else if (pr > 1)
@@ -469,8 +469,8 @@ void GLWidget::draw_cell(anyCell const *c, real /*p_min*/, real /*p_max*/)
     // Pericytes concentration...
     if (color_mode & COLOR_MODE_PERICYTES)
     {
-        real pr = c->concentrations[sat::dsPericytes][!(SimulationSettings.step % 2)];
-        real p;
+        float pr = c->concentrations[sat::dsPericytes][!(SimulationSettings.step % 2)];
+        float p;
         if (pr < 0)
             p = 0;
         else if (pr > 1)
@@ -525,7 +525,7 @@ void GLWidget::draw_all_cells(bool clip)
 
 
     first_cell = 0;
-    real p_avg = 0;
+    float p_avg = 0;
     int p_cnt = 0;
     cell_instance_to_draw_cnt = 0;
     for (int box_id = 0; box_id < SimulationSettings.no_boxes; box_id++)
@@ -871,7 +871,7 @@ void GLWidget::selected_object_move(QMouseEvent *event)
     {
         // translation...
         anyVector dir(x - mouse_last_x, y - mouse_last_y, 0);
-        real dl = (VisualSettings.v_matrix*anyVector(1, 0, 0) - VisualSettings.v_matrix*vectorZero).length2()*5;
+        float dl = (VisualSettings.v_matrix*anyVector(1, 0, 0) - VisualSettings.v_matrix*vectorZero).length2()*5;
 
         if (dl != 0) dir = dir*(1.0/dl);
         dir = VisualSettings.v_matrix*dir;
@@ -979,7 +979,7 @@ void GLWidget::scene_move_or_rotate(QMouseEvent *event)
     {
         // translation...
         anyVector dir(x - mouse_last_x, y - mouse_last_y, 0);
-        real dl = (VisualSettings.v_matrix*anyVector(1, 0, 0) - VisualSettings.v_matrix*vectorZero).length2()*5;
+        float dl = (VisualSettings.v_matrix*anyVector(1, 0, 0) - VisualSettings.v_matrix*vectorZero).length2()*5;
 
         if (dl != 0)
             dir = dir*(1.0/dl);

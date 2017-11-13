@@ -14,7 +14,7 @@ typedef enum { TT_Ident, TT_String, TT_Number, TT_Vector, TT_Color, TT_Transform
 struct anyToken
  {
   aTokenType type;  ///< type of token
-  real number;      ///< number (set if type == TT_Number)
+  float number;      ///< number (set if type == TT_Number)
   anyVector vector; ///< vector (set if type == TT_Vector)
   anyColor color;   ///< color (set if type == TT_Color)
   anyTransform transformation; ///< transformation matrix (set if type == TT_Transformation)

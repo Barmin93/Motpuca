@@ -24,16 +24,16 @@ class anyTubeBundle: public anyEditable
 */
 {
 public:
-    real extent_x;          ///< extension
-    real spacing_y;         ///< spacing in Y direction
-    real spacing_z;         ///< spacing in Z direction
-    real shift_y;           ///< shift in Y direction
-    real shift_z;           ///< shift in Z direction
-    real tube_length;       ///< length of single tube
-    real r;                 ///< tube radius
+    float extent_x;          ///< extension
+    float spacing_y;         ///< spacing in Y direction
+    float spacing_z;         ///< spacing in Z direction
+    float shift_y;           ///< shift in Y direction
+    float shift_z;           ///< shift in Z direction
+    float tube_length;       ///< length of single tube
+    float r;                 ///< tube radius
 
-    real min_blood_pressure;  ///< minimum blood pressure
-    real max_blood_pressure;  ///< maximum blood pressure
+    float min_blood_pressure;  ///< minimum blood pressure
+    float max_blood_pressure;  ///< maximum blood pressure
     bool fixed_blood_pressure; ///< is blood pressure fixed on ends?
 
     bool generated;         ///< are tube lines generated?
@@ -62,8 +62,8 @@ public:
 #ifdef QT_CORE_LIB
     virtual void display_properties(QTextBrowser *tb);
 #endif
-    real billion_to_inf(real x);
-    QString real_to_str(real x);
+    float billion_to_inf(float x);
+    QString real_to_str(float x);
 
 };
 

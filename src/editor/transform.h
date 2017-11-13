@@ -318,7 +318,7 @@ public:
         return h[h_indx];
     }
 
-    real det() const
+    float det() const
     {
         return
                 matrix[12]*matrix[9]*matrix[6]*matrix[3]  - matrix[8]*matrix[13]*matrix[6]*matrix[3]  - matrix[12]*matrix[5]*matrix[10]*matrix[3] + matrix[4]*matrix[13]*matrix[10]*matrix[3] +
@@ -332,7 +332,7 @@ public:
     anyTransform inverted() const
     {
         anyTransform v;
-        real x = det();
+        float x = det();
 
         if (x != 0)
         {

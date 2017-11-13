@@ -25,34 +25,34 @@ public:
     anyColor color;            ///< color
     sat::TissueType type;           ///< type
     char *name;                ///< unique name of tissue settings
-    real cell_r;               ///< radius of mature cell [um]
-    real density;              ///< tissue density [kg/m^3]
-    real cell_grow_speed;      ///< speed of cell growing [um/s]
-    real minimum_interphase_time; ///< miniumum interphase time [s]
-    real time_to_apoptosis;    ///< maximal age of cell [s]
-    real time_to_necrosis;     ///< time in apoptosis or hypoxia before switching to necrosis [s]
-    real time_to_necrosis_var; ///< variance of time_to_necrosis [s]
-    real time_in_necrosis;     ///< time in necrosis state [s]
-    real dead_r;               ///< size of dead cell [um]
-    real cell_shrink_speed;    ///< speed of shrinking of dead cell [um/s]
-    real minimum_mitosis_r;    ///< minimum radius for mitosis [um]
+    float cell_r;               ///< radius of mature cell [um]
+    float density;              ///< tissue density [kg/m^3]
+    float cell_grow_speed;      ///< speed of cell growing [um/s]
+    float minimum_interphase_time; ///< miniumum interphase time [s]
+    float time_to_apoptosis;    ///< maximal age of cell [s]
+    float time_to_necrosis;     ///< time in apoptosis or hypoxia before switching to necrosis [s]
+    float time_to_necrosis_var; ///< variance of time_to_necrosis [s]
+    float time_in_necrosis;     ///< time in necrosis state [s]
+    float dead_r;               ///< size of dead cell [um]
+    float cell_shrink_speed;    ///< speed of shrinking of dead cell [um/s]
+    float minimum_mitosis_r;    ///< minimum radius for mitosis [um]
 
-    real force_rep_factor;     ///< repulsion force factor
-    real force_atr1_factor;    ///< first attraction force factor
-    real force_atr2_factor;    ///< second attraction force factor
-    real force_dpd_factor;     ///< PDP gamma factor
-    real dpd_temperature;      ///< T in DPD random force
-    real max_pressure;         ///< maximum pressure allowing for growth and proliferation
-    real o2_consumption;       ///< oxygen consumption ratio in o2 kg/ cell kg /s
-    real pericyte_production;  ///< pericyte production
-    real o2_hypoxia;           ///< o2 concentration that leads to hypoxia
+    float force_rep_factor;     ///< repulsion force factor
+    float force_atr1_factor;    ///< first attraction force factor
+    float force_atr2_factor;    ///< second attraction force factor
+    float force_dpd_factor;     ///< PDP gamma factor
+    float dpd_temperature;      ///< T in DPD random force
+    float max_pressure;         ///< maximum pressure allowing for growth and proliferation
+    float o2_consumption;       ///< oxygen consumption ratio in o2 kg/ cell kg /s
+    float pericyte_production;  ///< pericyte production
+    float o2_hypoxia;           ///< o2 concentration that leads to hypoxia
     anyTissueSettings *next;   ///< pointer to next tissue
 
     // aux fields...
     int id;                    ///< id of tissue (0, 1,...)
     int no_cells[sat::csLast];      ///< number of cells (0 - all; 2...5 - for every state)
-    real pressure_sum;         ///< sum of cell pressures
-    real pressure;             ///< average pressure
+    float pressure_sum;         ///< sum of cell pressures
+    float pressure;             ///< average pressure
 
     anyTissueSettings();
 
@@ -76,8 +76,8 @@ public:
 #ifdef QT_CORE_LIB
     virtual void display_properties(QTextBrowser *tb);
 #endif
-    real billion_to_inf(real x);
-    QString real_to_str(real x);
+    float billion_to_inf(float x);
+    QString real_to_str(float x);
 
 };
 

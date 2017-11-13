@@ -6,7 +6,6 @@
 //#include <math.h>
 //#include <stdlib.h>
 
-typedef float real;
 #define MAX_REAL FLT_MAX
 
 

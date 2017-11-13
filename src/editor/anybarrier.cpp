@@ -2,13 +2,13 @@
 
 anyBarrier::anyBarrier(): type(sat::btIn){}
 
-real anyBarrier::billion_to_inf(real x)
+float anyBarrier::billion_to_inf(float x)
 {
     return x == 1000000000 ? MAX_REAL : x;
 }
 
 
-QString anyBarrier::real_to_str(real x)
+QString anyBarrier::real_to_str(float x)
 {
     if (x == MAX_REAL)
         return QString("inf");
@@ -58,7 +58,7 @@ void anyBarrier::remove_itself_from_scene()
     scene::RemoveBarrier(this);
 }
 
-bool anyBarrier::is_point_inside(anyVector const &p, real r)
+bool anyBarrier::is_point_inside(anyVector const &p, float r)
 {
     if (type == sat::btIn)
         return anyEditable::is_point_inside(p, r);

@@ -4,7 +4,7 @@ anyBoundingBox::anyBoundingBox(): from(0, 0, 0), to(0, 0, 0) {
     trans.setToIdentity();
 }
 
-bool anyBoundingBox::is_point_inside(anyVector const &p, real r)
+bool anyBoundingBox::is_point_inside(anyVector const &p, float r)
 {
     anyTransform trans_inv = trans.inverted();
     anyVector p2 = trans_inv*p;

@@ -62,7 +62,7 @@ namespace scene {
     anyTubeMerge *TubelMerge = 0;  ///< array of tube pairs to merge after tip-tip collision
     int NoTubeMerge = 0;           ///< number of tube pairs to merge
 
-    real ***Concentrations = 0;
+    float ***Concentrations = 0;
 
 
     void AddTissueSettings(anyTissueSettings *ts)
@@ -517,13 +517,13 @@ namespace scene {
             for (int i = 0; i < SimulationSettings.no_boxes; i++)
                 BoxedTubes[i].tubes = new anyTube *[SimulationSettings.max_cells_per_box];
 
-            Concentrations = new real**[2];
+            Concentrations = new float**[2];
             for(int frame = 0; frame < 2; frame++)
             {
-                Concentrations[frame] = new real*[sat::dsLast];
+                Concentrations[frame] = new float*[sat::dsLast];
                 for (int i = 0; i < sat::dsLast; i++)
                 {
-                    Concentrations[frame][i] = new real[SimulationSettings.no_boxes];
+                    Concentrations[frame][i] = new float[SimulationSettings.no_boxes];
                     for (int j = 0; j < SimulationSettings.no_boxes; j++)
                     {
                         Concentrations[frame][i][j]=0;
@@ -1432,8 +1432,8 @@ namespace scene {
       \param v -- pointer to tube
     */
     {
-        real len = v->final_length;
-    //    real len = (v->pos2 - v->pos1).length();
+        float len = v->final_length;
+    //    float len = (v->pos2 - v->pos1).length();
         // conversion of density from [kg/m^3] to [kg/um^3] gives 1e-18...
         v->one_by_mass = 1 / (M_PI*len*v->final_r*v->final_r*TubularSystemSettings.density*1e-18);
     }
@@ -1621,7 +1621,7 @@ namespace scene {
 
 
     static
-    real cell_tube_dist(anyCell const *c, anyTube const *v)
+    float cell_tube_dist(anyCell const *c, anyTube const *v)
     /**
       Calculates distance between cell and tube.
 
@@ -1631,13 +1631,13 @@ namespace scene {
     {
         anyVector p12 = v->pos2 - v->pos1;
         anyVector pc = c->pos - v->pos1;
-        real p12_len = p12.length();
+        float p12_len = p12.length();
         anyVector p12_n = p12;
         p12_n.normalize();
 
-        real d = pc|p12_n;
+        float d = pc|p12_n;
 
-        real p;
+        float p;
 
         if (d <= 0)
         {
@@ -1667,8 +1667,8 @@ namespace scene {
         LOG3(llDebug, "Generating cells for tissue '", b->tissue->name, "'");
 
         anyCell c;
-        real r = b->tissue->cell_r;
-        real r_pack = r*0.9;
+        float r = b->tissue->cell_r;
+        float r_pack = r*0.9;
 
         c.r = r;
         c.tissue = b->tissue;
@@ -1681,12 +1681,12 @@ namespace scene {
         if (SimulationSettings.dimensions == 3)
         {
             // 3D...
-            real x_shift = 0;
-            real y_shift = r_pack;
-            real y_shift_z = 0;
-            real dz = 1.6329931618554520654648560498039*r_pack; // 2 * (sqrt(6)/3)
-            real dy = 2*r_pack;
-            real dx = 1.7320508075688772935274463415059*r_pack;  // 2 * (sqrt(3)/2)
+            float x_shift = 0;
+            float y_shift = r_pack;
+            float y_shift_z = 0;
+            float dz = 1.6329931618554520654648560498039*r_pack; // 2 * (sqrt(6)/3)
+            float dy = 2*r_pack;
+            float dx = 1.7320508075688772935274463415059*r_pack;  // 2 * (sqrt(3)/2)
 
             int x_cnt = floor((b->to.x - b->from.x - 2*r_pack)/dx);
             int y_cnt = floor((b->to.y - b->from.y - 2*r_pack)/dy);
@@ -1697,18 +1697,18 @@ namespace scene {
             dy = (b->to.y - b->from.y - 2*r_pack)/y_cnt;
             dz = (b->to.z - b->from.z - 2*r_pack)/z_cnt;
 
-            for(real z = b->from.z + r; z <= b->to.z; z += dz)
+            for(float z = b->from.z + r; z <= b->to.z; z += dz)
             {
-                for(real x = b->from.x + r + x_shift; x < b->to.x; x += dx)
+                for(float x = b->from.x + r + x_shift; x < b->to.x; x += dx)
                 {
-                    for(real y = b->from.y + r + y_shift + y_shift_z; y < b->to.y; y += dy)
+                    for(float y = b->from.y + r + y_shift + y_shift_z; y < b->to.y; y += dy)
                     {
                         c.pos = b->trans*anyVector(x, y, z);
                         c.pos += anyVector(float(rand())/RAND_MAX*c.r - c.r*0.5,
                                            float(rand())/RAND_MAX*c.r - c.r*0.5,
                                            0)*0.5;
 
-                        c.age = real(rand())/real(RAND_MAX) * b->tissue->minimum_interphase_time;
+                        c.age = float(rand())/float(RAND_MAX) * b->tissue->minimum_interphase_time;
                         c.state_age = c.age;
 
                         c.time_to_necrosis = b->tissue->time_to_necrosis + (2*double(rand())/double(RAND_MAX) - 1.0)*b->tissue->time_to_necrosis_var;
@@ -1758,12 +1758,12 @@ namespace scene {
         else
         {
             // 2D...
-            real y_shift = r;
-            real dy = 2*r;
-            real dx = 1.7320508075688772935274463415059*r;  // 2 * (sqrt(3)/2)
-            for(real x = b->from.x + r; x < b->to.x - r; x += dx)
+            float y_shift = r;
+            float dy = 2*r;
+            float dx = 1.7320508075688772935274463415059*r;  // 2 * (sqrt(3)/2)
+            for(float x = b->from.x + r; x < b->to.x - r; x += dx)
             {
-                for(real y = b->from.y + r + y_shift; y < b->to.y - r; y += dy)
+                for(float y = b->from.y + r + y_shift; y < b->to.y - r; y += dy)
                 {
                     c.pos = b->trans*anyVector(x, y, 0);
 
@@ -1771,7 +1771,7 @@ namespace scene {
                                        float(rand())/RAND_MAX*c.r - c.r*0.5,
                                        0)*0.5;
 
-                    c.age = real(rand())/real(RAND_MAX) * b->tissue->minimum_interphase_time;
+                    c.age = float(rand())/float(RAND_MAX) * b->tissue->minimum_interphase_time;
                     c.state_age = c.age;
                     c.time_to_necrosis = b->tissue->time_to_necrosis + (2*double(rand())/double(RAND_MAX) - 1.0)*b->tissue->time_to_necrosis_var;
 
@@ -1847,11 +1847,11 @@ namespace scene {
     void GenerateTubesInTubeLine(anyTubeLine *vl)
     {
         // length of tube line...
-        real l = (vl->to - vl->from).length();
+        float l = (vl->to - vl->from).length();
 
         // number of tubes to generate...
         int n = round(l/vl->tube_length);
-        real ll = l/n;
+        float ll = l/n;
 
         anyVector vv = (vl->to - vl->from)*(1.0/n);
 
@@ -1891,11 +1891,11 @@ namespace scene {
 
     void GenerateTubesInTubeBundle(anyTubeBundle *vb)
     {
-        real y_shift = (vb->from.y + vb->to.y)*0.5 + vb->shift_y;
-        real z_shift = (vb->from.z + vb->to.z)*0.5 + vb->shift_z;
-        for (real y = y_shift + vb->spacing_y; y <= vb->to.y; y += vb->spacing_y)
+        float y_shift = (vb->from.y + vb->to.y)*0.5 + vb->shift_y;
+        float z_shift = (vb->from.z + vb->to.z)*0.5 + vb->shift_z;
+        for (float y = y_shift + vb->spacing_y; y <= vb->to.y; y += vb->spacing_y)
         {
-            for (real z = z_shift + vb->spacing_z; z <= vb->to.z; z += vb->spacing_z)
+            for (float z = z_shift + vb->spacing_z; z <= vb->to.z; z += vb->spacing_z)
             {
                 anyTubeLine vl;
                 vl.trans = vb->trans;
@@ -1908,7 +1908,7 @@ namespace scene {
                 vl.max_blood_pressure = vb->max_blood_pressure;
                 GenerateTubesInTubeLine(&vl);
             }
-            for (real z = z_shift; z >= vb->from.z; z -= vb->spacing_z)
+            for (float z = z_shift; z >= vb->from.z; z -= vb->spacing_z)
             {
                 anyTubeLine vl;
                 vl.trans = vb->trans;
@@ -1922,9 +1922,9 @@ namespace scene {
                 GenerateTubesInTubeLine(&vl);
             }
         }
-        for (real y = y_shift; y >= vb->from.y; y -= vb->spacing_y)
+        for (float y = y_shift; y >= vb->from.y; y -= vb->spacing_y)
         {
-            for (real z = z_shift + vb->spacing_z; z <= vb->to.z; z += vb->spacing_z)
+            for (float z = z_shift + vb->spacing_z; z <= vb->to.z; z += vb->spacing_z)
             {
                 anyTubeLine vl;
                 vl.trans = vb->trans;
@@ -1937,7 +1937,7 @@ namespace scene {
                 vl.max_blood_pressure = vb->max_blood_pressure;
                 GenerateTubesInTubeLine(&vl);
             }
-            for (real z = z_shift; z >= vb->from.z; z -= vb->spacing_z)
+            for (float z = z_shift; z >= vb->from.z; z -= vb->spacing_z)
             {
                 anyTubeLine vl;
                 vl.trans = vb->trans;

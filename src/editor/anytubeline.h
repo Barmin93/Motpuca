@@ -25,11 +25,11 @@ class anyTubeLine: public anyEditable
 */
 {
 public:
-    real tube_length;         ///< tube length
-    real r;                   ///< radius
+    float tube_length;         ///< tube length
+    float r;                   ///< radius
 
-    real min_blood_pressure;  ///< minimum blood pressure
-    real max_blood_pressure;  ///< maximum blood pressure
+    float min_blood_pressure;  ///< minimum blood pressure
+    float max_blood_pressure;  ///< maximum blood pressure
     bool fixed_blood_pressure;///< is blood pressure fixed on ends?
 
     bool generated;           ///< are tubes generated?
@@ -58,7 +58,7 @@ public:
 #ifdef QT_CORE_LIB
     virtual void display_properties(QTextBrowser *tb);
 #endif
-    real billion_to_inf(real x);
-    QString real_to_str(real x);
+    float billion_to_inf(float x);
+    QString real_to_str(float x);
 };
 #endif // ANYTUBELINE_H

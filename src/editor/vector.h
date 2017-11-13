@@ -11,31 +11,33 @@
 class anyVector
 {
 public:
-    real x, y, z;
+    float x, y, z;
 
     anyVector();
-    anyVector(real _x, real _y, real _z);
-    anyVector(real _x);
-    real length2() const;
-    real length() const;
-    real dot (anyVector const &v);
+    anyVector(float _x, float _y, float _z);
+    anyVector(float _x);
+    float length2() const;
+    float length() const;
+    float dot (anyVector const &v);
     void normalize();
     anyVector operator+(anyVector const &v) const;
     void operator+=(anyVector const &v);
     void operator-=(anyVector const &v);
-    void set(real _x = 0, real _y = 0, real _z = 0);
+    void set(float _x = 0, float _y = 0, float _z = 0);
     anyVector operator-(anyVector const &v) const;
-    anyVector operator*(real n) const;
-    anyVector operator/(real n) const;
+    anyVector operator*(float n) const;
+    anyVector operator/(float n) const;
+    void operator/=(float n);
     anyVector operator*(anyVector const &v) const;
-    void operator*=(real n);
+    void operator*=(float n);
     bool operator==(anyVector const &v) const;
+    void operator*=(anyVector const &v);
     bool operator!=(anyVector const &v) const;
     bool is_zero() const;
-    void set_random(int dim, real length);
+    void set_random(int dim, float length);
     char *toString() const;
     anyVector operator*(float *m) const;
-    real operator |(anyVector const &v) const;
+    float operator |(anyVector const &v) const;
 };
 
 const anyVector vectorZero(0, 0, 0);

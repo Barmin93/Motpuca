@@ -17,14 +17,14 @@ class anyTube
 public:
     anyVector pos1;    ///< tip #1 of tube
     anyVector pos2;    ///< tip #2 of tube
-    real length;       ///< length of tube
-    real final_length; ///< final length of tube
-    real r;            ///< radius
-    real final_r;      ///< final radius
+    float length;       ///< length of tube
+    float final_length; ///< final length of tube
+    float r;            ///< radius
+    float final_r;      ///< final radius
     sat::CellState state;   ///< state of tube
-    real age;          ///< age
-    real state_age;    ///< age in current state
-    real flow_time;    ///< time of last blood flow
+    float age;          ///< age
+    float state_age;    ///< age in current state
+    float flow_time;    ///< time of last blood flow
 
     anyVector velocity1; /// velocity in tip #1
     anyVector velocity2; /// velocity in tip #2
@@ -38,25 +38,25 @@ public:
     anyTube *top;    ///< link to base tube of last forked tube
     anyTube *jab;    ///< link to attached tube
 
-    real concentrations[sat::dsLast][2];
+    float concentrations[sat::dsLast][2];
 
     bool fixed_blood_pressure; ///< is blood pressure fixed?
-    real blood_pressure; ///< blood pressure
+    float blood_pressure; ///< blood pressure
 
     // aux values...
     bool taf_triggered; ///< enough TAF for sprouting?
-    real blood_flow;    ///< blood flows
+    float blood_flow;    ///< blood flows
 
     int id;            ///< tube id
     int parsed_id;     ///< id read from input file
     int base_id;       ///< id of read base tube
     int top_id;        ///< id of read top tube
     int nx, ny, nz;    ///< minimum bounding box
-    real one_by_mass;  ///< 1/mass
-    real pressure;             ///< pressure - real value of pressure in cell, may not be used in visualization or any calculations inside CellCellForces
-    real pressure_prev;        ///< pressure in previous step (for calculating pressure_avg in nei. cells)
-    real pressure_avg;         ///< average pressure - may not be used for visualization  or any calculations inside CellCellForces
-    real pressure_sum;         ///< pressure sum for averaging
+    float one_by_mass;  ///< 1/mass
+    float pressure;             ///< pressure - float value of pressure in cell, may not be used in visualization or any calculations inside CellCellForces
+    float pressure_prev;        ///< pressure in previous step (for calculating pressure_avg in nei. cells)
+    float pressure_avg;         ///< average pressure - may not be used for visualization  or any calculations inside CellCellForces
+    float pressure_sum;         ///< pressure sum for averaging
     int  nei_cnt;              ///< number of neighbouring cells
 
     anyTube();

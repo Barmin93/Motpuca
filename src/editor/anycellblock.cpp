@@ -6,13 +6,13 @@ anyCellBlock::anyCellBlock(): tissue(0), generated(false)
     concentrations[i] = 0;
 }
 
-real anyCellBlock::billion_to_inf(real x)
+float anyCellBlock::billion_to_inf(float x)
 {
     return x == 1000000000 ? MAX_REAL : x;
 }
 
 
-QString anyCellBlock::real_to_str(real x)
+QString anyCellBlock::real_to_str(float x)
 {
     if (x == MAX_REAL)
         return QString("inf");

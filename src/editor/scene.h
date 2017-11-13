@@ -39,7 +39,7 @@ namespace scene {
     extern int NoTissueSettings;
     extern anyCell *Cells;
     extern anyTube **TubeChains;
-    extern real ***Concentrations;
+    extern float ***Concentrations;
     extern int NoTubeChains;
     extern int NoTubes;
     extern int LastTubeId;

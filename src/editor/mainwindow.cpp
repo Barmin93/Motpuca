@@ -583,7 +583,7 @@ void MainWindow::display_statistics()
 
     // loop over all tissues...
     int no_cells = 0;
-    real pressure_sum = 0;
+    float pressure_sum = 0;
     while (ts)
     {
         QString t_color;
