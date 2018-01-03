@@ -1,7 +1,10 @@
 #ifndef TRANSFORM_H
 #define TRANSFORM_H
 
-#include "vector.h"
+#include "anyvector.h"
+
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 class anyTransform
 {
@@ -73,7 +76,7 @@ public:
 
     void setToRotationX(float fi)
     {
-        fi *= M_PI/180.0;
+        fi *= static_cast<float>(M_PI/180.0);
         float sfi = sin(fi);
         float cfi = cos(fi);
         setToIdentity();
@@ -93,7 +96,7 @@ public:
 
     void setToRotationY(float fi)
     {
-        fi *= M_PI/180.0;
+        fi *= static_cast<float>(M_PI/180.0);
         float sfi = sin(fi);
         float cfi = cos(fi);
         setToIdentity();
@@ -113,7 +116,7 @@ public:
 
     void setToRotationZ(float fi)
     {
-        fi *= M_PI/180.0;
+        fi *= static_cast<float>(M_PI/180.0f);
         float sfi = sin(fi);
         float cfi = cos(fi);
         setToIdentity();
@@ -139,7 +142,7 @@ public:
         anyVector dirn = dir;
         dirn.normalize();
 
-        fi *= M_PI/180.0;
+        fi *= static_cast<float>(M_PI/180.0f);
         double sfi = sin(fi);
         double cfi = cos(fi);
 
@@ -151,25 +154,25 @@ public:
         double b = p.y;
         double c = p.z;
 
-        matrix[0] = u*u + (v*v + w*w)*cfi;
-        matrix[4] = u*v*(1 - cfi) - w*sfi;
-        matrix[8] = u*w*(1 - cfi) + v*sfi;
-        matrix[12] = (a*(v*v + w*w) - u*(b*v + c*w))*(1 - cfi) + (b*w - c*v)*sfi;
+        matrix[0] = static_cast<float>(u*u + (v*v + w*w)*cfi);
+        matrix[4] = static_cast<float>(u*v*(1 - cfi) - w*sfi);
+        matrix[8] = static_cast<float>(u*w*(1 - cfi) + v*sfi);
+        matrix[12] = static_cast<float>((a*(v*v + w*w) - u*(b*v + c*w))*(1 - cfi) + (b*w - c*v)*sfi);
 
-        matrix[1] = u*v*(1 - cfi) + w*sfi;
-        matrix[5] = v*v + (u*u + w*w)*cfi;
-        matrix[9] = v*w*(1 - cfi) - u*sfi;
-        matrix[13] = (b*(u*u + w*w) - v*(a*u + c*w))*(1 - cfi) + (c*u - a*w)*sfi;
+        matrix[1] = static_cast<float>(u*v*(1 - cfi) + w*sfi);
+        matrix[5] = static_cast<float>(v*v + (u*u + w*w)*cfi);
+        matrix[9] = static_cast<float>(v*w*(1 - cfi) - u*sfi);
+        matrix[13] = static_cast<float>((b*(u*u + w*w) - v*(a*u + c*w))*(1 - cfi) + (c*u - a*w)*sfi);
 
-        matrix[2] = u*w*(1 - cfi) - v*sfi;
-        matrix[6] = v*w*(1 - cfi) + u*sfi;
-        matrix[10] = w*w + (u*u + v*v)*cfi;
-        matrix[14] = (c*(u*u + v*v) - w*(a*u + b*v))*(1 - cfi) + (a*v + b*u)*sfi;
+        matrix[2] = static_cast<float>(u*w*(1 - cfi) - v*sfi);
+        matrix[6] = static_cast<float>(v*w*(1 - cfi) + u*sfi);
+        matrix[10] = static_cast<float>(w*w + (u*u + v*v)*cfi);
+        matrix[14] = static_cast<float>((c*(u*u + v*v) - w*(a*u + b*v))*(1 - cfi) + (a*v + b*u)*sfi);
 
-        matrix[3] = 0;
-        matrix[7] = 0;
-        matrix[11] = 0;
-        matrix[15] = 1;
+        matrix[3] = .0f;
+        matrix[7] = .0f;
+        matrix[11] = .0f;
+        matrix[15] = .1f;
     }
 
     anyTransform &rotate(float fi, anyVector const &p, anyVector const &dir)

@@ -2,8 +2,8 @@
 #include <string.h>
 #include <math.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <sys/stat.h>
+#include <direct.h>
 
 #ifdef QT_CORE_LIB
 #include <QtDebug>

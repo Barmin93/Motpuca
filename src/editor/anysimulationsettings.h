@@ -2,7 +2,7 @@
 #define ANYSIMULATIONSETTINGS_H
 
 #include "anyglobalsettings.h"
-#include "vector.h"
+#include "anyvector.h"
 
 class anySimulationSettings
 /**

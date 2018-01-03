@@ -5,7 +5,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <unistd.h>
+#include <direct.h>
+
 #include <sys/stat.h>
 #include "const.h"
 #include "parser.h"
@@ -491,8 +492,6 @@ void ParseFile(char const *fname, bool store_filename)
     FILE *f = fopen(fname, "r");
     if (!f)
     {
-        char wd[1001];
-        getcwd(wd, 1000);
         throw new Error(__FILE__, __LINE__, "Cannot open file for reading", fname /*ParserFile*/);
     }
 

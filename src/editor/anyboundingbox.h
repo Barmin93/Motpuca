@@ -1,7 +1,7 @@
 #ifndef ANYBOUNDINGBOX_H
 #define ANYBOUNDINGBOX_H
 
-#include "vector.h"
+#include "anyvector.h"
 #include "transform.h"
 
 class anyBoundingBox
