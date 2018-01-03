@@ -540,7 +540,7 @@ namespace scene {
     }
 
 
-    void floatlocSimulation()
+    void ReallocSimulation()
     {
         LOG(llError, "floatlocation not implemented YET!");
 

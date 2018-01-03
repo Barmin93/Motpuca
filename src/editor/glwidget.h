@@ -132,15 +132,15 @@ protected:
     void selection_start();
     void selection_finish();
 
-    void scene_move_or_rotate(QMouseEvent *event);
-    void selected_object_move(QMouseEvent *event);
-    void clip_plane_move(QMouseEvent *event);
-    void user_scene_zoom(QWheelEvent *event);
-    void clip_plane_move_z(QWheelEvent *event);
+    void scene_move_or_rotate(QMouseEvent* event);
+    void selected_object_move(QMouseEvent* event);
+    void clip_plane_move(QMouseEvent* event);
+    void user_scene_zoom(QWheelEvent* event);
+    void clip_plane_move_z(QWheelEvent* event);
 
     void make_mouse_matrix(int x, int y, Qt::MouseButtons buttons, anyTransform &trans);
 
-    void wheelEvent(QWheelEvent *event)
+    void wheelEvent(QWheelEvent* event)
     /**
       Mouse wheel event (scaling/zooming).
     */
@@ -160,7 +160,7 @@ protected:
         repaint();
     }
 
-    void mousePressEvent(QMouseEvent *event)
+    void mousePressEvent(QMouseEvent* event)
     {
         mouse_last_x = mouse_press_x = event->pos().x() - size().width()/2;
         mouse_last_y = mouse_press_y = -(event->pos().y() - size().height()/2);
@@ -169,14 +169,14 @@ protected:
         repaint();
     }
 
-    void mouseReleaseEvent()
+    void mouseReleaseEvent(QMouseEvent*)
     {
         mouse_pressed = false;
         mouse_buttons = 0;
         repaint();
     }
 
-    void mouseMoveEvent(QMouseEvent *event)
+    void mouseMoveEvent(QMouseEvent* event)
     /**
       Mouse move event.
     */

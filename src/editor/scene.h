@@ -120,7 +120,7 @@ namespace scene {
 
     void AllocSimulation();
     void DeallocSimulation();
-    void floatlocSimulation();
+    void ReallocSimulation();
 
     void UpdateSimulationBox();
 

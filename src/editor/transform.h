@@ -169,10 +169,10 @@ public:
         matrix[10] = static_cast<float>(w*w + (u*u + v*v)*cfi);
         matrix[14] = static_cast<float>((c*(u*u + v*v) - w*(a*u + b*v))*(1 - cfi) + (a*v + b*u)*sfi);
 
-        matrix[3] = .0f;
-        matrix[7] = .0f;
-        matrix[11] = .0f;
-        matrix[15] = .1f;
+        matrix[3] = 0.0f;
+        matrix[7] = 0.0f;
+        matrix[11] = 0.0f;
+        matrix[15] = 1.0f;
     }
 
     anyTransform &rotate(float fi, anyVector const &p, anyVector const &dir)
