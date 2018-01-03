@@ -160,7 +160,7 @@ void GLWidget::paintScene(float /*eye_shift*/)
     // zoom factor...
     float dl = (VisualSettings.v_matrix*anyVector(1, 0, 0)).length();
 
-    VisualSettings.p_matrix.setToPerspective(45, widget_ratio, 0.01, max_comp_box_size + dl*dist);
+    VisualSettings.p_matrix.setToPerspective(45, widget_ratio, 0.01f, max_comp_box_size + dl*dist);
     VisualSettings.p_matrix.translate(anyVector(0, 0, -max_comp_box_size*0.5 - dist));
 
     if (MainWindowPtr->get_show_elements(SHOW_AXIS))
@@ -283,7 +283,7 @@ void GLWidget::draw_all_cell_blocks()
 }
 
 
-void GLWidget::draw_tube_line(anyTubeLine const */*vl*/, bool /*selected*/)
+void GLWidget::draw_tube_line(anyTubeLine const*, bool)
 /**
   Draws tube line - if tubes are already generated, color is blended.
 */
@@ -292,7 +292,7 @@ void GLWidget::draw_tube_line(anyTubeLine const */*vl*/, bool /*selected*/)
 }
 
 
-void GLWidget::draw_tube_bundle(anyTubeBundle const */*vb*/, bool /*selected*/)
+void GLWidget::draw_tube_bundle(anyTubeBundle const *, bool)
 /**
   Draws tube bundle - if tube lines are already generated, color is blended.
 */
@@ -381,7 +381,7 @@ void GLWidget::draw_all_boxes(bool clip)
 }
 
 
-void GLWidget::draw_cell(anyCell const *c, real /*p_min*/, real /*p_max*/)
+void GLWidget::draw_cell(anyCell const *c, float /*p_min*/, float /*p_max*/)
 /**
  Draws cell.
 
@@ -419,8 +419,8 @@ void GLWidget::draw_cell(anyCell const *c, real /*p_min*/, real /*p_max*/)
     // pressure...
     if (color_mode & COLOR_MODE_PRESSURE)
     {
-        real pr = c->pressure_prev;
-        real p;
+        float pr = c->pressure_prev;
+        float p;
         if (pressure_max == pressure_min)
             color.add(0.5, 0.5, 0.5);
         else
@@ -441,8 +441,8 @@ void GLWidget::draw_cell(anyCell const *c, real /*p_min*/, real /*p_max*/)
     // O2 concentration...
     if (color_mode & COLOR_MODE_O2)
     {
-        real pr = c->concentrations[sat::dsO2][!(SimulationSettings.step % 2)];
-        real p;
+        float pr = c->concentrations[sat::dsO2][!(SimulationSettings.step % 2)];
+        float p;
         if (pr < 0)
             p = 0;
         else if (pr > 1)
@@ -455,8 +455,8 @@ void GLWidget::draw_cell(anyCell const *c, real /*p_min*/, real /*p_max*/)
     // TAF concentration...
     if (color_mode & COLOR_MODE_TAF)
     {
-        real pr = c->concentrations[sat::dsTAF][!(SimulationSettings.step % 2)];
-        real p;
+        float pr = c->concentrations[sat::dsTAF][!(SimulationSettings.step % 2)];
+        float p;
         if (pr < 0)
             p = 0;
         else if (pr > 1)
@@ -469,8 +469,8 @@ void GLWidget::draw_cell(anyCell const *c, real /*p_min*/, real /*p_max*/)
     // Pericytes concentration...
     if (color_mode & COLOR_MODE_PERICYTES)
     {
-        real pr = c->concentrations[sat::dsPericytes][!(SimulationSettings.step % 2)];
-        real p;
+        float pr = c->concentrations[sat::dsPericytes][!(SimulationSettings.step % 2)];
+        float p;
         if (pr < 0)
             p = 0;
         else if (pr > 1)
@@ -525,7 +525,7 @@ void GLWidget::draw_all_cells(bool clip)
 
 
     first_cell = 0;
-    real p_avg = 0;
+    float p_avg = 0;
     int p_cnt = 0;
     cell_instance_to_draw_cnt = 0;
     for (int box_id = 0; box_id < SimulationSettings.no_boxes; box_id++)
@@ -557,8 +557,8 @@ void GLWidget::draw_all_cells(bool clip)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     shaderInstanced.setUniformMatrix4x4("pv_matrix", VisualSettings.p_matrix*VisualSettings.v_matrix);
-    shaderInstanced.setUniformFloat("ambient", 0.2);
-    shaderInstanced.setUniformFloat("diffuse", 0.8);
+    shaderInstanced.setUniformFloat("ambient", 0.2f);
+    shaderInstanced.setUniformFloat("diffuse", 0.8f);
     shaderInstanced.setUniformVector("lightDir", VisualSettings.light_dir_r);
 
     rGlModel *sphere;
@@ -591,7 +591,7 @@ void GLWidget::draw_cylinder(anyVector const &p1, anyVector const &p2, float r, 
     anyVector vec = p2 - p1;
 
     if (p1.z == p2.z)
-        vec.z = 0.0001;
+        vec.z = 0.0001f;
 
     float l = vec.length();
     float fi = -vec.z/l;
@@ -614,8 +614,8 @@ void GLWidget::draw_cylinder(anyVector const &p1, anyVector const &p2, float r, 
     cylinderModel.program()->setUniformMatrix3x3("norm_matrix", m_matrix.normMatrix());
     cylinderModel.program()->setUniformVector("lightDir", VisualSettings.light_dir_r);
     cylinderModel.program()->setUniformColorRGBA("colorRGBA", color);
-    cylinderModel.program()->setUniformFloat("diffuse", 1.0);
-    cylinderModel.program()->setUniformFloat("ambient", 0.2);
+    cylinderModel.program()->setUniformFloat("diffuse", 1.0f);
+    cylinderModel.program()->setUniformFloat("ambient", 0.2f);
     cylinderModel.draw();
 
 
@@ -684,7 +684,7 @@ void GLWidget::draw_axes()
 {
     anyTransform m_matrix;
 
-    anyVector scale = (SimulationSettings.comp_box_to - SimulationSettings.comp_box_from)*0.7;
+    anyVector scale = (SimulationSettings.comp_box_to - SimulationSettings.comp_box_from)*0.7f;
     float max_scale = qMax(qMax(scale.x, scale.y), scale.z);
     scale.x = max_scale;
     scale.y = max_scale;
@@ -693,14 +693,14 @@ void GLWidget::draw_axes()
 
     arrowModel.program()->use();
     arrowModel.program()->setUniformVector("lightDir", VisualSettings.light_dir_r);
-    arrowModel.program()->setUniformFloat("diffuse", 0.3);
-    arrowModel.program()->setUniformFloat("ambient", 0.7);
+    arrowModel.program()->setUniformFloat("diffuse", 0.3f);
+    arrowModel.program()->setUniformFloat("ambient", 0.7f);
 
     // Y...
 
     arrowModel.program()->setUniformMatrix4x4("pvm_matrix", VisualSettings.p_matrix*VisualSettings.v_matrix*m_matrix);
     arrowModel.program()->setUniformMatrix3x3("norm_matrix", m_matrix.normMatrix());
-    arrowModel.program()->setUniformColorRGBA("colorRGBA", anyColor(0.0, 0.8, 0.0, 1.0));
+    arrowModel.program()->setUniformColorRGBA("colorRGBA", anyColor(0.0f, 0.8f, 0.0f, 1.0f));
     arrowModel.draw();
 
     // Z...
@@ -708,7 +708,7 @@ void GLWidget::draw_axes()
     m_matrix.rotateX(-90);
     arrowModel.program()->setUniformMatrix4x4("pvm_matrix", VisualSettings.p_matrix*VisualSettings.v_matrix*m_matrix);
     arrowModel.program()->setUniformMatrix3x3("norm_matrix", m_matrix.normMatrix());
-    arrowModel.program()->setUniformColorRGBA("colorRGBA", anyColor(0.0, 0.5, 1.0, 1.0));
+    arrowModel.program()->setUniformColorRGBA("colorRGBA", anyColor(0.0f, 0.5f, 1.0f, 1.0f));
     arrowModel.draw();
 
     // X...
@@ -789,9 +789,9 @@ void GLWidget::draw_legend()
     if (color_mode & COLOR_MODE_PRESSURE)
     {
         // pressure...
-        draw_legend_item(pos++, anyColor(0, 0, 0), "min");
-        draw_legend_item(pos++, anyColor(0.33, 0.33, 0.33), "");
-        draw_legend_item(pos++, anyColor(0.66, 0.66, 0.66), "");
+        draw_legend_item(pos++, anyColor(.0f, .0f, .0f), "min");
+        draw_legend_item(pos++, anyColor(0.33f, 0.33f, 0.33f), "");
+        draw_legend_item(pos++, anyColor(0.66f, 0.66f, 0.66f), "");
         draw_legend_item(pos++, anyColor(1, 1, 1), "max");
         draw_legend_caption(pos++, "Pressure:");
     }
@@ -871,7 +871,7 @@ void GLWidget::selected_object_move(QMouseEvent *event)
     {
         // translation...
         anyVector dir(x - mouse_last_x, y - mouse_last_y, 0);
-        real dl = (VisualSettings.v_matrix*anyVector(1, 0, 0) - VisualSettings.v_matrix*vectorZero).length2()*5;
+        float dl = (VisualSettings.v_matrix*anyVector(1, 0, 0) - VisualSettings.v_matrix*vectorZero).length2()*5;
 
         if (dl != 0) dir = dir*(1.0/dl);
         dir = VisualSettings.v_matrix*dir;
@@ -979,7 +979,7 @@ void GLWidget::scene_move_or_rotate(QMouseEvent *event)
     {
         // translation...
         anyVector dir(x - mouse_last_x, y - mouse_last_y, 0);
-        real dl = (VisualSettings.v_matrix*anyVector(1, 0, 0) - VisualSettings.v_matrix*vectorZero).length2()*5;
+        float dl = (VisualSettings.v_matrix*anyVector(1, 0, 0) - VisualSettings.v_matrix*vectorZero).length2()*5;
 
         if (dl != 0)
             dir = dir*(1.0/dl);

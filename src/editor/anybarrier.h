@@ -48,10 +48,10 @@ public:
     virtual bool validate_removal() { return true; }
     virtual void add_itself_to_scene();
     virtual void remove_itself_from_scene();
-    virtual bool is_point_inside(anyVector const &p, real r);
+    virtual bool is_point_inside(anyVector const &p, float r);
 
-    real billion_to_inf(real x);
-    QString real_to_str(real x);
+    float billion_to_inf(float x);
+    QString float_to_str(float x);
 };
 
 

@@ -28,7 +28,7 @@ public:
     void set_color_of_button(QPushButton *button, anyColor const &color);
     anyColor get_color_from_button(QPushButton *b) const;
 
-    real billion_to_inf(real x);
+    float billion_to_inf(float x);
 
 private slots:
         void slot_ok_clicked();

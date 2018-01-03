@@ -14,7 +14,7 @@ public:
     anyBoundingBox();
     void update_bounding_box_by_point(anyVector v, anyVector &u_from, anyVector &u_to, bool &first);
     virtual void update_bounding_box(anyVector &from, anyVector &to, bool &first);
-    virtual bool is_point_inside(anyVector const &p, real r);
+    virtual bool is_point_inside(anyVector const &p, float r);
     void fix();
 
 

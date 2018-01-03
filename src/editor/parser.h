@@ -14,7 +14,7 @@ typedef enum { TT_Ident, TT_String, TT_Number, TT_Vector, TT_Color, TT_Transform
 struct anyToken
  {
   aTokenType type;  ///< type of token
-  real number;      ///< number (set if type == TT_Number)
+  float number;      ///< number (set if type == TT_Number)
   anyVector vector; ///< vector (set if type == TT_Vector)
   anyColor color;   ///< color (set if type == TT_Color)
   anyTransform transformation; ///< transformation matrix (set if type == TT_Transformation)
@@ -47,8 +47,8 @@ void ReplaceToken(anyToken &t);
 void DeallocateDefinitions();
 void Slashify(char *s, bool add_slash_at_end);
 
-#define SAVE_REAL(f, s, fld_name) fprintf(f, s->fld_name < MAX_REAL ? "  " #fld_name " = %g\n" : "  " #fld_name " = inf\n", s->fld_name)
-#define SAVE_REAL_N(f, s, fld_name, save_name) fprintf(f, s->fld_name < MAX_REAL ? "  " #save_name " = %g\n" : "  " #save_name " = inf\n", s->fld_name)
+#define SAVE_float(f, s, fld_name) fprintf(f, s->fld_name < MAX_float ? "  " #fld_name " = %g\n" : "  " #fld_name " = inf\n", s->fld_name)
+#define SAVE_float_N(f, s, fld_name, save_name) fprintf(f, s->fld_name < MAX_float ? "  " #save_name " = %g\n" : "  " #save_name " = inf\n", s->fld_name)
 #define SAVE_INT(f, s, fld_name) fprintf(f, "  " #fld_name " = %d\n", int(s->fld_name))
 #define SAVE_ENUM(f, s, fld_name, valname) fprintf(f, "  " #fld_name " = %s\n", valname[(int)(s->fld_name)])
 #define SAVE_VECT(f, s, fld_name) fprintf(f, "  " #fld_name " = <%g, %g, %g>\n", s->fld_name.x, s->fld_name.y, s->fld_name.z)
@@ -58,12 +58,12 @@ void Slashify(char *s, bool add_slash_at_end);
 #define SAVE_STRING(f, s, fld_name) fprintf(f, "  " #fld_name " = \"%s\"\n", s->fld_name)
 
 
-#define PARSE_VALUE_REAL(object, name) \
+#define PARSE_VALUE_float(object, name) \
      else if (!StrCmp(tv.str, #name)) \
       { if (Token.type == TT_Number) object.name = Token.number; \
         else throw new Error(__FILE__, __LINE__, "Syntax error (number expected)", TokenToString(Token), ParserFile, ParserLine); }
 
-#define PARSE_VALUE_REAL_N(object, name, save_name) \
+#define PARSE_VALUE_float_N(object, name, save_name) \
      else if (!StrCmp(tv.str, #save_name)) \
       { if (Token.type == TT_Number) object.name = Token.number; \
         else throw new Error(__FILE__, __LINE__, "Syntax error (number expected)", TokenToString(Token), ParserFile, ParserLine); }

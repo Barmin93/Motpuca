@@ -68,14 +68,14 @@ void SaveSimulationSettings_ag(FILE *f, anySimulationSettings const *ss)
     SAVE_INT(f, ss, dimensions);
     SAVE_INT(f, ss, sim_phases);
 
-    SAVE_REAL(f, ss, time_step);
-    SAVE_REAL(f, ss, time);
-    SAVE_REAL(f, ss, stop_time);
+    SAVE_float(f, ss, time_step);
+    SAVE_float(f, ss, time);
+    SAVE_float(f, ss, stop_time);
     SAVE_VECT(f, ss, comp_box_from);
     SAVE_VECT(f, ss, comp_box_to);
-    SAVE_REAL(f, ss, box_size);
+    SAVE_float(f, ss, box_size);
     SAVE_INT(f, ss, max_cells_per_box);
-    SAVE_REAL(f, ss, force_r_cut);
+    SAVE_float(f, ss, force_r_cut);
 
     SAVE_INT(f, ss, max_tube_chains);
     SAVE_INT(f, ss, max_tube_merge);
@@ -86,9 +86,9 @@ void SaveSimulationSettings_ag(FILE *f, anySimulationSettings const *ss)
 
     SAVE_INT(f, ss, graph_sampling);
 
-    SAVE_REAL_N(f, ss, diffusion_coeff[sat::dsO2], diffusion_coeff_O2);
-    SAVE_REAL_N(f, ss, diffusion_coeff[sat::dsTAF], diffusion_coeff_TAF);
-    SAVE_REAL_N(f, ss, diffusion_coeff[sat::dsPericytes], diffusion_coeff_Pericytes);
+    SAVE_float_N(f, ss, diffusion_coeff[sat::dsO2], diffusion_coeff_O2);
+    SAVE_float_N(f, ss, diffusion_coeff[sat::dsTAF], diffusion_coeff_TAF);
+    SAVE_float_N(f, ss, diffusion_coeff[sat::dsPericytes], diffusion_coeff_Pericytes);
 
     fprintf(f, " }\n");
 }
@@ -107,21 +107,21 @@ void SaveTubularSystemSettings_ag(FILE *f, anyTubularSystemSettings const *vs)
     fprintf(f, " {\n");
 
     // save all fields...
-    SAVE_REAL(f, vs, force_chain_attr_factor);
-    SAVE_REAL(f, vs, force_length_keep_factor);
-    SAVE_REAL(f, vs, force_angle_factor);
-    SAVE_REAL(f, vs, force_rep_factor);
-    SAVE_REAL(f, vs, force_atr1_factor);
-    SAVE_REAL(f, vs, force_atr2_factor);
-    SAVE_REAL(f, vs, density);
-    SAVE_REAL(f, vs, lengthening_speed);
-    SAVE_REAL(f, vs, thickening_speed);
-    SAVE_REAL(f, vs, minimum_interphase_time);
-    SAVE_REAL(f, vs, TAFtrigger);
-    SAVE_REAL(f, vs, minimum_blood_flow);
-    SAVE_REAL(f, vs, time_to_degradation);
+    SAVE_float(f, vs, force_chain_attr_factor);
+    SAVE_float(f, vs, force_length_keep_factor);
+    SAVE_float(f, vs, force_angle_factor);
+    SAVE_float(f, vs, force_rep_factor);
+    SAVE_float(f, vs, force_atr1_factor);
+    SAVE_float(f, vs, force_atr2_factor);
+    SAVE_float(f, vs, density);
+    SAVE_float(f, vs, lengthening_speed);
+    SAVE_float(f, vs, thickening_speed);
+    SAVE_float(f, vs, minimum_interphase_time);
+    SAVE_float(f, vs, TAFtrigger);
+    SAVE_float(f, vs, minimum_blood_flow);
+    SAVE_float(f, vs, time_to_degradation);
 
-    SAVE_REAL(f, vs, o2_production);
+    SAVE_float(f, vs, o2_production);
 
     fprintf(f, " }\n");
 }
@@ -331,14 +331,14 @@ void ParseSimulationSettingsValue(FILE *f)
     if (0) ;
     PARSE_VALUE_INT(SimulationSettings, dimensions)
     PARSE_VALUE_INT(SimulationSettings, sim_phases)
-    PARSE_VALUE_REAL(SimulationSettings, time_step)
-    PARSE_VALUE_REAL(SimulationSettings, stop_time)
-    PARSE_VALUE_REAL(SimulationSettings, time)
+    PARSE_VALUE_float(SimulationSettings, time_step)
+    PARSE_VALUE_float(SimulationSettings, stop_time)
+    PARSE_VALUE_float(SimulationSettings, time)
     PARSE_VALUE_VECTOR(SimulationSettings, comp_box_from)
     PARSE_VALUE_VECTOR(SimulationSettings, comp_box_to)
-    PARSE_VALUE_REAL(SimulationSettings, box_size)
+    PARSE_VALUE_float(SimulationSettings, box_size)
     PARSE_VALUE_INT(SimulationSettings, max_cells_per_box)
-    PARSE_VALUE_REAL(SimulationSettings, force_r_cut)
+    PARSE_VALUE_float(SimulationSettings, force_r_cut)
     PARSE_VALUE_INT(SimulationSettings, max_tube_chains)
     PARSE_VALUE_INT(SimulationSettings, max_tube_merge)
 
@@ -348,9 +348,9 @@ void ParseSimulationSettingsValue(FILE *f)
 
     PARSE_VALUE_INT(SimulationSettings, graph_sampling)
 
-    PARSE_VALUE_REAL_N(SimulationSettings, diffusion_coeff[sat::dsO2], diffusion_coeff_o2)
-    PARSE_VALUE_REAL_N(SimulationSettings, diffusion_coeff[sat::dsTAF], diffusion_coeff_taf)
-    PARSE_VALUE_REAL_N(SimulationSettings, diffusion_coeff[sat::dsPericytes], diffusion_coeff_pericytes)
+    PARSE_VALUE_float_N(SimulationSettings, diffusion_coeff[sat::dsO2], diffusion_coeff_o2)
+    PARSE_VALUE_float_N(SimulationSettings, diffusion_coeff[sat::dsTAF], diffusion_coeff_taf)
+    PARSE_VALUE_float_N(SimulationSettings, diffusion_coeff[sat::dsPericytes], diffusion_coeff_pericytes)
 
     else
         throw new Error(__FILE__, __LINE__, "Unknown token in 'simulation'", TokenToString(tv), ParserFile, ParserLine);
@@ -379,20 +379,20 @@ void ParseTubularSystemSettingsValue(FILE *f)
 
     // assign value...
     if (0) ;
-    PARSE_VALUE_REAL(TubularSystemSettings, force_chain_attr_factor)
-    PARSE_VALUE_REAL(TubularSystemSettings, force_length_keep_factor)
-    PARSE_VALUE_REAL(TubularSystemSettings, force_angle_factor)
-    PARSE_VALUE_REAL(TubularSystemSettings, force_rep_factor)
-    PARSE_VALUE_REAL(TubularSystemSettings, force_atr1_factor)
-    PARSE_VALUE_REAL(TubularSystemSettings, force_atr2_factor)
-    PARSE_VALUE_REAL(TubularSystemSettings, density)
-    PARSE_VALUE_REAL(TubularSystemSettings, o2_production)
-    PARSE_VALUE_REAL(TubularSystemSettings, lengthening_speed)
-    PARSE_VALUE_REAL(TubularSystemSettings, thickening_speed)
-    PARSE_VALUE_REAL(TubularSystemSettings, minimum_interphase_time)
-    PARSE_VALUE_REAL(TubularSystemSettings, TAFtrigger)
-    PARSE_VALUE_REAL(TubularSystemSettings, minimum_blood_flow)
-    PARSE_VALUE_REAL(TubularSystemSettings, time_to_degradation)
+    PARSE_VALUE_float(TubularSystemSettings, force_chain_attr_factor)
+    PARSE_VALUE_float(TubularSystemSettings, force_length_keep_factor)
+    PARSE_VALUE_float(TubularSystemSettings, force_angle_factor)
+    PARSE_VALUE_float(TubularSystemSettings, force_rep_factor)
+    PARSE_VALUE_float(TubularSystemSettings, force_atr1_factor)
+    PARSE_VALUE_float(TubularSystemSettings, force_atr2_factor)
+    PARSE_VALUE_float(TubularSystemSettings, density)
+    PARSE_VALUE_float(TubularSystemSettings, o2_production)
+    PARSE_VALUE_float(TubularSystemSettings, lengthening_speed)
+    PARSE_VALUE_float(TubularSystemSettings, thickening_speed)
+    PARSE_VALUE_float(TubularSystemSettings, minimum_interphase_time)
+    PARSE_VALUE_float(TubularSystemSettings, TAFtrigger)
+    PARSE_VALUE_float(TubularSystemSettings, minimum_blood_flow)
+    PARSE_VALUE_float(TubularSystemSettings, time_to_degradation)
 
     else
         throw new Error(__FILE__, __LINE__, "Unknown token in 'TubularSystem'", TokenToString(tv), ParserFile, ParserLine);

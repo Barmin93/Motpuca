@@ -1,27 +1,27 @@
 #include "anytissuesettings.h"
 
 anyTissueSettings::anyTissueSettings(): color(0, 0, 0), type(sat::ttNormal), name(0), cell_r(10), density(1),
-    cell_grow_speed(0), minimum_interphase_time(0), time_to_apoptosis(MAX_REAL), time_to_necrosis(0),
+    cell_grow_speed(0), minimum_interphase_time(0), time_to_apoptosis(MAX_float), time_to_necrosis(0),
     time_to_necrosis_var(0),
     time_in_necrosis(0), dead_r(1),
-    cell_shrink_speed(0), minimum_mitosis_r(10),
+    cell_shrink_speed(0), minimum_mitosis_r(10.0f),
     force_rep_factor(0), force_atr1_factor(0), force_atr2_factor(0), force_dpd_factor(0), dpd_temperature(0),
-    max_pressure(0), o2_consumption(7.5e-9), pericyte_production(0), o2_hypoxia(0),
+    max_pressure(0), o2_consumption(7.5e-9f), pericyte_production(0), o2_hypoxia(0),
     next(0), id(0), pressure_sum(0), pressure(0)
 {
 for (int i = 0; i < sat::csLast; i++)
-no_cells[i] = 0;
+	no_cells[i] = 0;
 }
 
-real anyTissueSettings::billion_to_inf(real x)
+float anyTissueSettings::billion_to_inf(float x)
 {
-    return x == 1000000000 ? MAX_REAL : x;
+    return x == 1000000000 ? MAX_float : x;
 }
 
 
-QString anyTissueSettings::real_to_str(real x)
+QString anyTissueSettings::float_to_str(float x)
 {
-    if (x == MAX_REAL)
+    if (x == MAX_float)
         return QString("inf");
     else
         return QString::number(x);
@@ -62,22 +62,22 @@ void anyTissueSettings::display_properties(QTextBrowser *tb)
         tb->append(QObject::tr("type: ") + " <b>" + QObject::tr("TUMOR") + "</b>");
         break;
     }
-    tb->append(QObject::tr("cell radius: ") + " <b>" + anyTissueSettings::real_to_str(cell_r) + "</b>");
-    tb->append(QObject::tr("dead cell radius: ") + " <b>" + anyTissueSettings::real_to_str(dead_r) + "</b>");
-    tb->append(QObject::tr("density: ") + " <b>" + anyTissueSettings::real_to_str(density) + "</b>");
-    tb->append(QObject::tr("growth speed: ") + " <b>" + anyTissueSettings::real_to_str(cell_grow_speed) + "</b>");
-    tb->append(QObject::tr("shinking speed: ") + " <b>" + anyTissueSettings::real_to_str(cell_shrink_speed) + "</b>");
-    tb->append(QObject::tr("minimum interphase time: ") + " <b>" + anyTissueSettings::real_to_str(minimum_interphase_time) + "</b>");
-    tb->append(QObject::tr("time to apoptosis: ") + " <b>" + anyTissueSettings::real_to_str(time_to_apoptosis) + "</b>");
-    tb->append(QObject::tr("time to necrosis: ") + " <b>" + anyTissueSettings::real_to_str(time_to_necrosis) + "</b>");
-    tb->append(QObject::tr("time in necrosis: ") + " <b>" + anyTissueSettings::real_to_str(time_in_necrosis) + "</b>");
-    tb->append(QObject::tr("minimum mitosis radius: ") + " <b>" + anyTissueSettings::real_to_str(minimum_mitosis_r) + "</b>");
-    tb->append(QObject::tr("repulsion factor: ") + " <b>" + anyTissueSettings::real_to_str(force_rep_factor) + "</b>");
-    tb->append(QObject::tr("attraction factor #1: ") + " <b>" + anyTissueSettings::real_to_str(force_atr1_factor) + "</b>");
-    tb->append(QObject::tr("attraction factor #2: ") + " <b>" + anyTissueSettings::real_to_str(force_atr2_factor) + "</b>");
-    tb->append(QObject::tr("maximum pressure: ") + " <b>" + anyTissueSettings::real_to_str(max_pressure) + "</b>");
-    tb->append(QObject::tr("O2 consumption: ") + " <b>" + anyTissueSettings::real_to_str(o2_consumption) + "</b>");
-    tb->append(QObject::tr("Pericytes production: ") + " <b>" + anyTissueSettings::real_to_str(pericyte_production) + "</b>");
+    tb->append(QObject::tr("cell radius: ") + " <b>" + anyTissueSettings::float_to_str(cell_r) + "</b>");
+    tb->append(QObject::tr("dead cell radius: ") + " <b>" + anyTissueSettings::float_to_str(dead_r) + "</b>");
+    tb->append(QObject::tr("density: ") + " <b>" + anyTissueSettings::float_to_str(density) + "</b>");
+    tb->append(QObject::tr("growth speed: ") + " <b>" + anyTissueSettings::float_to_str(cell_grow_speed) + "</b>");
+    tb->append(QObject::tr("shinking speed: ") + " <b>" + anyTissueSettings::float_to_str(cell_shrink_speed) + "</b>");
+    tb->append(QObject::tr("minimum interphase time: ") + " <b>" + anyTissueSettings::float_to_str(minimum_interphase_time) + "</b>");
+    tb->append(QObject::tr("time to apoptosis: ") + " <b>" + anyTissueSettings::float_to_str(time_to_apoptosis) + "</b>");
+    tb->append(QObject::tr("time to necrosis: ") + " <b>" + anyTissueSettings::float_to_str(time_to_necrosis) + "</b>");
+    tb->append(QObject::tr("time in necrosis: ") + " <b>" + anyTissueSettings::float_to_str(time_in_necrosis) + "</b>");
+    tb->append(QObject::tr("minimum mitosis radius: ") + " <b>" + anyTissueSettings::float_to_str(minimum_mitosis_r) + "</b>");
+    tb->append(QObject::tr("repulsion factor: ") + " <b>" + anyTissueSettings::float_to_str(force_rep_factor) + "</b>");
+    tb->append(QObject::tr("attraction factor #1: ") + " <b>" + anyTissueSettings::float_to_str(force_atr1_factor) + "</b>");
+    tb->append(QObject::tr("attraction factor #2: ") + " <b>" + anyTissueSettings::float_to_str(force_atr2_factor) + "</b>");
+    tb->append(QObject::tr("maximum pressure: ") + " <b>" + anyTissueSettings::float_to_str(max_pressure) + "</b>");
+    tb->append(QObject::tr("O2 consumption: ") + " <b>" + anyTissueSettings::float_to_str(o2_consumption) + "</b>");
+    tb->append(QObject::tr("Pericytes production: ") + " <b>" + anyTissueSettings::float_to_str(pericyte_production) + "</b>");
 }
 
 

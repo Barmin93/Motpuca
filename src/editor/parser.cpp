@@ -351,7 +351,7 @@ void get_next_token_ident(FILE *f, bool replace)
 
     if (!StrCmp(Token.str, "inf"))
     {
-        Token.number = MAX_REAL;
+        Token.number = MAX_float;
         Token.type = TT_Number;
     }
     else

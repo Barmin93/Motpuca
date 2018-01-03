@@ -77,8 +77,8 @@ public:
     void setToRotationX(float fi)
     {
         fi *= static_cast<float>(M_PI/180.0);
-        float sfi = sin(fi);
-        float cfi = cos(fi);
+        float const sfi = static_cast<float>(sin(fi));
+        float const cfi = static_cast<float>(cos(fi));
         setToIdentity();
         matrix[5] = cfi;
         matrix[9] = sfi;
@@ -97,8 +97,8 @@ public:
     void setToRotationY(float fi)
     {
         fi *= static_cast<float>(M_PI/180.0);
-        float sfi = sin(fi);
-        float cfi = cos(fi);
+        float const sfi = static_cast<float>(sin(fi));
+        float const cfi = static_cast<float>(cos(fi));
         setToIdentity();
         matrix[0] = cfi;
         matrix[8] = sfi;
@@ -117,8 +117,8 @@ public:
     void setToRotationZ(float fi)
     {
         fi *= static_cast<float>(M_PI/180.0f);
-        float sfi = sin(fi);
-        float cfi = cos(fi);
+        float const sfi = static_cast<float>(sin(fi));
+        float const cfi = static_cast<float>(cos(fi));
         setToIdentity();
         matrix[0] = cfi;
         matrix[4] = -sfi;
@@ -241,7 +241,7 @@ public:
     {
         // https://unspecified.wordpress.com/2012/06/21/calculating-the-gluperspective-matrix-and-other-opengl-matrix-maths/
 
-        float f = 1.0/tan(M_PI*verticalAngle/360.0); //  = /2.0 /180.0
+        float const f = static_cast<float>(1.0/tan(M_PI*verticalAngle/360.0)); //  = /2.0 /180.0
         matrix[0] = f/aspectRatio;
         matrix[1] = 0;
         matrix[2] = 0;
@@ -321,7 +321,7 @@ public:
         return h[h_indx];
     }
 
-    real det() const
+    float det() const
     {
         return
                 matrix[12]*matrix[9]*matrix[6]*matrix[3]  - matrix[8]*matrix[13]*matrix[6]*matrix[3]  - matrix[12]*matrix[5]*matrix[10]*matrix[3] + matrix[4]*matrix[13]*matrix[10]*matrix[3] +
@@ -335,7 +335,7 @@ public:
     anyTransform inverted() const
     {
         anyTransform v;
-        real x = det();
+        float x = det();
 
         if (x != 0)
         {

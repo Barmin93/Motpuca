@@ -59,7 +59,7 @@ void anyEditableDialog::slot_delete_clicked()
         return;
 
     if (QMessageBox::question(0, QObject::tr("Confirmation"),
-                             QObject::tr("Do you really want to delete this ") + editable->get_name() + "?",
+                             QObject::tr("Do you floatly want to delete this ") + editable->get_name() + "?",
                              QObject::tr("Yes"),
                              QObject::tr("No")))
         return;

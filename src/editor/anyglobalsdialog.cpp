@@ -33,9 +33,9 @@ anyGlobalsDialog::anyGlobalsDialog()
     resizer->addWidgetsFromLayout(dialog->groupBox_colors_cellstates->layout(), 0);
 }
 
-real anyGlobalsDialog::billion_to_inf(real x)
+float anyGlobalsDialog::billion_to_inf(float x)
 {
-    return x == 1000000000 ? MAX_REAL : x;
+    return x == 1000000000 ? MAX_float : x;
 }
 
 void anyGlobalsDialog::slot_ok_clicked()

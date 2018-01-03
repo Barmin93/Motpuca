@@ -21,7 +21,7 @@ class anyCellBlock: public anyEditable
 public:
     anyTissueSettings *tissue; ///< tissue
     bool generated;            ///< are cells generated?
-    real concentrations[sat::dsLast]; ///< initial concentrations
+    float concentrations[sat::dsLast]; ///< initial concentrations
 
     anyCellBlock();
 
@@ -44,8 +44,8 @@ public:
 
     bool should_be_generated_next();
 
-    real billion_to_inf(real x);
-    QString real_to_str(real x);
+    float billion_to_inf(float x);
+    QString float_to_str(float x);
 
     virtual char *get_name();
 

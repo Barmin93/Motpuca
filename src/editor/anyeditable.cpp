@@ -52,7 +52,7 @@ int anyEditable::display_dialog(bool add_new)
 
 void anyEditable::scale_event(int amount, bool x_axe, bool y_axe, bool z_axe)
 {
-    real step = amount < 0 ? -10 : 10;
+    float step = amount < 0 ? -10 : 10;
     if (x_axe)
     {
         from.x -= step;
@@ -93,15 +93,15 @@ void anyEditable::rotation_event(anyVector d, bool x_axe, bool y_axe, bool z_axe
         trans.rotateZ(d.z);
 }
 
-real billion_to_inf(real x)
+float billion_to_inf(float x)
 {
-    return x == 1000000000 ? MAX_REAL : x;
+    return x == 1000000000 ? MAX_float : x;
 }
 
 
-QString real_to_str(real x)
+QString float_to_str(float x)
 {
-    if (x == MAX_REAL)
+    if (x == MAX_float)
         return QString("inf");
     else
         return QString::number(x);

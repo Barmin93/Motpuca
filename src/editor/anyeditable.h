@@ -41,8 +41,8 @@ public:
     virtual void scale_event(int amount, bool x_axe, bool y_axe, bool z_axe);
     virtual void trans_event(anyVector d, bool x_axe, bool y_axe, bool z_axe);
     virtual void rotation_event(anyVector d, bool x_axe, bool y_axe, bool z_axe);
-    real billion_to_inf(real x);
-    QString real_to_str(real x);
+    float billion_to_inf(float x);
+    QString float_to_str(float x);
 };
 
 #endif

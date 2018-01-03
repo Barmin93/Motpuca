@@ -4,7 +4,7 @@ anyBoundingBox::anyBoundingBox(): from(0, 0, 0), to(0, 0, 0) {
     trans.setToIdentity();
 }
 
-bool anyBoundingBox::is_point_inside(anyVector const &p, real r)
+bool anyBoundingBox::is_point_inside(anyVector const &p, float r)
 {
     anyTransform trans_inv = trans.inverted();
     anyVector p2 = trans_inv*p;
@@ -16,11 +16,11 @@ bool anyBoundingBox::is_point_inside(anyVector const &p, real r)
 void anyBoundingBox::fix()
 {
     if (from.x > to.x)
-        from.x = to.x = (from.x + to.x)*0.5;
+        from.x = to.x = (from.x + to.x)*0.5f;
     if (from.y > to.y)
-        from.y = to.y = (from.y + to.y)*0.5;
+        from.y = to.y = (from.y + to.y)*0.5f;
     if (from.z > to.z)
-        from.z = to.z = (from.z + to.z)*0.5;
+        from.z = to.z = (from.z + to.z)*0.5f;
 }
 
 void anyBoundingBox::update_bounding_box_by_point(anyVector v, anyVector &u_from, anyVector &u_to, bool &first)

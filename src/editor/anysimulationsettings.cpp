@@ -7,7 +7,7 @@ anySimulationSettings::anySimulationSettings(){}
 void anySimulationSettings::reset()
 {
     step = 0;
-    max_o2_concentration = 1e-26;
+    max_o2_concentration = 1e-26f;
 
     char fname[P_MAX_PATH];
     snprintf(fname, P_MAX_PATH, "%s%ssimulation_settings.ag", GlobalSettings.app_dir, FOLDER_DEFAULTS);

@@ -58,43 +58,43 @@ and tend to be at their highest levels in S and at their lowest near mitosis.
 
 
 // SPH kernel functions
-real W_poly6(real r_sq, real h_sq, real h)
+float W_poly6(float r_sq, float h_sq, float h)
 {
-    static real coefficient = 315.0f / (64.0f*c::PIf*pow(h, 9));
+    static float coefficient = 315.0f / (64.0f*c::PIf*pow(h, 9));
 
     return coefficient * pow(h_sq - r_sq, 3);
 }
 
-anyVector GradW_poly6(real r, real h)
+anyVector GradW_poly6(float r, float h)
 {
-    static real coefficient = -945.0f / (32.0f*c::PIf*pow(h, 9));
+    static float coefficient = -945.0f / (32.0f*c::PIf*pow(h, 9));
 
     return anyVector(coefficient * pow(pow(h, 2) - pow(r, 2), 2));// * r
 }
 
 // do surface tension color field
-real LapW_poly6(real r, real h)
+float LapW_poly6(float r, float h)
 {
-    static real coefficient = -945.0f / (32.0f*c::PIf*pow(h, 9));
+    static float coefficient = -945.0f / (32.0f*c::PIf*pow(h, 9));
 
     return coefficient * (pow(h, 2) - pow(r, 2)) * (3.0f*pow(h, 2) - 7.0f*pow(r, 2));
 }
 
-anyVector GradW_spiky(real r, real h)
+anyVector GradW_spiky(float r, float h)
 {
-    static real coefficient = -45.0f / (c::PIf*pow(h, 6));
+    static float coefficient = -45.0f / (c::PIf*pow(h, 6));
 
     return anyVector(coefficient * pow((h - r), 2) / r);
 }
 
-real LapW_viscosity(real r, real h)
+float LapW_viscosity(float r, float h)
 {
-    static real coefficient = 45.0f / (c::PIf*pow(h, 6));
+    static float coefficient = 45.0f / (c::PIf*pow(h, 6));
 
     return coefficient * (h - r);
 }
 
-anyVector Grad_BicubicSpline(anyVector x, real h)
+anyVector Grad_BicubicSpline(anyVector x, float h)
 {
     auto const r = x.length();
     auto const q = r / h;
@@ -120,11 +120,11 @@ void cell_density(anyCell *particle_i, anyCell *particle_j)
   \param particle_j -- pointer to second cell
 */
 {
-    const real h_sq = c::H*c::H;
+    const float h_sq = c::H*c::H;
 
     anyVector rVec = particle_i->pos - particle_j->pos;
-    real r_sq = rVec.dot(rVec);
-    real r = sqrt(r_sq);
+    float r_sq = rVec.dot(rVec);
+    float r = sqrt(r_sq);
 
     if (r > c::H)
     {
@@ -261,7 +261,7 @@ int conc_step_prev()
 
 
 static
-void normalize_conc(real &conc)
+void normalize_conc(float &conc)
 /**
   Normalizes concentration value to range [0, 1].
 
@@ -274,7 +274,7 @@ void normalize_conc(real &conc)
 
 
 static
-void limit_velocity(anyVector &v, real limit)
+void limit_velocity(anyVector &v, float limit)
 /**
   Limits velocity (or any other) vector.
 
@@ -723,22 +723,22 @@ double normal()
 
 
 static
-void calc_force_dissipative_and_random(anyVector const &p1, anyVector const &p2, real radius, anyVector const &v1, anyVector const &v2, real force_dpd_factor, real dpd_temperature, anyVector &force)
+void calc_force_dissipative_and_random(anyVector const &p1, anyVector const &p2, float radius, anyVector const &v1, anyVector const &v2, float force_dpd_factor, float dpd_temperature, anyVector &force)
 {
-    const real Boltzmann = 1.380648813131313e-23 * 1e2;
+    const float Boltzmann = 1.380648813131313e-23f * 1e2f;
 
     if (force_dpd_factor == 0 && dpd_temperature == 0)
         return;
 
     anyVector r = p2 - p1;
     anyVector v = v2 - v1;
-    real r_len2 = r.length2();
+    float r_len2 = r.length2();
 
     if (r_len2 == 0) return;
 
-    real r_len = sqrt(r_len2);
-    real omega = 1 - r_len/(SimulationSettings.force_r_cut + radius);
-    real w = omega/r_len2;
+    float r_len = sqrt(r_len2);
+    float omega = 1 - r_len/(SimulationSettings.force_r_cut + radius);
+    float w = omega/r_len2;
 
     // dissipative force...
     if (force_dpd_factor > 0)
@@ -751,7 +751,7 @@ void calc_force_dissipative_and_random(anyVector const &p1, anyVector const &p2,
 
 
 static
-bool calc_force(anyVector const &p1, anyVector const &p2, anyVector &force, real &dp, real r, real force_rep_factor, real force_attr1_factor, real force_attr2_factor, bool do_r_cut)
+bool calc_force(anyVector const &p1, anyVector const &p2, anyVector &force, float &dp, float r, float force_rep_factor, float force_attr1_factor, float force_attr2_factor, bool do_r_cut)
 /**
   Calculates forces between two spheres.
 
@@ -767,7 +767,7 @@ bool calc_force(anyVector const &p1, anyVector const &p2, anyVector &force, real
 */
 {
     anyVector d_c1c2 = p2 - p1;
-    real d_c1c2_len2 = d_c1c2.length2();
+    float d_c1c2_len2 = d_c1c2.length2();
 
     force.set(0, 0, 0);
     dp = 0;
@@ -782,8 +782,8 @@ bool calc_force(anyVector const &p1, anyVector const &p2, anyVector &force, real
         d_c1c2_len2 = d_c1c2.length2();
     }
 
-    real d_c1c2_len = sqrt(d_c1c2_len2);
-    real dr_len = d_c1c2_len - r;
+    float d_c1c2_len = sqrt(d_c1c2_len2);
+    float dr_len = d_c1c2_len - r;
 
     if (do_r_cut && dr_len > SimulationSettings.force_r_cut)
         return false;
@@ -819,17 +819,17 @@ bool calc_force(anyVector const &p1, anyVector const &p2, anyVector &force, real
     return true;
 }
 
-real vol(real r) {
+float vol(float r) {
     return 4.19 * r * r * r;
 }
 
 
 static
-void concentration_exchange(real conc1[sat::dsLast][2], real conc2[sat::dsLast][2], real r1, real r2, real dist2, bool bidirectional = true)
+void concentration_exchange(float conc1[sat::dsLast][2], float conc2[sat::dsLast][2], float r1, float r2, float dist2, bool bidirectional = true)
 {
     int current_frame = conc_step_current();
     int prev_frame = conc_step_prev();
-    const real max_exchange_ratio = 1/14.0 / 200; // okolo 14 kul tej samej wielkosci zmiesci sie obok danej kuli;
+    const float max_exchange_ratio = 1/14.0f / 200.0f; // okolo 14 kul tej samej wielkosci zmiesci sie obok danej kuli;
                                             //przez 2 zeby wartosci sie nie zamienily, zamienione na 50 zeby bylo stabilne, uzasadnic
 
     //exchange oxygen and TAF concentrations
@@ -837,19 +837,19 @@ void concentration_exchange(real conc1[sat::dsLast][2], real conc2[sat::dsLast][
     //produkcja powinna byc rowna - jak ja zdefiniowac - musi tu zalezec od boxu, zeby sie dalo porownac
     //odleglosc przeplywu - wlasciwie powinna zalezec od zuzycia w poszczegolnych komorkach
     //szybkosc wymiany miedzy komorkami powinna zalezec od: ich wzajemnej odleglosci, ich mas,
-    real min_r = MIN(r1, r2);
-    real min_vol = vol(min_r);
+    float min_r = MIN(r1, r2);
+    float min_vol = vol(min_r);
 
     for (int sub = 0; sub < sat::dsLast; sub++)
     {
-        real diffLevel = conc1[sub][prev_frame] - conc2[sub][prev_frame];
+        float diffLevel = conc1[sub][prev_frame] - conc2[sub][prev_frame];
         if (diffLevel != 0 && dist2 < (r1+r2)*(r1+r2)*1.2)
         {
             if (dist2 < (r1+r2)*(r1+r2)) dist2 = (r1+r2)*(r1+r2);
 //            if (dist2 < (r1+r2)*(r1+r2)) qDebug("%.2f %.2f", sqrt(dist2), (r1+r2));
-            real movingMass = diffLevel * min_vol * max_exchange_ratio;
+            float movingMass = diffLevel * min_vol * max_exchange_ratio;
             //@@@
-            real diffSpeed = SimulationSettings.diffusion_coeff[sub] * SimulationSettings.time_step / dist2;
+            float diffSpeed = SimulationSettings.diffusion_coeff[sub] * SimulationSettings.time_step / dist2;
 //            qDebug("%f", dist2);
 
             if (bidirectional)
@@ -875,7 +875,7 @@ void cell_cell_force(anyCell *c1, anyCell *c2)
 */
 {
     anyVector force;
-    real dp;
+    float dp;
 
 
     if (!calc_force(c1->pos, c2->pos,
@@ -999,8 +999,8 @@ void CellCellForces()
 static
 void cell_barrier_out_force(anyBarrier *b, anyCell *c)
 {
-    real dr_len; ///< distance from cell to wall
-    real f;
+    float dr_len; ///< distance from cell to wall
+    float f;
 
     // left...
     dr_len = (c->pos.x - c->r) - b->to.x;
@@ -1097,8 +1097,8 @@ void cell_barrier_in_force(anyBarrier *b, anyCell *c)
   \param c -- pointer to cell
 */
 {
-    real dr_len; ///< distance from cell to wall
-    real f;
+    float dr_len; ///< distance from cell to wall
+    float f;
 
     // left...
     dr_len = c->pos.x - c->r - b->from.x;
@@ -1271,7 +1271,7 @@ void tube_tube_sprout_force_base(anyTube *v)
 {
     anyTube *v_b = v->base;
     anyVector force1, force2;
-    real dp, v1l, v2l;
+    float dp, v1l, v2l;
 
     // ortogonalization...
     anyVector v1 = (v->pos2 - v->pos1);
@@ -1283,13 +1283,13 @@ void tube_tube_sprout_force_base(anyTube *v)
     if (v1l == 0 || v2l == 0)
         return;
 
-    real r_mod = v1l/v2l;
+    float r_mod = v1l/v2l;
 
     // normalization...
     v1 *= (1/v1l);
     v2 *= (1/v2l);
 
-    real cc = (v1|v2); // - cos(90.0*M_PI/180.0);
+    float cc = (v1|v2); // - cos(90.0*M_PI/180.0);
 
     anyVector vv = v1*v2;
     vv.normalize();
@@ -1319,7 +1319,7 @@ void tube_tube_sprout_force_top(anyTube *v)
 {
     anyTube *v_b = v->top;
     anyVector force1, force2;
-    real dp, v1l, v2l;
+    float dp, v1l, v2l;
 
     // ortogonalization...
     anyVector v1 = (v->pos1 - v->pos2);
@@ -1331,13 +1331,13 @@ void tube_tube_sprout_force_top(anyTube *v)
     if (v1l == 0 || v2l == 0)
         return;
 
-    real r_mod = v1l/v2l;
+    float r_mod = v1l/v2l;
 
     // normalization...
     v1 *= (1/v1l);
     v2 *= (1/v2l);
 
-    real cc = (v1|v2); // - cos(90.0*M_PI/180.0);
+    float cc = (v1|v2); // - cos(90.0*M_PI/180.0);
 
     anyVector vv = v1*v2;
     vv.normalize();
@@ -1362,11 +1362,11 @@ void tube_tube_sprout_force_top(anyTube *v)
 static
 void min_dist_line_to_line(anyVector const &p1, anyVector const &u1,
                            anyVector const &p2, anyVector const &u2,
-                           real &t1, real &t2)
+                           float &t1, float &t2)
 {
     anyVector d = p2 - p1;
     anyVector M = u2*u1;
-    real m = M|M;
+    float m = M|M;
     if (!m)
         t1 = t2 = 0.5;
     else
@@ -1381,14 +1381,14 @@ void min_dist_line_to_line(anyVector const &p1, anyVector const &u1,
 
 static
 void min_dist_point_to_line(anyVector const &c, anyVector const &p1, anyVector const &p2,
-                            real &t2)
+                            float &t2)
 {
     // http://mathworld.wolfram.com/Point-LineDistance3-Dimensional.html
 
-    real dx = p2.x - p1.x;
-    real dy = p2.y - p1.y;
-    real dz = p2.z - p1.z;
-    real m  = dx*dx + dy*dy + dz*dz;
+    float dx = p2.x - p1.x;
+    float dy = p2.y - p1.y;
+    float dz = p2.z - p1.z;
+    float m  = dx*dx + dy*dy + dz*dz;
     if (m == 0)
         t2 = 0;
     else
@@ -1397,13 +1397,13 @@ void min_dist_point_to_line(anyVector const &c, anyVector const &p1, anyVector c
 
 
 static
-bool is_out(real x)
+bool is_out(float x)
 {
     return x < 0 || x > 1;
 }
 
 static
-void norm_t(real &x)
+void norm_t(float &x)
 {
     if (x < 0) x = 0;
     else if (x > 1) x = 1;
@@ -1413,7 +1413,7 @@ void norm_t(real &x)
 static
 void tube_tube_force(anyTube *v1, anyTube *v2)
 {
-    real t1, t2;
+    float t1, t2;
     anyVector p1;
     anyVector p2;
 
@@ -1460,7 +1460,7 @@ void tube_tube_force(anyTube *v1, anyTube *v2)
 
     // force...
     anyVector force;
-    real dp;
+    float dp;
     if (!calc_force(p1, p2,
                    force, dp,
                    v1->r + v2->r,
@@ -1576,7 +1576,7 @@ void tube_length_force(anyTube *v)
 */
 {
     anyVector dr = v->pos2 - v->pos1;
-    real dl = dr.length() - v->length;
+    float dl = dr.length() - v->length;
 
     dr.normalize();
     anyVector force = dr*dl*TubularSystemSettings.force_length_keep_factor;
@@ -1612,17 +1612,17 @@ void tube_cell_force(anyTube *v, anyCell *c)
   \param v -- pointer to tube
 */
 {
-    real p = 0.5;
+    float p = 0.5;
 
     if (SimulationSettings.sim_phases & sat::spForces)
     {
         anyVector p12 = v->pos2 - v->pos1;
         anyVector pc = c->pos - v->pos1;
-        real p12_len = p12.length();
+        float p12_len = p12.length();
         anyVector p12_n = p12;
         p12_n.normalize();
 
-        real d = pc|p12_n;
+        float d = pc|p12_n;
 
         if (d <= 0)
         {
@@ -1641,7 +1641,7 @@ void tube_cell_force(anyTube *v, anyCell *c)
         }
 
         anyVector force;
-        real dp;
+        float dp;
         if (!calc_force(c->pos, v->pos1*(1 - p) + v->pos2*p,
                         force, dp,
                         v->r + c->r,
@@ -1667,7 +1667,7 @@ void tube_cell_force(anyTube *v, anyCell *c)
 
     if ((SimulationSettings.sim_phases & sat::spDiffusion) && v->blood_flow)
     {
-        const real vessel_conc_accel = 0.25;
+        const float vessel_conc_accel = 0.25;
         concentration_exchange(c->concentrations, v->concentrations,
                                c->r*vessel_conc_accel, c->r*vessel_conc_accel,
                                (c->r+c->r)*(c->r+c->r)*vessel_conc_accel*vessel_conc_accel,
@@ -1859,7 +1859,7 @@ void GrowTube(anyTube *v)
                 end_point = end_point*-1;
         }
         end_point.normalize();
-        end_point = end_point*v->final_length*0.1;
+        end_point = end_point*v->final_length*0.1f;
         anyVector mid_point = (v->pos1 + v->pos2)*0.5;
         v2->pos1 = mid_point;
         v2->pos2 = mid_point + end_point;
@@ -2119,7 +2119,7 @@ void BloodFlow()
             {
                 if (!v->fixed_blood_pressure)
                 {
-                    real np = 0;
+                    float np = 0;
                     int np_cnt = 0;
                     if (v->next)
                     {
@@ -2169,7 +2169,7 @@ void BloodFlow()
             anyTube *v = scene::TubeChains[i];
             while (v)
             {
-                real p1 = 0, p2 = 0;
+                float p1 = 0, p2 = 0;
                 bool p1p, p2p;
 
                 p1p = true;

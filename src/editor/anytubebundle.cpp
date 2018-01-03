@@ -5,15 +5,15 @@ anyTubeBundle::anyTubeBundle(): extent_x(0), spacing_y(0), spacing_z(0),
 
 }
 
-real anyTubeBundle::billion_to_inf(real x)
+float anyTubeBundle::billion_to_inf(float x)
 {
-    return x == 1000000000 ? MAX_REAL : x;
+    return x == 1000000000 ? MAX_float : x;
 }
 
 
-QString anyTubeBundle::real_to_str(real x)
+QString anyTubeBundle::float_to_str(float x)
 {
-    if (x == MAX_REAL)
+    if (x == MAX_float)
         return QString("inf");
     else
         return QString::number(x);
@@ -43,21 +43,21 @@ void anyTubeBundle::display_properties(QTextBrowser *tb)
     tb->clear();
     tb->append(MODEL_TUBEBUNDLE_NAME.toUpper());
     tb->append("");
-    tb->append(QObject::tr("width: ") + "<b>" + anyTubeBundle::real_to_str(to.x - from.x) + " + 2*" + anyTubeBundle::real_to_str(extent_x) + "</b>");
-    tb->append(QObject::tr("height: ") + "<b>" + anyTubeBundle::real_to_str(to.y - from.y) + "</b>");
-    tb->append(QObject::tr("depth: ") + "<b>" + anyTubeBundle::real_to_str(to.z - from.z) + "</b>");
-    tb->append(QObject::tr("tube radius: ") + "<b>" + anyTubeBundle::real_to_str(r) + "</b>");
-    tb->append(QObject::tr("tube length: ") + "<b>" + anyTubeBundle::real_to_str(tube_length) + "</b>");
-    tb->append(QObject::tr("extension: ") + "<b>" + anyTubeBundle::real_to_str(extent_x) + "</b>");
-    tb->append(QObject::tr("y spacing: ") + "<b>" + anyTubeBundle::real_to_str(spacing_y) + "</b>");
-    tb->append(QObject::tr("z spacing: ") + "<b>" + anyTubeBundle::real_to_str(spacing_z) + "</b>");
-    tb->append(QObject::tr("y shift: ") + "<b>" + anyTubeBundle::real_to_str(shift_y) + "</b>");
-    tb->append(QObject::tr("z shift: ") + "<b>" + anyTubeBundle::real_to_str(shift_z) + "</b>");
+    tb->append(QObject::tr("width: ") + "<b>" + anyTubeBundle::float_to_str(to.x - from.x) + " + 2*" + anyTubeBundle::float_to_str(extent_x) + "</b>");
+    tb->append(QObject::tr("height: ") + "<b>" + anyTubeBundle::float_to_str(to.y - from.y) + "</b>");
+    tb->append(QObject::tr("depth: ") + "<b>" + anyTubeBundle::float_to_str(to.z - from.z) + "</b>");
+    tb->append(QObject::tr("tube radius: ") + "<b>" + anyTubeBundle::float_to_str(r) + "</b>");
+    tb->append(QObject::tr("tube length: ") + "<b>" + anyTubeBundle::float_to_str(tube_length) + "</b>");
+    tb->append(QObject::tr("extension: ") + "<b>" + anyTubeBundle::float_to_str(extent_x) + "</b>");
+    tb->append(QObject::tr("y spacing: ") + "<b>" + anyTubeBundle::float_to_str(spacing_y) + "</b>");
+    tb->append(QObject::tr("z spacing: ") + "<b>" + anyTubeBundle::float_to_str(spacing_z) + "</b>");
+    tb->append(QObject::tr("y shift: ") + "<b>" + anyTubeBundle::float_to_str(shift_y) + "</b>");
+    tb->append(QObject::tr("z shift: ") + "<b>" + anyTubeBundle::float_to_str(shift_z) + "</b>");
     if (fixed_blood_pressure)
     {
         tb->append(QObject::tr("fixed blood pressure:"));
-        tb->append(QObject::tr("- min pressure: ") + "<b>" + anyTubeBundle::real_to_str(min_blood_pressure) + "</b>");
-        tb->append(QObject::tr("- max pressure: ") + "<b>" + anyTubeBundle::real_to_str(max_blood_pressure) + "</b>");
+        tb->append(QObject::tr("- min pressure: ") + "<b>" + anyTubeBundle::float_to_str(min_blood_pressure) + "</b>");
+        tb->append(QObject::tr("- max pressure: ") + "<b>" + anyTubeBundle::float_to_str(max_blood_pressure) + "</b>");
     }
 }
 void anyTubeBundle::read_defaults()
