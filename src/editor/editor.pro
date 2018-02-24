@@ -7,7 +7,7 @@ HEADERS += mainwindow.h \
     glwidget.h \
     config.h \
     types.h \
-    vector.h \
+    anyvector.h \
     scene.h \
     log.h \
     const.h \
@@ -48,7 +48,7 @@ SOURCES += mainwindow.cpp \
     main.cpp \
     scene.cpp \
     config.cpp \
-    vector.cpp \
+    anyvector.cpp \
     log.cpp \
     simulation.cpp \
     timers.cpp \

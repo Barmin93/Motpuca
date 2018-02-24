@@ -7,6 +7,7 @@
 #include <QCloseEvent>
 #include <QMessageBox>
 #include <QProcess>
+#include <QFileInfo>
 
 
 #include "const.h"
@@ -107,6 +108,8 @@ public:
 
 protected:
     void changeEvent(QEvent *e);
+
+    QFileInfo loadedFile;
 
 private slots:
     void on_pushButton_stats_Save_clicked();

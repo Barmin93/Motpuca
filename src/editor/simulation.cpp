@@ -427,16 +427,6 @@ void GrowCell(anyCell *c)
 //        std::cout << c->tissue->name << std::endl;
 //        std::cout << (strcmp(c->tissue->name, "epidermis") == 0) << std::endl;
 
-        if(c->tissue->type == sat::ttTumor
-           && mutation
-           && (rand() % 100000 < cos)
-        ){
-
-            anyTissueSettings *ts = scene::FindTissueSettings("melanoma1");
-            nc->tissue = ts;
-            mutation = false;
-        }
-
         // move cells...
         c->pos  += d;
         nc->pos -= d;
@@ -458,9 +448,11 @@ void GrowCell(anyCell *c)
             change_cell_state(c, csApoptosis);
         else*/ if (c->state_age > tissue->time_to_apoptosis)
             change_cell_state(c, sat::csApoptosis);
+            LOG(llDebug, "Cell died of old age");
         else if (c->tissue->o2_hypoxia > 0 && c->concentrations[sat::dsO2][conc_step_current()] < c->tissue->o2_hypoxia)
         {
             change_cell_state(c, sat::csHypoxia);
+            LOG(llDebug, "Hypoxic cell");
         }
         else if(c->r < tissue->cell_r
                 && c->pressure_prev < tissue->max_pressure
