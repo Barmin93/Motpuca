@@ -56,7 +56,6 @@ sulfhydryl compounds in the cell. Sulfhydryls are natural radioprotectors
 and tend to be at their highest levels in S and at their lowest near mitosis.
 */
 
-
 // SPH kernel functions
 float W_poly6(float r_sq, float h_sq, float h)
 {
@@ -110,33 +109,20 @@ anyVector Grad_BicubicSpline(anyVector x, float h)
     return anyVector(coefficient) * x / h;
 }
 
-
-static
-void cell_density(anyCell *particle_i, anyCell *particle_j)
+static void cell_cell_viscosity(anyCell *particle_i, anyCell *particle_j)
 /**
-  Calculate density of a cell based on densities of its neighbors
+  Calculate viscosity of a cell based on viscosities and densities of its neighbors
 
   \param particle_i -- pointer to first cell; for which we calculate density
   \param particle_j -- pointer to second cell
 */
 {
-    const float h_sq = c::H*c::H;
-
-    anyVector rVec = particle_i->pos - particle_j->pos;
-    float r_sq = rVec.dot(rVec);
-    float r = sqrt(r_sq);
-
-    if (r > c::H)
-    {
-        return;
-    }
-    particle_i->density += W_poly6(r_sq, h_sq, c::H);
+    particle_i->viscosity += 0.5f * (particle_i->viscosity + particle_j->viscosity / particle_j->density);
 }
 
-static
-void cell_density_box2(int box1_first_cell, int box1_no_cells, int box2_x, int box2_y, int box2_z)
+static void cell_cell_viscosity_box2(int box1_first_cell, int box1_no_cells, int box2_x, int box2_y, int box2_z)
 /**
-  Calculates density of cell, when its neighbors is in different box
+  Calculates viscosity of cell, when its neighbors is in different box
 
   \param box1_first_cell -- index of first cell of first box
   \param box1_no_cells -- number of cells in first box
@@ -156,10 +142,10 @@ void cell_density_box2(int box1_first_cell, int box1_no_cells, int box2_x, int b
 
     for (int i = 0; i < box1_no_cells; i++)
         for (int j = 0; j < box2_no_cells; j++)
-            cell_density(scene::Cells + box1_first_cell + i, scene::Cells + box2_first_cell + j);
+			cell_cell_viscosity(scene::Cells + box1_first_cell + i, scene::Cells + box2_first_cell + j);
 }
 
-void CalculateCellsDensities(){
+void CalculateCellsViscosities(){
     StartTimer(TimerDensitiesId);
 
 
@@ -180,26 +166,26 @@ void CalculateCellsDensities(){
                     // inner-box forces...
                     for (int i = 0; i < no_cells - 1; i++)
                         for (int j = i + 1; j < no_cells; j++)
-                            cell_density(scene::Cells + first_cell + i, scene::Cells + first_cell + j);
+							cell_cell_viscosity(scene::Cells + first_cell + i, scene::Cells + first_cell + j);
 
                     // inter-box forces...
                     // (+1, 0, 0)...
-                    cell_density_box2(first_cell, no_cells, box_x + 1, box_y, box_z);
+					cell_cell_viscosity_box2(first_cell, no_cells, box_x + 1, box_y, box_z);
 
                     // (+1, +1, 0)...
-                    cell_density_box2(first_cell, no_cells, box_x + 1, box_y + 1, box_z);
+					cell_cell_viscosity_box2(first_cell, no_cells, box_x + 1, box_y + 1, box_z);
 
                     // (0, +1, 0)...
-                    cell_density_box2(first_cell, no_cells, box_x, box_y + 1, box_z);
+					cell_cell_viscosity_box2(first_cell, no_cells, box_x, box_y + 1, box_z);
 
                     // (-1, +1, 0)...
-                    cell_density_box2(first_cell, no_cells, box_x - 1, box_y + 1, box_z);
+					cell_cell_viscosity_box2(first_cell, no_cells, box_x - 1, box_y + 1, box_z);
 
                     if (box_z < SimulationSettings.no_boxes_z - 1)
                         for (int dx = -1; dx <= 1; dx++)
                             for (int dy = -1; dy <= 1; dy++)
                                 // (dx, dy, +1)...
-                                cell_density_box2(first_cell, no_cells, box_x + dx, box_y + dy, box_z + 1);
+								cell_cell_viscosity_box2(first_cell, no_cells, box_x + dx, box_y + dy, box_z + 1);
                 }
                 first_cell += SimulationSettings.max_cells_per_box;
             }
@@ -208,8 +194,7 @@ void CalculateCellsDensities(){
 
 }
 
-inline
-void change_cell_state(anyCell *c, sat::CellState new_state)
+inline void change_cell_state(anyCell *c, sat::CellState new_state)
 /**
   Changes state of cell and resets its timer.
 
@@ -221,9 +206,7 @@ void change_cell_state(anyCell *c, sat::CellState new_state)
     c->state_age = 0;
 }
 
-
-inline
-void change_tube_state(anyTube *v, sat::CellState new_state)
+inline void change_tube_state(anyTube *v, sat::CellState new_state)
 /**
   Changes state of tube and resets its timer.
 
@@ -235,21 +218,15 @@ void change_tube_state(anyTube *v, sat::CellState new_state)
     v->state_age = 0;
 }
 
-
-inline
-int conc_step_current()
+inline int conc_step_current()
 /**
   Returns index in concentations[] array associated with current simulation step.
-
-  \returns index in concentations[] array associated with current simulation step.
 */
 {
     return SimulationSettings.step % 2;
 }
 
-
-inline
-int conc_step_prev()
+inline int conc_step_prev()
 /**
   Returns index in concentations[] array associated with previous simulation step.
 
@@ -259,9 +236,7 @@ int conc_step_prev()
     return !(SimulationSettings.step % 2);
 }
 
-
-static
-void normalize_conc(float &conc)
+static void normalize_conc(float &conc)
 /**
   Normalizes concentration value to range [0, 1].
 
@@ -272,9 +247,7 @@ void normalize_conc(float &conc)
     else if (conc > 1) conc = 1;
 }
 
-
-static
-void limit_velocity(anyVector &v, float limit)
+static void limit_velocity(anyVector &v, float limit)
 /**
   Limits velocity (or any other) vector.
 
@@ -288,7 +261,6 @@ void limit_velocity(anyVector &v, float limit)
         v = v*limit;
     }
 }
-
 
 void GrowCell(anyCell *c)
 /**
@@ -427,7 +399,7 @@ void GrowCell(anyCell *c)
 //        std::cout << c->tissue->name << std::endl;
 //        std::cout << (strcmp(c->tissue->name, "epidermis") == 0) << std::endl;
 
-        if(c->tissue->type == sat::ttTumor
+        /*if(c->tissue->type == sat::ttTumor
            && mutation
            && (rand() % 100000 < cos)
         ){
@@ -435,7 +407,7 @@ void GrowCell(anyCell *c)
             anyTissueSettings *ts = scene::FindTissueSettings("melanoma1");
             nc->tissue = ts;
             mutation = false;
-        }
+        }*/
 
         // move cells...
         c->pos  += d;
@@ -502,7 +474,6 @@ void GrowCell(anyCell *c)
     c->state_age += SimulationSettings.time_step;
 }
 
-
 void GrowAllCells()
 /**
   Growth of all cells.
@@ -528,7 +499,6 @@ void GrowAllCells()
         StopTimer(TimerCellGrowId);
     }
 }
-
 
 void UpdateTubes()
 /**
@@ -604,7 +574,6 @@ void UpdateTubes()
     StopTimer(TimerTubeUpdateId);
 }
 
-
 void RearrangeCells()
 /**
   Removes cells in csRemove state, promotes cells from csAdded to csAlive,
@@ -668,7 +637,6 @@ void RearrangeCells()
     StopTimer(TimerRearangeId);
 }
 
-
 void ConnectTubeChains()
 {
     StartTimer(TimerConnectTubeChainsId);
@@ -705,7 +673,6 @@ void ConnectTubeChains()
     StopTimer(TimerConnectTubeChainsId);
 }
 
-
 double normal()
 {
     double v1, v2, s;
@@ -721,9 +688,7 @@ double normal()
     return(v1*sqrt((-2.0*log(s))/s));
 }
 
-
-static
-void calc_force_dissipative_and_random(anyVector const &p1, anyVector const &p2, float radius, anyVector const &v1, anyVector const &v2, float force_dpd_factor, float dpd_temperature, anyVector &force)
+static void calc_force_dissipative_and_random(anyVector const &p1, anyVector const &p2, float radius, anyVector const &v1, anyVector const &v2, float force_dpd_factor, float dpd_temperature, anyVector &force)
 {
     const float Boltzmann = 1.380648813131313e-23f * 1e2f;
 
@@ -747,11 +712,10 @@ void calc_force_dissipative_and_random(anyVector const &p1, anyVector const &p2,
     // random force...
     if (dpd_temperature > 0)
         force += r*(sqrt(2*force_dpd_factor*Boltzmann*dpd_temperature*omega)*normal()/r_len);
+
 }
 
-
-static
-bool calc_force(anyVector const &p1, anyVector const &p2, anyVector &force, float &dp, float r, float force_rep_factor, float force_attr1_factor, float force_attr2_factor, bool do_r_cut)
+static bool calc_force(anyVector const &p1, anyVector const &p2, anyVector &force, float &dp, float r, float force_rep_factor, float force_attr1_factor, float force_attr2_factor, bool do_r_cut)
 /**
   Calculates forces between two spheres.
 
@@ -823,9 +787,7 @@ float vol(float r) {
     return 4.19 * r * r * r;
 }
 
-
-static
-void concentration_exchange(float conc1[sat::dsLast][2], float conc2[sat::dsLast][2], float r1, float r2, float dist2, bool bidirectional = true)
+static void concentration_exchange(float conc1[sat::dsLast][2], float conc2[sat::dsLast][2], float r1, float r2, float dist2, bool bidirectional = true)
 {
     int current_frame = conc_step_current();
     int prev_frame = conc_step_prev();
@@ -846,11 +808,9 @@ void concentration_exchange(float conc1[sat::dsLast][2], float conc2[sat::dsLast
         if (diffLevel != 0 && dist2 < (r1+r2)*(r1+r2)*1.2)
         {
             if (dist2 < (r1+r2)*(r1+r2)) dist2 = (r1+r2)*(r1+r2);
-//            if (dist2 < (r1+r2)*(r1+r2)) qDebug("%.2f %.2f", sqrt(dist2), (r1+r2));
-            float movingMass = diffLevel * min_vol * max_exchange_ratio;
-            //@@@
+
+			float movingMass = diffLevel * min_vol * max_exchange_ratio;
             float diffSpeed = SimulationSettings.diffusion_coeff[sub] * SimulationSettings.time_step / dist2;
-//            qDebug("%f", dist2);
 
             if (bidirectional)
             {
@@ -864,9 +824,7 @@ void concentration_exchange(float conc1[sat::dsLast][2], float conc2[sat::dsLast
     }
 }
 
-
-static
-void cell_cell_force(anyCell *c1, anyCell *c2)
+static void cell_cell_force(anyCell *c1, anyCell *c2)
 /**
   Calculates forces between two cells.
 
@@ -899,11 +857,36 @@ void cell_cell_force(anyCell *c1, anyCell *c2)
                  (c1->tissue->dpd_temperature + c2->tissue->dpd_temperature)*0.5,
                  force);
 
-        c1->force += force;
-        c2->force -= force;
+		// add and subtract calculated forces 
+        //c1->force += force*2;
+        //c2->force -= force*2;
 
-        c1->pressure += dp;
+		if (c1->tissue->get_name() == "melanoma" && c2->tissue->get_name() == "melanoma") {
+			c1->force += force;
+			c2->force -= force;
+		}
+		else if ((c1->tissue->get_name() == "melanoma" && c2->tissue->get_name() == "dermis") || (c1->tissue->get_name() == "dermis" && c2->tissue->get_name() == "melanoma")) {
+			c1->force += force;
+			c2->force -= force;
+		}
+		else {
+			c1->force += force*12;
+			c2->force -= force*12;
+		}
+
+		//// calculate viscosity force and add it
+		/*if (c1->tissue->get_name() == "melanoma" && c2->tissue->get_name() == "melanoma") {
+			c1->force += (c1->velocity - c2->velocity) * 1e-17f* ((c1->viscosity + c2->viscosity) / c1->density);
+			c2->force -= (c1->velocity - c2->velocity) * 1e-17f * ((c1->viscosity + c2->viscosity) / c1->density);
+		}
+		else {
+			c1->force += (c1->velocity - c2->velocity) * 8e-17f* ((c1->viscosity + c2->viscosity) / c1->density);
+			c2->force -= (c1->velocity - c2->velocity) * 8e-17f * ((c1->viscosity + c2->viscosity) / c1->density);
+		}*/
+
+		c1->pressure += dp;
         c2->pressure += dp;
+
         c1->pressure_sum += c2->pressure_prev;
         c2->pressure_sum += c1->pressure_prev;
     }
@@ -916,9 +899,7 @@ void cell_cell_force(anyCell *c1, anyCell *c2)
     }
 }
 
-
-static
-void cell_cell_forces_box2(int box1_first_cell, int box1_no_cells, int box2_x, int box2_y, int box2_z)
+static void cell_cell_forces_box2(int box1_first_cell, int box1_no_cells, int box2_x, int box2_y, int box2_z)
 /**
   Calculates forces between cells from two different boxes.
 
@@ -942,7 +923,6 @@ void cell_cell_forces_box2(int box1_first_cell, int box1_no_cells, int box2_x, i
         for (int j = 0; j < box2_no_cells; j++)
             cell_cell_force(scene::Cells + box1_first_cell + i, scene::Cells + box2_first_cell + j);
 }
-
 
 void CellCellForces()
 /**
@@ -995,9 +975,7 @@ void CellCellForces()
     StopTimer(TimerCellCellForcesId);
 }
 
-
-static
-void cell_barrier_out_force(anyBarrier *b, anyCell *c)
+static void cell_barrier_out_force(anyBarrier *b, anyCell *c)
 {
     float dr_len; ///< distance from cell to wall
     float f;
@@ -1087,9 +1065,7 @@ void cell_barrier_out_force(anyBarrier *b, anyCell *c)
     }
 }
 
-
-static
-void cell_barrier_in_force(anyBarrier *b, anyCell *c)
+static void cell_barrier_in_force(anyBarrier *b, anyCell *c)
 /**
   Calculates forces from barrier.
 
@@ -1156,7 +1132,6 @@ void cell_barrier_in_force(anyBarrier *b, anyCell *c)
 
 }
 
-
 void CellBarrierForces()
 /**
   Highly UNEFFICIENT bariers - cells interactions.
@@ -1194,7 +1169,6 @@ void CellBarrierForces()
         StopTimer(TimerCellBarrierForcesId);
     }
 }
-
 
 void TissueProperties()
 /**
@@ -1241,9 +1215,7 @@ void TissueProperties()
     StopTimer(TimerTissuePropertiesId);
 }
 
-
-static
-void tube_tube_in_chain_force(anyTube *v)
+static void tube_tube_in_chain_force(anyTube *v)
 /**
   Calculates attraction forces between two joined tubes.
 
@@ -1260,9 +1232,7 @@ void tube_tube_in_chain_force(anyTube *v)
     v_n->force1 -= force;
 }
 
-
-static
-void tube_tube_sprout_force_base(anyTube *v)
+static void tube_tube_sprout_force_base(anyTube *v)
 /**
   Calculates attraction forces between tubes in sprout.
 
@@ -1308,9 +1278,7 @@ void tube_tube_sprout_force_base(anyTube *v)
     v_b->force2 += force1*0.5;
 }
 
-
-static
-void tube_tube_sprout_force_top(anyTube *v)
+static void tube_tube_sprout_force_top(anyTube *v)
 /**
   Calculates attraction forces between tubes in sprout.
 
@@ -1357,10 +1325,7 @@ void tube_tube_sprout_force_top(anyTube *v)
     v_b->force2 += force1*0.5;
 }
 
-
-
-static
-void min_dist_line_to_line(anyVector const &p1, anyVector const &u1,
+static void min_dist_line_to_line(anyVector const &p1, anyVector const &u1,
                            anyVector const &p2, anyVector const &u2,
                            float &t1, float &t2)
 {
@@ -1378,9 +1343,7 @@ void min_dist_line_to_line(anyVector const &p1, anyVector const &u1,
     }
 }
 
-
-static
-void min_dist_point_to_line(anyVector const &c, anyVector const &p1, anyVector const &p2,
+static void min_dist_point_to_line(anyVector const &c, anyVector const &p1, anyVector const &p2,
                             float &t2)
 {
     // http://mathworld.wolfram.com/Point-LineDistance3-Dimensional.html
@@ -1395,23 +1358,18 @@ void min_dist_point_to_line(anyVector const &c, anyVector const &p1, anyVector c
         t2 = -(dx*(p1.x - c.x) + dy*(p1.y - c.y) + dz*(p1.z - c.z))/m;
 }
 
-
-static
-bool is_out(float x)
+static bool is_out(float x)
 {
     return x < 0 || x > 1;
 }
 
-static
-void norm_t(float &x)
+static void norm_t(float &x)
 {
     if (x < 0) x = 0;
     else if (x > 1) x = 1;
 }
 
-
-static
-void tube_tube_force(anyTube *v1, anyTube *v2)
+static void tube_tube_force(anyTube *v1, anyTube *v2)
 {
     float t1, t2;
     anyVector p1;
@@ -1518,7 +1476,6 @@ void tube_tube_force(anyTube *v1, anyTube *v2)
     }
 }
 
-
 void TubeTubeInChainsForces()
 /**
   Calculates forces between joined tubes.
@@ -1539,7 +1496,6 @@ void TubeTubeInChainsForces()
         }
     }
 }
-
 
 void TubeTubeOutChainsForces()
 /**
@@ -1566,9 +1522,7 @@ void TubeTubeOutChainsForces()
     }
 }
 
-
-static
-void tube_length_force(anyTube *v)
+static void tube_length_force(anyTube *v)
 /**
   Keeps defined distance between tube's ends.
 
@@ -1584,7 +1538,6 @@ void tube_length_force(anyTube *v)
     v->force1 += force;
     v->force2 -= force;
 }
-
 
 void TubeLengthForces()
 /**
@@ -1602,9 +1555,7 @@ void TubeLengthForces()
     }
 }
 
-
-static
-void tube_cell_force(anyTube *v, anyCell *c)
+static void tube_cell_force(anyTube *v, anyCell *c)
 /**
   Calculates forces between cell and tube.
 
@@ -1676,7 +1627,6 @@ void tube_cell_force(anyTube *v, anyCell *c)
     }
 }
 
-
 void TubeCellForces()
 {
     if (SimulationSettings.sim_phases & sat::spForces)
@@ -1729,7 +1679,6 @@ void TubeCellForces()
     }
 }
 
-
 void TubeTubeForces()
 /**
   Calculates forces between tubes.
@@ -1751,9 +1700,6 @@ void TubeTubeForces()
         StopTimer(TimerTubeTubeForcesId);
     }
 }
-
-
-
 
 void GrowTube(anyTube *v)
 {
@@ -1930,7 +1876,6 @@ void GrowTube(anyTube *v)
         v->flow_time = SimulationSettings.time;
 }
 
-
 void GrowAllTubes()
 /**
   Growth of all tubes.
@@ -1954,7 +1899,6 @@ void GrowAllTubes()
     }
 }
 
-
 void CopyConcentrations()
 {
     StartTimer(TimerCopyConcentrationsId);
@@ -1975,7 +1919,6 @@ void CopyConcentrations()
 
     StopTimer(TimerCopyConcentrationsId);
 }
-
 
 void ResetForces()
 {
@@ -2012,7 +1955,6 @@ void ResetForces()
 
     StopTimer(TimerResetForcesId);
 }
-
 
 void UpdatePressures()
 {
@@ -2067,7 +2009,6 @@ void UpdatePressures()
     StopTimer(TimerUpdatePressuresId);
 }
 
-
 void RemoveTubes()
 {
     StartTimer(TimerRemoveTubesId);
@@ -2103,7 +2044,6 @@ void RemoveTubes()
 
     StopTimer(TimerRemoveTubesId);
 }
-
 
 void BloodFlow()
 {
@@ -2207,7 +2147,6 @@ void BloodFlow()
         StopTimer(TimerBloodFlowId);
     }
 }
-
 
 void TimeStep()
 /**
