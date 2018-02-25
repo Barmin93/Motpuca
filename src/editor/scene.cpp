@@ -187,6 +187,7 @@ namespace scene {
         PARSE_VALUE_float((*ts), dpd_temperature)
         PARSE_VALUE_float((*ts), max_pressure)
         PARSE_VALUE_float((*ts), o2_consumption)
+        PARSE_VALUE_float((*ts), medicine_consumption)
         PARSE_VALUE_float((*ts), o2_hypoxia)
         PARSE_VALUE_float((*ts), pericyte_production)
         PARSE_VALUE_float((*ts), time_to_necrosis_var)
@@ -268,6 +269,7 @@ namespace scene {
         SAVE_float(f, ts, force_atr2_factor);
         SAVE_float(f, ts, max_pressure);
         SAVE_float(f, ts, o2_consumption);
+        SAVE_float(f, ts, medicine_consumption);
         SAVE_float(f, ts, o2_hypoxia);
         SAVE_float(f, ts, pericyte_production);
         SAVE_float(f, ts, time_to_necrosis_var);

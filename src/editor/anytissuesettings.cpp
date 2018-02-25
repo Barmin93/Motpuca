@@ -6,7 +6,7 @@ anyTissueSettings::anyTissueSettings(): color(0, 0, 0), type(sat::ttNormal), nam
     time_in_necrosis(0), dead_r(1),
     cell_shrink_speed(0), minimum_mitosis_r(10.0f),
     force_rep_factor(0), force_atr1_factor(0), force_atr2_factor(0), force_dpd_factor(0), dpd_temperature(0),
-    max_pressure(0), o2_consumption(7.5e-9f), pericyte_production(0), o2_hypoxia(0),
+    max_pressure(0), o2_consumption(7.5e-9f), medicine_consumption(7.5e-9f), pericyte_production(0), o2_hypoxia(0),
     next(0), id(0), pressure_sum(0), pressure(0)
 {
 for (int i = 0; i < sat::csLast; i++)
@@ -142,6 +142,8 @@ void anyTissueSettings::prepare_dialog()
     dialog->dialog->lineEdit_t_dpdfactor->setText(QString::number(force_dpd_factor));
     dialog->dialog->lineEdit_t_dpdtemp->setText(QString::number(dpd_temperature));
     dialog->dialog->lineEdit_t_o2cons->setText(QString::number(o2_consumption));
+    dialog->dialog->lineEdit_t_medcons->setText(QString::number(medicine_consumption));
+
     dialog->dialog->doubleSpinBox_t_o2hypoxia->setValue(o2_hypoxia);
     dialog->dialog->lineEdit_t_per_prod->setText(QString::number(pericyte_production));
 }
@@ -245,6 +247,7 @@ void anyTissueSettings::update_from_dialog()
     force_dpd_factor = anyTissueSettings::billion_to_inf(dialog->dialog->lineEdit_t_dpdfactor->text().toDouble());
     dpd_temperature= anyTissueSettings::billion_to_inf(dialog->dialog->lineEdit_t_dpdtemp->text().toDouble());
     o2_consumption = anyTissueSettings::billion_to_inf(dialog->dialog->lineEdit_t_o2cons->text().toDouble());
+    medicine_consumption = anyTissueSettings::billion_to_inf(dialog->dialog->lineEdit_t_medcons->text().toDouble());
     o2_hypoxia = dialog->dialog->doubleSpinBox_t_o2hypoxia->value();
     pericyte_production = dialog->dialog->lineEdit_t_per_prod->text().toDouble();
 
