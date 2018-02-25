@@ -438,6 +438,35 @@ void GrowCell(anyCell *c)
     }
     // tissue change...
 
+    if (SimulationSettings.sim_phases & sat::spMitosis
+        && SimulationSettings.step > 1  //< pressures are calculated in steps 0 & 1
+        && c->state == sat::csAlive
+        && (strcmp(c->tissue->name, "quiescent") != 0)
+        && (c->concentrations[sat::dsMedicine][conc_step_current()] > 0.3f)
+        && rand() % 3==1
+        )
+    {
+        change_cell_state(c, sat::csNecrosis);
+    }
+
+    if (SimulationSettings.sim_phases & sat::spMitosis
+        && SimulationSettings.step > 1  //< pressures are calculated in steps 0 & 1
+        && c->state == sat::csAlive
+        && (strcmp(c->tissue->name, "quiescent") == 0)
+        && (c->concentrations[sat::dsMedicine][conc_step_current()] > 0.3f)
+        && rand() % 3==1
+        )
+    {
+        if(rand() % 2==1){
+            change_cell_state(c, sat::csNecrosis);}
+        else {
+            c->tissue->no_cells[0]--;
+            anyTissueSettings *ts = scene::FindTissueSettings("proliferative");
+            c->tissue = ts;
+            c->tissue->no_cells[0]++;
+        }
+
+    }
 
     // state and radius change...
     switch (c->state)
