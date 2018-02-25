@@ -368,9 +368,11 @@ void GrowCell(anyCell *c)
         normalize_conc(c->concentrations[sat::dsPericytes][conc_step_current()]);
     }
 
-    // Medicine diffusion
-    c->concentrations[sat::dsMedicine][conc_step_current()] -= c->tissue->o2_consumption * c->tissue->density / 10e18 * SimulationSettings.time_step / SimulationSettings.max_o2_concentration / 10;
-    normalize_conc(c->concentrations[sat::dsMedicine][conc_step_current()]);
+    // Medicine diffusion -> if added and not removed
+    if (SimulationSettings.add_medicine < SimulationSettings.step && SimulationSettings.step < SimulationSettings.remove_medicine){
+        c->concentrations[sat::dsMedicine][conc_step_current()] -= c->tissue->o2_consumption * c->tissue->density / 10e18 * SimulationSettings.time_step / SimulationSettings.max_o2_concentration / 10;
+        normalize_conc(c->concentrations[sat::dsMedicine][conc_step_current()]);
+    }
 
     //mitosis
 
@@ -1934,7 +1936,8 @@ void GrowTube(anyTube *v)
     v->concentrations[sat::dsTAF][conc_step_current()] = 0;
     if (v->blood_flow != 0){
         v->concentrations[sat::dsO2][conc_step_current()] = 1;
-        v->concentrations[sat::dsMedicine][conc_step_current()] = 1;
+        if (SimulationSettings.add_medicine < SimulationSettings.step && SimulationSettings.step < SimulationSettings.remove_medicine)
+            v->concentrations[sat::dsMedicine][conc_step_current()] = 1;
     }
     // update timers...
     v->age += SimulationSettings.time_step;
