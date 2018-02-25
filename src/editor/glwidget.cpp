@@ -480,6 +480,19 @@ void GLWidget::draw_cell(anyCell const *c, float /*p_min*/, float /*p_max*/)
         color.add(p, p, 0);
     }
 
+    // Medicine concentration...
+    if (color_mode & COLOR_MODE_MEDICINE)
+    {
+        float pr = c->concentrations[sat::dsMedicine][!(SimulationSettings.step % 2)];
+        float p;
+        if (pr < 0)
+            p = 0;
+        else if (pr > 1)
+            p = 1;
+        else
+            p = pr;
+        color.add(p, p, 0);
+    }
 
     if (cell_instance_to_draw_cnt < cell_instance_cnt)
     {
@@ -824,26 +837,37 @@ void GLWidget::draw_legend()
         draw_legend_caption(pos++, "O2 concentration:");
     }
 
-    if (color_mode & COLOR_MODE_TAF)
+    if (color_mode & COLOR_MODE_MEDICINE)
     {
-        // TAF...
+        // MEDICINE...
         draw_legend_item(pos++, anyColor(0, 0, 0), "0%");
-        draw_legend_item(pos++, anyColor(0, 0.25, 0), "25%");
-        draw_legend_item(pos++, anyColor(0, 0.5, 0), "50%");
-        draw_legend_item(pos++, anyColor(0, 0.75, 0), "75%");
-        draw_legend_item(pos++, anyColor(0, 1, 0), "100%");
-        draw_legend_caption(pos++, "TAF concentration:");
+        draw_legend_item(pos++, anyColor(0.25, 0.25, 0), "25%");
+        draw_legend_item(pos++, anyColor(0.5, 0.5, 0), "50%");
+        draw_legend_item(pos++, anyColor(0.75, 0.75, 0), "75%");
+        draw_legend_item(pos++, anyColor(1, 1, 0), "100%");
+        draw_legend_caption(pos++, "Medicine concentration:");
     }
 
     if (color_mode & COLOR_MODE_PERICYTES)
     {
-        // TAF...
+        // Pericytes... The same as medicine because it's not working
         draw_legend_item(pos++, anyColor(0, 0, 0), "0%");
         draw_legend_item(pos++, anyColor(0.25, 0.25, 0), "25%");
         draw_legend_item(pos++, anyColor(0.5, 0.5, 0), "50%");
         draw_legend_item(pos++, anyColor(0.75, 0.75, 0), "75%");
         draw_legend_item(pos++, anyColor(1, 1, 0), "100%");
         draw_legend_caption(pos++, "Pericytes concentration:");
+    }
+
+    if (color_mode & COLOR_MODE_TAF)
+    {
+        // TAF...
+        draw_legend_item(pos++, anyColor(0, 0, 0), "0%");
+        draw_legend_item(pos++, anyColor(0.25,0, 0), "25%");
+        draw_legend_item(pos++, anyColor(0.5, 0, 0), "50%");
+        draw_legend_item(pos++, anyColor(0.75, 0, 0), "75%");
+        draw_legend_item(pos++, anyColor(1, 0, 0), "100%");
+        draw_legend_caption(pos++, "TAF concentration:");
     }
 
     glEnable(GL_DEPTH_TEST);

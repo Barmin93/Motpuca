@@ -756,6 +756,14 @@ namespace scene {
                 throw new Error(__FILE__, __LINE__, "Invalid concentration value", TokenToString(Token), ParserFile, ParserLine);
             c->concentrations[sat::dsPericytes][0] = c->concentrations[sat::dsPericytes][1] = Token.number;
         }
+        else if (!StrCmp(tv.str, "conc_Medicine"))
+        {
+            if (Token.type != TT_Number)
+                throw new Error(__FILE__, __LINE__, "Invalid concentration value", TokenToString(Token), ParserFile, ParserLine);
+            if (Token.number < 0 || Token.number > 1)
+                throw new Error(__FILE__, __LINE__, "Invalid concentration value", TokenToString(Token), ParserFile, ParserLine);
+            c->concentrations[sat::dsMedicine][0] = c->concentrations[sat::dsMedicine][1] = Token.number;
+        }
         PARSE_VALUE_VECTOR((*c), pos)
         PARSE_VALUE_float((*c), r)
         PARSE_VALUE_float((*c), age)
@@ -831,6 +839,7 @@ namespace scene {
         fprintf(f, "  conc_O2 = %g\n", c->concentrations[sat::dsO2][SimulationSettings.step % 2]);
         fprintf(f, "  conc_TAF = %g\n", c->concentrations[sat::dsTAF][SimulationSettings.step % 2]);
         fprintf(f, "  conc_Pericytes = %g\n", c->concentrations[sat::dsPericytes][SimulationSettings.step % 2]);
+        fprintf(f, "  conc_Medicine = %g\n", c->concentrations[sat::dsMedicine][SimulationSettings.step % 2]);
 
         fprintf(f, " }\n");
     }
@@ -1023,7 +1032,7 @@ namespace scene {
         fprintf(f, "  conc_o2 = %g\n", b->concentrations[sat::dsO2]);
         fprintf(f, "  conc_taf = %g\n", b->concentrations[sat::dsTAF]);
         fprintf(f, "  conc_pericytes = %g\n", b->concentrations[sat::dsPericytes]);
-
+        fprintf(f, "  conc_medicine = %g\n", b->concentrations[sat::dsMedicine]);
         fprintf(f, " }\n");
     }
 

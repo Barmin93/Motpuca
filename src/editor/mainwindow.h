@@ -7,6 +7,7 @@
 #include <QCloseEvent>
 #include <QMessageBox>
 #include <QProcess>
+#include <QFileInfo>
 
 
 #include "const.h"
@@ -29,7 +30,8 @@
 #define COLOR_MODE_PRESSURE     4
 #define COLOR_MODE_O2           8
 #define COLOR_MODE_TAF         16
-#define COLOR_MODE_PERICYTES   32
+#define COLOR_MODE_MEDICINE   32
+#define COLOR_MODE_PERICYTES   64
 
 
 namespace Ui {
@@ -108,6 +110,8 @@ public:
 protected:
     void changeEvent(QEvent *e);
 
+    QFileInfo loadedFile;
+
 private slots:
     void on_pushButton_stats_Save_clicked();
     void on_tabWidget_currentChanged(int index);
@@ -167,7 +171,6 @@ private slots:
     void slot_redraw_main_view(bool checked);
     void slot_redraw_main_view_on_checked(bool checked);
     void slot_process_msg();
-
 
 public slots:
     void on_pushButton_load_clicked();

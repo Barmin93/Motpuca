@@ -106,6 +106,7 @@ void anyGlobalsDialog::prepare_dialog()
     dialog->doubleSpinBox_diffcoefO2->setValue(SimulationSettings.diffusion_coeff[sat::dsO2]);
     dialog->doubleSpinBox_diffcoefTAF->setValue(SimulationSettings.diffusion_coeff[sat::dsTAF]);
     dialog->doubleSpinBox_diffcoefPeri->setValue(SimulationSettings.diffusion_coeff[sat::dsPericytes]);
+    dialog->doubleSpinBox_diffcoefMedicine->setValue(SimulationSettings.diffusion_coeff[sat::dsMedicine]);
     dialog->doubleSpinBox_stop_time->setValue(SimulationSettings.stop_time);
 
     dialog->spinBox_savepovray->setValue(SimulationSettings.save_povray);
@@ -183,6 +184,7 @@ void anyGlobalsDialog::update_from_dialog()
     SimulationSettings.diffusion_coeff[sat::dsO2] = dialog->doubleSpinBox_diffcoefO2->value();
     SimulationSettings.diffusion_coeff[sat::dsTAF] = dialog->doubleSpinBox_diffcoefTAF->value();
     SimulationSettings.diffusion_coeff[sat::dsPericytes] = dialog->doubleSpinBox_diffcoefPeri->value();
+    SimulationSettings.diffusion_coeff[sat::dsMedicine] = dialog->doubleSpinBox_diffcoefMedicine->value();
 
     SimulationSettings.save_povray = dialog->spinBox_savepovray->value();
     SimulationSettings.save_ag = dialog->spinBox_saveag->value();

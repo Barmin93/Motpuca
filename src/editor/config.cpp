@@ -89,6 +89,7 @@ void SaveSimulationSettings_ag(FILE *f, anySimulationSettings const *ss)
     SAVE_float_N(f, ss, diffusion_coeff[sat::dsO2], diffusion_coeff_O2);
     SAVE_float_N(f, ss, diffusion_coeff[sat::dsTAF], diffusion_coeff_TAF);
     SAVE_float_N(f, ss, diffusion_coeff[sat::dsPericytes], diffusion_coeff_Pericytes);
+    SAVE_float_N(f, ss, diffusion_coeff[sat::dsMedicine], diffusion_coeff_Medicine);
 
     fprintf(f, " }\n");
 }
@@ -351,6 +352,7 @@ void ParseSimulationSettingsValue(FILE *f)
     PARSE_VALUE_float_N(SimulationSettings, diffusion_coeff[sat::dsO2], diffusion_coeff_o2)
     PARSE_VALUE_float_N(SimulationSettings, diffusion_coeff[sat::dsTAF], diffusion_coeff_taf)
     PARSE_VALUE_float_N(SimulationSettings, diffusion_coeff[sat::dsPericytes], diffusion_coeff_pericytes)
+    PARSE_VALUE_float_N(SimulationSettings, diffusion_coeff[sat::dsMedicine], diffusion_coeff_medicine)
 
     else
         throw new Error(__FILE__, __LINE__, "Unknown token in 'simulation'", TokenToString(tv), ParserFile, ParserLine);

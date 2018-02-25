@@ -259,7 +259,7 @@
      <x>0</x>
      <y>0</y>
      <width>919</width>
-     <height>24</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1140,6 +1140,13 @@
           </property>
          </widget>
         </item>
+        <item row="3" column="1">
+         <widget class="QCheckBox" name="checkBox_color_Medicine">
+          <property name="text">
+           <string>Medicine conc.</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </item>
@@ -1729,6 +1736,22 @@
   </connection>
   <connection>
    <sender>checkBox_color_o2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slot_redraw_main_view(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>246</x>
+     <y>671</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>487</x>
+     <y>515</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_color_Medicine</sender>
    <signal>toggled(bool)</signal>
    <receiver>MainWindow</receiver>
    <slot>slot_redraw_main_view(bool)</slot>

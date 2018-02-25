@@ -268,7 +268,8 @@ void MainWindow::load_scene(const char *fname)
         ParseFile(fname, true);
         ui->checkBox_show_blocks->setChecked(!GlobalSettings.simulation_allocated);
         ui->tabWidget->setTabText(2, tr("Input text: ") + fname);
-        set_window_name(QFileInfo(fname).fileName());
+        this->loadedFile = QFileInfo(fname);
+        set_window_name(this->loadedFile.fileName());
         ui->glwidget_main_view->repaint();
         display_tree_objects();
         display_statistics();
@@ -370,7 +371,7 @@ void MainWindow::run_simulation()
         if (SimulationSettings.save_statistics && SimulationSettings.step % SimulationSettings.save_statistics == 0)
         {
             char fname[P_MAX_PATH];
-            snprintf(fname, P_MAX_PATH, "%sstatistics_%08d.csv", GlobalSettings.output_dir, SimulationSettings.step);
+            snprintf(fname, P_MAX_PATH, "%s%s_statistics_%08d.csv", GlobalSettings.output_dir, this->loadedFile.fileName().toLatin1().data(), SimulationSettings.step);
             SaveStatistics(fname);
         }
 
@@ -417,6 +418,8 @@ int MainWindow::get_coloring_mode()
         mode |= COLOR_MODE_TAF;
     if (ui->checkBox_color_Pericytes->isChecked())
         mode |= COLOR_MODE_PERICYTES;
+    if (ui->checkBox_color_Medicine->isChecked())
+        mode |= COLOR_MODE_MEDICINE;
 
     return mode;
 }

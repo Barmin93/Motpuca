@@ -89,6 +89,7 @@ void anyCellBlock::prepare_dialog()
     dialog->dialog->doubleSpinBox_concO2->setValue(concentrations[sat::dsO2]);
     dialog->dialog->doubleSpinBox_concTAF->setValue(concentrations[sat::dsTAF]);
     dialog->dialog->doubleSpinBox_concPericytes->setValue(concentrations[sat::dsPericytes]);
+    dialog->dialog->doubleSpinBox_concMedicine->setValue(concentrations[sat::dsMedicine]);
 
     // select tissue in combo...
     if (tissue)
@@ -130,6 +131,7 @@ void anyCellBlock::update_from_dialog()
     concentrations[sat::dsO2] = dialog->dialog->doubleSpinBox_concO2->value();
     concentrations[sat::dsTAF] = dialog->dialog->doubleSpinBox_concTAF->value();
     concentrations[sat::dsPericytes] = dialog->dialog->doubleSpinBox_concPericytes->value();
+    concentrations[sat::dsMedicine] = dialog->dialog->doubleSpinBox_concMedicine->value();
 
     LOG(llDebug, "CellBlock updated from dialog");
 }
@@ -214,6 +216,7 @@ void anyCellBlock::display_properties(QTextBrowser *tb)
         tb->append(QObject::tr("init O2 conc: ") + "<b>" + anyCellBlock::float_to_str(concentrations[sat::dsO2]) + "</b>");
         tb->append(QObject::tr("init TAF conc: ") + "<b>" + anyCellBlock::float_to_str(concentrations[sat::dsTAF]) + "</b>");
         tb->append(QObject::tr("init Pericytes conc: ") + "<b>" + anyCellBlock::float_to_str(concentrations[sat::dsPericytes]) + "</b>");
+        tb->append(QObject::tr("init Medicine conc: ") + "<b>" + anyCellBlock::float_to_str(concentrations[sat::dsMedicine]) + "</b>");
     }
 }
 void anyCellBlock::add_itself_to_scene()

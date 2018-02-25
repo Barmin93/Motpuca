@@ -7,7 +7,6 @@ HEADERS += mainwindow.h \
     glwidget.h \
     config.h \
     types.h \
-    vector.h \
     scene.h \
     log.h \
     const.h \
@@ -42,13 +41,14 @@ HEADERS += mainwindow.h \
     anyvisualsettings.h \
     anysimulationsettings.h \
     anytubularsystemsettings.h \
-    anyglobalsdialog.h
+    anyglobalsdialog.h \
+    anyvector.h
+
 SOURCES += mainwindow.cpp \
     glwidget.cpp \
     main.cpp \
     scene.cpp \
     config.cpp \
-    vector.cpp \
     log.cpp \
     simulation.cpp \
     timers.cpp \
@@ -73,7 +73,9 @@ SOURCES += mainwindow.cpp \
     anyvisualsettings.cpp \
     anysimulationsettings.cpp \
     anytubularsystemsettings.cpp \
-    anyglobalsdialog.cpp
+    anyglobalsdialog.cpp \
+    anyvector.cpp
+
 FORMS += mainwindow.ui \
     dialogEditable.ui \
     dialogGlobals.ui \

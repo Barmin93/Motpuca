@@ -35,7 +35,6 @@ public:
     float time_to_necrosis;     ///< individual time to necrosis (in hypoxia or apoptosis)
     float concentrations[sat::dsLast][2];
     float density;
-	float viscosity;
     bool mark;                 ///< marker (for debugging)
 
     anyCell();
