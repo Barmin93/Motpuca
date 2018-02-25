@@ -370,39 +370,13 @@ void GrowCell(anyCell *c)
 
     //mitosis
 
-    if(strcmp(c->tissue->name, "membrane") == 0){
-        if (SimulationSettings.sim_phases & sat::spMitosis
-            && SimulationSettings.step > 1  //< pressures are calculated in steps 0 & 1
-            && c->state == sat::csAlive
-            && c->age > tissue->minimum_interphase_time
-            && c->r >= tissue->minimum_mitosis_r
-            && c->pressure_prev < tissue->max_pressure
-            && rand() % 100==23
-            )
-        {
-            // change age...
-            c->age = 0;
-            change_cell_state(c, sat::csAdded);
-
-            // clone cell...
-            anyCell *nc = new anyCell;
-            *nc = *c;
-
-            //double time_step = (double)SimulationSettings.step;
-            //auto cos = (time_step*time_step*time_step* 100000) /216000000000 ;
-            anyTissueSettings *ts = scene::FindTissueSettings("epidermis");
-            nc->tissue = ts;
-            nc->pos += anyVector(0,c->r,0);
-            c->pos_h1.x = c->pos_h2.x = nc->pos_h1.x = nc->pos_h2.x = -1000000000;
-            scene::AddCell(nc);
-        }
-    }else if (SimulationSettings.sim_phases & sat::spMitosis
+    if (SimulationSettings.sim_phases & sat::spMitosis
         && SimulationSettings.step > 1  //< pressures are calculated in steps 0 & 1
         && c->state == sat::csAlive
         && c->age > tissue->minimum_interphase_time
         && c->r >= tissue->minimum_mitosis_r
         && c->pressure_prev < tissue->max_pressure
-        && (strcmp(c->tissue->name, "epidermis") != 0)
+        && (strcmp(c->tissue->name, "quiescent") != 0)
         && rand() % 1000==23
         )
     {
@@ -423,9 +397,7 @@ void GrowCell(anyCell *c)
         *nc = *c;
 
         double time_step = (double)SimulationSettings.step;
-        auto cos = (time_step*time_step*time_step* 100000) /216000000000 ;
-//        std::cout << c->tissue->name << std::endl;
-//        std::cout << (strcmp(c->tissue->name, "epidermis") == 0) << std::endl;
+
 
         // move cells...
         c->pos  += d;
@@ -435,6 +407,35 @@ void GrowCell(anyCell *c)
         scene::AddCell(nc);
     }
 
+
+
+    //tissue becomes quiescent
+
+    if (SimulationSettings.sim_phases & sat::spMitosis
+        && SimulationSettings.step > 1  //< pressures are calculated in steps 0 & 1
+        && c->state == sat::csAlive
+        && (strcmp(c->tissue->name, "proliferative") == 0)
+        && (c->concentrations[sat::dsO2][conc_step_current()] < SimulationSettings.quiescent_o2)
+        )
+    {
+        c->tissue->no_cells[0]--;
+        anyTissueSettings *ts = scene::FindTissueSettings("quiescent");
+        c->tissue = ts;
+        c->tissue->no_cells[0]++;
+    }
+
+    if (SimulationSettings.sim_phases & sat::spMitosis
+        && SimulationSettings.step > 1  //< pressures are calculated in steps 0 & 1
+        && c->state == sat::csAlive
+        && (strcmp(c->tissue->name, "quiescent") == 0)
+        && (c->concentrations[sat::dsO2][conc_step_current()] > SimulationSettings.proliferative_o2)
+        )
+    {
+        c->tissue->no_cells[0]--;
+        anyTissueSettings *ts = scene::FindTissueSettings("proliferative");
+        c->tissue = ts;
+        c->tissue->no_cells[0]++;
+    }
     // tissue change...
 
 
@@ -444,15 +445,11 @@ void GrowCell(anyCell *c)
     case sat::csAdded:
         break;
     case sat::csAlive:
-/*        if (tissue->type == ttNormal && c->nei_cnt[ttTumor] > c->nei_cnt[ttNormal])
-            change_cell_state(c, csApoptosis);
-        else*/ if (c->state_age > tissue->time_to_apoptosis)
+        if (c->state_age > tissue->time_to_apoptosis)
             change_cell_state(c, sat::csApoptosis);
-            LOG(llDebug, "Cell died of old age");
         else if (c->tissue->o2_hypoxia > 0 && c->concentrations[sat::dsO2][conc_step_current()] < c->tissue->o2_hypoxia)
         {
             change_cell_state(c, sat::csHypoxia);
-            LOG(llDebug, "Hypoxic cell");
         }
         else if(c->r < tissue->cell_r
                 && c->pressure_prev < tissue->max_pressure
