@@ -415,7 +415,7 @@ void GrowCell(anyCell *c)
         && SimulationSettings.step > 1  //< pressures are calculated in steps 0 & 1
         && c->state == sat::csAlive
         && (strcmp(c->tissue->name, "proliferative") == 0)
-        && (c->concentrations[sat::dsO2][conc_step_current()] < SimulationSettings.quiescent_o2)
+        && ((c->concentrations[sat::dsO2][conc_step_current()]) < (SimulationSettings.quiescent_o2 + ((rand() % 41 / 10.0f) - 0.2f)))
         )
     {
         c->tissue->no_cells[0]--;
@@ -428,7 +428,7 @@ void GrowCell(anyCell *c)
         && SimulationSettings.step > 1  //< pressures are calculated in steps 0 & 1
         && c->state == sat::csAlive
         && (strcmp(c->tissue->name, "quiescent") == 0)
-        && (c->concentrations[sat::dsO2][conc_step_current()] > SimulationSettings.proliferative_o2)
+        && ((c->concentrations[sat::dsO2][conc_step_current()]) > (SimulationSettings.quiescent_o2 + ((rand() % 41 / 10.0f) - 0.2f)))
         )
     {
         c->tissue->no_cells[0]--;
