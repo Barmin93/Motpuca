@@ -103,6 +103,8 @@ void anyGlobalsDialog::prepare_dialog()
     dialog->spinBox_cellsperbox->setValue(SimulationSettings.max_cells_per_box);
     dialog->doubleSpinBox_forcercut->setValue(SimulationSettings.force_r_cut);
     dialog->spinBox_max_tube_chains->setValue(SimulationSettings.max_tube_chains);
+    dialog->doubleSpinBox_add_medicine->setValue(SimulationSettings.add_medicine);
+    dialog->doubleSpinBox_remove_medicine->setValue(SimulationSettings.remove_medicine);
     dialog->doubleSpinBox_diffcoefO2->setValue(SimulationSettings.diffusion_coeff[sat::dsO2]);
     dialog->doubleSpinBox_diffcoefTAF->setValue(SimulationSettings.diffusion_coeff[sat::dsTAF]);
     dialog->doubleSpinBox_diffcoefPeri->setValue(SimulationSettings.diffusion_coeff[sat::dsPericytes]);
@@ -189,6 +191,10 @@ void anyGlobalsDialog::update_from_dialog()
     SimulationSettings.save_povray = dialog->spinBox_savepovray->value();
     SimulationSettings.save_ag = dialog->spinBox_saveag->value();
     SimulationSettings.save_statistics = dialog->spinBox_savestats->value();
+
+    SimulationSettings.add_medicine = dialog->doubleSpinBox_add_medicine->value();
+    SimulationSettings.remove_medicine = dialog->doubleSpinBox_remove_medicine->value();
+
     SimulationSettings.graph_sampling = dialog->spinBox_graphrate->value();
 
     SimulationSettings.sim_phases = dialog->checkBox_sim_diffusion->isChecked()*sat::spDiffusion +

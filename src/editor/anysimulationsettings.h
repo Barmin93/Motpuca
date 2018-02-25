@@ -39,6 +39,10 @@ public:
     int save_povray;           ///< povray saving frequency
     int save_ag;               ///< ag saving frequency
 
+    // medicine...
+    int add_medicine;          ///< step when medicine is added to blood vessels
+    int remove_medicine;       ///< step when medicine is remove from blood vessels
+
     // graph...
     int graph_sampling;        ///< graph samplimg rate
 

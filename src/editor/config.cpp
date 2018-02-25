@@ -349,6 +349,9 @@ void ParseSimulationSettingsValue(FILE *f)
 
     PARSE_VALUE_INT(SimulationSettings, graph_sampling)
 
+    PARSE_VALUE_INT(SimulationSettings, add_medicine)
+    PARSE_VALUE_INT(SimulationSettings, remove_medicine)
+
     PARSE_VALUE_float_N(SimulationSettings, diffusion_coeff[sat::dsO2], diffusion_coeff_o2)
     PARSE_VALUE_float_N(SimulationSettings, diffusion_coeff[sat::dsTAF], diffusion_coeff_taf)
     PARSE_VALUE_float_N(SimulationSettings, diffusion_coeff[sat::dsPericytes], diffusion_coeff_pericytes)
