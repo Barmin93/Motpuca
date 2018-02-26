@@ -27,8 +27,8 @@ public:
     float box_size;             ///< box size [um] *should be calculated autmatically!*
     int max_cells_per_box;     ///< maximum number of cells in box *should be calculated autmatically!*
     float force_r_cut;          ///< attraction forces r_cut [um]
-    float quiescent_o2;          ///< attraction forces r_cut [um]
-    float proliferative_o2;          ///< attraction forces r_cut [um]
+    float quiescent_o2;         ///
+    float proliferative_o2;     ///
     float force_r_peak;         ///< attraction forces peak
 
     int max_tube_chains;       ///< max number of tube chains

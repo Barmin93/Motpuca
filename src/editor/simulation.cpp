@@ -351,7 +351,8 @@ void GrowCell(anyCell *c)
 //    if (tissue->type == ttNormal && 2*c->nei_cnt[ttTumor] > c->nei_cnt[ttNormal])
 //        ;
 //    else
-    c->concentrations[sat::dsO2][conc_step_current()] -= c->tissue->o2_consumption * c->tissue->density / 10e18 * SimulationSettings.time_step / SimulationSettings.max_o2_concentration / 10;
+    c->concentrations[sat::dsO2][conc_step_current()] -= c->tissue->o2_consumption * c->tissue->density
+            / 10e18 * SimulationSettings.time_step / SimulationSettings.max_o2_concentration / 10;
     normalize_conc(c->concentrations[sat::dsO2][conc_step_current()]);
 
     // TAF production...
@@ -369,10 +370,10 @@ void GrowCell(anyCell *c)
     }
 
     // Medicine diffusion -> if added and not removed
-    //if (SimulationSettings.add_medicine < SimulationSettings.step && SimulationSettings.step < SimulationSettings.remove_medicine){
-    c->concentrations[sat::dsMedicine][conc_step_current()] -= c->tissue->medicine_consumption * c->tissue->density / 10e18 * SimulationSettings.time_step / SimulationSettings.max_o2_concentration / 10;
-    normalize_conc(c->concentrations[sat::dsMedicine][conc_step_current()]);
-    //}
+    if (SimulationSettings.add_medicine < SimulationSettings.step){
+        c->concentrations[sat::dsMedicine][conc_step_current()] -= c->tissue->medicine_consumption * c->tissue->density / 10e18 * SimulationSettings.time_step / SimulationSettings.max_o2_concentration / 10;
+        normalize_conc(c->concentrations[sat::dsMedicine][conc_step_current()]);
+    }
 
     //mitosis
 
@@ -450,6 +451,7 @@ void GrowCell(anyCell *c)
         && SimulationSettings.step > 1  //< pressures are calculated in steps 0 & 1
         && c->state == sat::csAlive
         && (strcmp(c->tissue->name, "quiescent") != 0)
+        && (strcmp(c->tissue->name, "dermis") != 0)
         && (c->concentrations[sat::dsMedicine][conc_step_current()] > 0.3f)
         && rand() % 3==1
         )
@@ -1970,7 +1972,13 @@ void GrowTube(anyTube *v)
     if (v->blood_flow != 0){
         v->concentrations[sat::dsO2][conc_step_current()] = 1;
         if (SimulationSettings.add_medicine < SimulationSettings.step && SimulationSettings.step < SimulationSettings.remove_medicine)
+        {
             v->concentrations[sat::dsMedicine][conc_step_current()] = 1;
+        }
+        else
+        {
+            v->concentrations[sat::dsMedicine][conc_step_current()] = 0;
+        }
     }
     // update timers...
     v->age += SimulationSettings.time_step;

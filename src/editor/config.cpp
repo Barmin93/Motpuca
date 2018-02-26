@@ -341,9 +341,11 @@ void ParseSimulationSettingsValue(FILE *f)
     PARSE_VALUE_VECTOR(SimulationSettings, comp_box_to)
     PARSE_VALUE_float(SimulationSettings, box_size)
     PARSE_VALUE_INT(SimulationSettings, max_cells_per_box)
+
     PARSE_VALUE_float(SimulationSettings, force_r_cut)
     PARSE_VALUE_float(SimulationSettings, quiescent_o2)
     PARSE_VALUE_float(SimulationSettings, proliferative_o2)
+
     PARSE_VALUE_INT(SimulationSettings, max_tube_chains)
     PARSE_VALUE_INT(SimulationSettings, max_tube_merge)
 
