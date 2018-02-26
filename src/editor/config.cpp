@@ -76,6 +76,8 @@ void SaveSimulationSettings_ag(FILE *f, anySimulationSettings const *ss)
     SAVE_float(f, ss, box_size);
     SAVE_INT(f, ss, max_cells_per_box);
     SAVE_float(f, ss, force_r_cut);
+    SAVE_float(f, ss, quiescent_o2);
+    SAVE_float(f, ss, proliferative_o2);
 
     SAVE_INT(f, ss, max_tube_chains);
     SAVE_INT(f, ss, max_tube_merge);
@@ -340,6 +342,8 @@ void ParseSimulationSettingsValue(FILE *f)
     PARSE_VALUE_float(SimulationSettings, box_size)
     PARSE_VALUE_INT(SimulationSettings, max_cells_per_box)
     PARSE_VALUE_float(SimulationSettings, force_r_cut)
+    PARSE_VALUE_float(SimulationSettings, quiescent_o2)
+    PARSE_VALUE_float(SimulationSettings, proliferative_o2)
     PARSE_VALUE_INT(SimulationSettings, max_tube_chains)
     PARSE_VALUE_INT(SimulationSettings, max_tube_merge)
 

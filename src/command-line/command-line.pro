@@ -13,7 +13,7 @@ SOURCES += \
     ../Editor/glshaderprogram.cpp \
     ../Editor/scene.cpp \
     ../Editor/config.cpp \
-    ../Editor/vector.cpp \
+    ../Editor/anyvector.cpp \
     ../Editor/log.cpp \
     ../Editor/simulation.cpp \
     ../Editor/timers.cpp \
