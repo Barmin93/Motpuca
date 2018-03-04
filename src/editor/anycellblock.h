@@ -33,7 +33,10 @@ public:
     virtual void prepare_dialog();
     virtual void update_from_dialog();
     virtual bool validate_properties();
+    void virtual display_properties(QTextBrowser *tb);
+    QString float_to_str(float x);
 #endif
+
     virtual bool validate_removal() { return true; }
     virtual void add_itself_to_scene();
     virtual void remove_itself_from_scene();
@@ -45,13 +48,8 @@ public:
     bool should_be_generated_next();
 
     float billion_to_inf(float x);
-    QString float_to_str(float x);
 
     virtual char *get_name();
-
-#ifdef QT_CORE_LIB
-    void virtual display_properties(QTextBrowser *tb);
-#endif
 
 };
 #endif // ANYCELLBLOCK_H

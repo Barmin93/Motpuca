@@ -1,19 +1,20 @@
 #ifndef ANYEDITABLEDIALOG_H
 #define ANYEDITABLEDIALOG_H
 
+#ifdef QT_CORE_LIB
+
 #include <QDialog>
 #include <QColorDialog>
 #include <QFileDialog>
 #include <QStandardPaths>
+#include "mainwindow.h"
+#include "ui_dialogEditable.h"
+
+#endif
 
 #include "color.h"
-#include "mainwindow.h"
 #include "config.h"
 #include "parser.h"
-
-#ifdef QT_CORE_LIB
-#include "ui_dialogEditable.h"
-#endif
 
 class anyEditable;
 

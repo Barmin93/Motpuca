@@ -2,6 +2,7 @@
 
 #include "config.h"
 
+#ifdef QT_CORE_LIB
 anyGlobalsDialog::anyGlobalsDialog()
 {
     dialog = new Ui_DialogGlobals;
@@ -240,4 +241,4 @@ void anyGlobalsDialog::update_from_dialog()
 
     LOG(llDebug, "Global settings updated from dialog.");
 }
-
+#endif

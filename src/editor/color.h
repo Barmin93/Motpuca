@@ -8,6 +8,8 @@
 #define col_float float
 #endif
 
+#include <cstdio>
+
 extern int Color_Mode;
 void SetColorMode(int cm);
 

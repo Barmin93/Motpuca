@@ -19,25 +19,18 @@ float anyTissueSettings::billion_to_inf(float x)
 }
 
 
-QString anyTissueSettings::float_to_str(float x)
-{
-    if (x == MAX_float)
-        return QString("inf");
-    else
-        return QString::number(x);
-}
-
-
 void anyTissueSettings::add_itself_to_scene()
 {
     scene::AddTissueSettings(this);
 }
+
 void anyTissueSettings::remove_itself_from_scene()
 {
 
     LOG(llDebug, "Removing tissue");
     scene::RemoveTissueSettings(this);
 }
+
 char* anyTissueSettings::get_name()
 {
     static char buff[1000];
@@ -47,6 +40,33 @@ char* anyTissueSettings::get_name()
         snprintf(buff, 1000, "tissue '%s'", name);
     return buff;
 }
+
+void anyTissueSettings::read_defaults()
+{
+    char fname[P_MAX_PATH];
+
+    snprintf(fname, P_MAX_PATH, "%s%stissue.ag", GlobalSettings.app_dir, FOLDER_DEFAULTS);
+
+    try
+    {
+        LOG2(llInfo, "Reading defaults for Tissue: ", fname);
+
+        FILE *f = fopen(fname, "r");
+        if (!f)
+            throw new Error(__FILE__, __LINE__, "Cannot open file", fname);
+
+        scene::ParseTissueSettings(f, this, false);
+
+        fclose(f);
+    }
+    catch (Error *err)
+    {
+        LogError(err);
+    }
+}
+
+#ifdef QT_CORE_LIB
+
 void anyTissueSettings::display_properties(QTextBrowser *tb)
 {
     tb->clear();
@@ -80,33 +100,6 @@ void anyTissueSettings::display_properties(QTextBrowser *tb)
     tb->append(QObject::tr("Pericytes production: ") + " <b>" + anyTissueSettings::float_to_str(pericyte_production) + "</b>");
 }
 
-
-void anyTissueSettings::read_defaults()
-{
-    char fname[P_MAX_PATH];
-
-    snprintf(fname, P_MAX_PATH, "%s%stissue.ag", GlobalSettings.app_dir, FOLDER_DEFAULTS);
-
-    try
-    {
-        LOG2(llInfo, "Reading defaults for Tissue: ", fname);
-
-        FILE *f = fopen(fname, "r");
-        if (!f)
-            throw new Error(__FILE__, __LINE__, "Cannot open file", fname);
-
-        scene::ParseTissueSettings(f, this, false);
-
-        fclose(f);
-    }
-    catch (Error *err)
-    {
-        LogError(err);
-    }
-}
-
-
-#ifdef QT_CORE_LIB
 void anyTissueSettings::prepare_dialog()
 {
     dialog->dialog->groupBox_tissueparams->setVisible(true);
@@ -147,10 +140,7 @@ void anyTissueSettings::prepare_dialog()
     dialog->dialog->doubleSpinBox_t_o2hypoxia->setValue(o2_hypoxia);
     dialog->dialog->lineEdit_t_per_prod->setText(QString::number(pericyte_production));
 }
-#endif
 
-
-#ifdef QT_CORE_LIB
 bool anyTissueSettings::validate_properties()
 {
     // tissue name given?...
@@ -175,10 +165,7 @@ bool anyTissueSettings::validate_properties()
 
     return true;
 }
-#endif
 
-
-#ifdef QT_CORE_LIB
 bool anyTissueSettings::validate_removal()
 {
     // is tissue used by any cell block?...
@@ -212,10 +199,7 @@ bool anyTissueSettings::validate_removal()
 
     return true;
 }
-#endif
 
-
-#ifdef QT_CORE_LIB
 void anyTissueSettings::update_from_dialog()
 {
     anyEditable::update_from_dialog();
@@ -253,5 +237,14 @@ void anyTissueSettings::update_from_dialog()
 
     LOG(llDebug, "Tissue updated from dialog");
 }
+
+QString anyTissueSettings::float_to_str(float x)
+{
+    if (x == MAX_float)
+        return QString("inf");
+    else
+        return QString::number(x);
+}
+
 #endif
 

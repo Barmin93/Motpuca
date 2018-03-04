@@ -69,16 +69,16 @@ public:
     virtual bool validate_properties();
     virtual bool validate_removal();
     virtual void update_from_dialog();
+    virtual void display_properties(QTextBrowser *tb);
+    QString float_to_str(float x);
 #endif
 
     virtual void add_itself_to_scene();
     virtual void remove_itself_from_scene();
     virtual char *get_name();
-#ifdef QT_CORE_LIB
-    virtual void display_properties(QTextBrowser *tb);
-#endif
+
     float billion_to_inf(float x);
-    QString float_to_str(float x);
+
 
 };
 

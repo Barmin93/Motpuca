@@ -168,7 +168,6 @@ void CalculateCellsDensities(){
     int first_cell = 0;
     int no_cells;
 
-    #pragma omp for schedule(static)
     for (int box_z = 0; box_z < SimulationSettings.no_boxes_z; box_z++)
         for (int box_y = 0; box_y < SimulationSettings.no_boxes_y; box_y++)
             for (int box_x = 0; box_x < SimulationSettings.no_boxes_x; box_x++, box_id++)
@@ -1007,7 +1006,7 @@ void CellCellForces()
     int box_id = 0;
     int first_cell = 0;
     int no_cells;
-    #pragma omp for schedule(static)
+
     for (int box_z = 0; box_z < SimulationSettings.no_boxes_z; box_z++)
         for (int box_y = 0; box_y < SimulationSettings.no_boxes_y; box_y++)
             for (int box_x = 0; box_x < SimulationSettings.no_boxes_x; box_x++, box_id++)
@@ -1223,7 +1222,7 @@ void CellBarrierForces()
         {
             // loop over all cells...
             int first_cell = 0;
-            #pragma omp for schedule(static)
+
             for (int box_id = 0; box_id < SimulationSettings.no_boxes; box_id++)
             {
                 int no_cells = scene::Cells[first_cell].no_cells_in_box;
@@ -1600,7 +1599,7 @@ void TubeTubeOutChainsForces()
     // loop over all boxes...
     anyTube *v1, *v2;
     int box_id = 0;
-    #pragma omp for schedule(static)
+
     for (int box_z = 0; box_z < SimulationSettings.no_boxes_z; box_z++)
         for (int box_y = 0; box_y < SimulationSettings.no_boxes_y; box_y++)
             for (int box_x = 0; box_x < SimulationSettings.no_boxes_x; box_x++, box_id++)
@@ -1765,7 +1764,7 @@ void TubeCellForces()
                                 // loop over all particles in box...
                                 int first_cell = BOX_ID(x, y, z)*SimulationSettings.max_cells_per_box;
                                 int no_cells = scene::Cells[first_cell].no_cells_in_box;
-                                #pragma omp for schedule(static)
+
                                 for (int j = 0; j < no_cells; j++)
                                 // only active cells...
                                 if (scene::Cells[first_cell + j].state != sat::csRemoved)

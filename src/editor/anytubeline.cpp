@@ -11,13 +11,6 @@ float anyTubeLine::billion_to_inf(float x)
 }
 
 
-QString anyTubeLine::float_to_str(float x)
-{
-    if (x == MAX_float)
-        return QString("inf");
-    else
-        return QString::number(x);
-}
 
 void anyTubeLine::read_defaults()
 {
@@ -43,8 +36,8 @@ void anyTubeLine::read_defaults()
     }
 }
 
-
 #ifdef QT_CORE_LIB
+
 void anyTubeLine::prepare_dialog()
 {
     dialog->dialog->groupBox_ends->setVisible(true);
@@ -60,10 +53,7 @@ void anyTubeLine::prepare_dialog()
     dialog->dialog->doubleSpinBox_blood_max_pressure->setValue(max_blood_pressure);
     dialog->dialog->checkBox_blood_fixed->setChecked(fixed_blood_pressure);
 }
-#endif
 
-
-#ifdef QT_CORE_LIB
 bool anyTubeLine::validate_properties()
 {
     // tube length?...
@@ -79,10 +69,7 @@ bool anyTubeLine::validate_properties()
 
     return true;
 }
-#endif
 
-
-#ifdef QT_CORE_LIB
 void anyTubeLine::update_from_dialog()
 {
     anyEditable::update_from_dialog();
@@ -96,31 +83,7 @@ void anyTubeLine::update_from_dialog()
 
     LOG(llDebug, "TubeLine updated from dialog");
 }
-#endif
 
-void anyTubeLine::add_itself_to_scene()
-{
-    scene::AddTubeLine(this);
-}
-void anyTubeLine::remove_itself_from_scene()
-{
-    LOG(llDebug, "Removing tube line");
-    scene::RemoveTubeLine(this);
-}
-
-
-char* anyTubeLine::get_name()
-{
-    static char buff[100];
-    #ifdef QT_CORE_LIB
-      snprintf(buff, 30, "%s", MODEL_TUBELINE_NAME.toLatin1().constData());
-    #else
-      snprintf(buff, 30, "%s", MODEL_TUBELINE_NAME_PCHAR);
-    #endif
-    return buff;
-}
-
-#ifdef QT_CORE_LIB
 void anyTubeLine::display_properties(QTextBrowser *tb)
 {
     tb->clear();
@@ -135,4 +98,35 @@ void anyTubeLine::display_properties(QTextBrowser *tb)
         tb->append(QObject::tr("- max pressure: ") + "<b>" + anyTubeLine::float_to_str(max_blood_pressure) + "</b>");
     }
 }
+
+QString anyTubeLine::float_to_str(float x)
+{
+    if (x == MAX_float)
+        return QString("inf");
+    else
+        return QString::number(x);
+}
+
 #endif
+
+void anyTubeLine::add_itself_to_scene()
+{
+    scene::AddTubeLine(this);
+}
+
+void anyTubeLine::remove_itself_from_scene()
+{
+    LOG(llDebug, "Removing tube line");
+    scene::RemoveTubeLine(this);
+}
+
+char* anyTubeLine::get_name()
+{
+    static char buff[100];
+    #ifdef QT_CORE_LIB
+      snprintf(buff, 30, "%s", MODEL_TUBELINE_NAME.toLatin1().constData());
+    #else
+      snprintf(buff, 30, "%s", MODEL_TUBELINE_NAME_PCHAR);
+    #endif
+    return buff;
+}

@@ -3,7 +3,9 @@
 
 #include "anyeditable.h"
 #include "types.h"
+#if QT_CORE_LIB
 #include <qtextbrowser.h>
+#endif
 #include "model.h"
 #include "const.h"
 #include "log.h"
@@ -52,6 +54,8 @@ public:
     virtual void prepare_dialog();
     virtual void update_from_dialog();
     virtual bool validate_properties();
+    virtual void display_properties(QTextBrowser *tb);
+    QString float_to_str(float x);
 #endif
 
     virtual bool validate_removal() { return true; }
@@ -59,11 +63,7 @@ public:
     virtual void remove_itself_from_scene();
     virtual char *get_name();
 
-#ifdef QT_CORE_LIB
-    virtual void display_properties(QTextBrowser *tb);
-#endif
     float billion_to_inf(float x);
-    QString float_to_str(float x);
 
 };
 

@@ -1,6 +1,8 @@
 #include "anyeditabledialog.h"
 #include "anyeditable.h"
 
+#ifdef QT_CORE_LIB
+
 anyEditableDialog::anyEditableDialog(){
     dialog = new Ui_DialogEditable;
     dialog->setupUi(this);
@@ -14,7 +16,6 @@ anyEditableDialog::anyEditableDialog(){
     connect(dialog->pushButton_TissueSave, SIGNAL(clicked()), this, SLOT(slot_save_tissue_clicked()));
 }
 
-#ifdef QT_CORE_LIB
 void anyEditableDialog::slot_ok_clicked()
 {
     if (slot_apply_clicked())

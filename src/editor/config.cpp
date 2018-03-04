@@ -1,14 +1,12 @@
 #ifdef QT_CORE_LIB
 #include <QColorDialog>
+#include "mainwindow.h"
 #endif
 
 #include <stdio.h>
-
 #include "config.h"
 #include "log.h"
 #include "parser.h"
-
-#include "mainwindow.h"
 
 
 anyGlobalSettings GlobalSettings;               ///< global settings
@@ -145,14 +143,13 @@ void displayGlobalsDialog()
     delete dialog;
 }
 
-
-
 void SaveNeeded(bool needed)
 {
     GlobalSettings.save_needed = needed;
     MainWindowPtr->set_save_needed(needed);
 }
 
+#endif
 
 void ParseSimulationSettings(FILE *f)
 /**
@@ -408,13 +405,6 @@ void ParseTubularSystemSettingsValue(FILE *f)
     else
         throw new Error(__FILE__, __LINE__, "Unknown token in 'TubularSystem'", TokenToString(tv), ParserFile, ParserLine);
  }
-
-
-#endif
-
-
-
-
 
 
 

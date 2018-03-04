@@ -12,13 +12,6 @@ float anyCellBlock::billion_to_inf(float x)
 }
 
 
-QString anyCellBlock::float_to_str(float x)
-{
-    if (x == MAX_float)
-        return QString("inf");
-    else
-        return QString::number(x);
-}
 
 bool anyCellBlock::should_be_generated_next()
 {
@@ -55,6 +48,7 @@ bool anyCellBlock::should_be_generated_next()
 
     return true;
 }
+
 void anyCellBlock::read_defaults()
 {
     char fname[P_MAX_PATH];
@@ -78,6 +72,9 @@ void anyCellBlock::read_defaults()
         LogError(err);
     }
 }
+
+#ifdef QT_CORE_LIB
+
 void anyCellBlock::prepare_dialog()
 {
     dialog->dialog->groupBox_size->setVisible(true);
@@ -100,6 +97,7 @@ void anyCellBlock::prepare_dialog()
                 break;
             }
 }
+
 bool anyCellBlock::validate_properties()
 {
     // tissue selected in combo?...
@@ -112,6 +110,7 @@ bool anyCellBlock::validate_properties()
 
     return true;
 }
+
 void anyCellBlock::update_from_dialog()
 {
     anyEditable::update_from_dialog();
@@ -135,14 +134,45 @@ void anyCellBlock::update_from_dialog()
 
     LOG(llDebug, "CellBlock updated from dialog");
 }
+
+void anyCellBlock::display_properties(QTextBrowser *tb)
+{
+    tb->clear();
+    tb->append(QObject::tr("CELL BLOCK"));
+    tb->append("");
+    tb->append(QObject::tr("tissue name: ") + " <b>" + tissue->name + "</b>");
+    tb->append(QObject::tr("width: ") + "<b>" + anyCellBlock::float_to_str(to.x - from.x) + "</b>");
+    tb->append(QObject::tr("height: ") + "<b>" + anyCellBlock::float_to_str(to.y - from.y) + "</b>");
+    tb->append(QObject::tr("depth: ") + "<b>" + anyCellBlock::float_to_str(to.z - from.z) + "</b>");
+    if (!generated)
+    {
+        tb->append(QObject::tr("init O2 conc: ") + "<b>" + anyCellBlock::float_to_str(concentrations[sat::dsO2]) + "</b>");
+        tb->append(QObject::tr("init TAF conc: ") + "<b>" + anyCellBlock::float_to_str(concentrations[sat::dsTAF]) + "</b>");
+        tb->append(QObject::tr("init Pericytes conc: ") + "<b>" + anyCellBlock::float_to_str(concentrations[sat::dsPericytes]) + "</b>");
+        tb->append(QObject::tr("init Medicine conc: ") + "<b>" + anyCellBlock::float_to_str(concentrations[sat::dsMedicine]) + "</b>");
+    }
+}
+
+QString anyCellBlock::float_to_str(float x)
+{
+    if (x == MAX_float)
+        return QString("inf");
+    else
+        return QString::number(x);
+}
+
+#endif
+
 bool anyCellBlock::can_move_up()
 {
     return scene::LastCellBlock != this;
 }
+
 bool anyCellBlock::can_move_down()
 {
     return scene::FirstCellBlock != this;
 }
+
 void anyCellBlock::move_up()
 {
     if (!can_move_up())
@@ -174,6 +204,7 @@ void anyCellBlock::move_up()
         scene::LastCellBlock = this;
     ne->next = this;
 }
+
 void anyCellBlock::move_down()
 {
     if (!can_move_down())
@@ -193,6 +224,7 @@ void anyCellBlock::move_down()
     if (pe)
         pe->move_up();
 }
+
 char* anyCellBlock::get_name()
 {
     static char buff[1000];
@@ -202,27 +234,12 @@ char* anyCellBlock::get_name()
         snprintf(buff, 1000, "cell block");
     return buff;
 }
-void anyCellBlock::display_properties(QTextBrowser *tb)
-{
-    tb->clear();
-    tb->append(QObject::tr("CELL BLOCK"));
-    tb->append("");
-    tb->append(QObject::tr("tissue name: ") + " <b>" + tissue->name + "</b>");
-    tb->append(QObject::tr("width: ") + "<b>" + anyCellBlock::float_to_str(to.x - from.x) + "</b>");
-    tb->append(QObject::tr("height: ") + "<b>" + anyCellBlock::float_to_str(to.y - from.y) + "</b>");
-    tb->append(QObject::tr("depth: ") + "<b>" + anyCellBlock::float_to_str(to.z - from.z) + "</b>");
-    if (!generated)
-    {
-        tb->append(QObject::tr("init O2 conc: ") + "<b>" + anyCellBlock::float_to_str(concentrations[sat::dsO2]) + "</b>");
-        tb->append(QObject::tr("init TAF conc: ") + "<b>" + anyCellBlock::float_to_str(concentrations[sat::dsTAF]) + "</b>");
-        tb->append(QObject::tr("init Pericytes conc: ") + "<b>" + anyCellBlock::float_to_str(concentrations[sat::dsPericytes]) + "</b>");
-        tb->append(QObject::tr("init Medicine conc: ") + "<b>" + anyCellBlock::float_to_str(concentrations[sat::dsMedicine]) + "</b>");
-    }
-}
+
 void anyCellBlock::add_itself_to_scene()
 {
     scene::AddCellBlock(this);
 }
+
 void anyCellBlock::remove_itself_from_scene()
 {
     LOG(llDebug, "Removing cell block");

@@ -27,6 +27,10 @@ public:
 
 #ifdef QT_CORE_LIB
     virtual void display_properties(QTextBrowser *tb);
+    virtual void prepare_dialog();
+    virtual void update_from_dialog();
+    virtual bool validate_properties();
+    QString float_to_str(float x);
 #endif
 
     virtual char *get_name();
@@ -39,19 +43,13 @@ public:
     };
     virtual void read_defaults();
 
-#ifdef QT_CORE_LIB
-    virtual void prepare_dialog();
-    virtual void update_from_dialog();
-    virtual bool validate_properties();
-#endif
-
     virtual bool validate_removal() { return true; }
     virtual void add_itself_to_scene();
     virtual void remove_itself_from_scene();
     virtual bool is_point_inside(anyVector const &p, float r);
 
     float billion_to_inf(float x);
-    QString float_to_str(float x);
+
 };
 
 

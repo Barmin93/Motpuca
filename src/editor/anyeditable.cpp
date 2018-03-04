@@ -1,6 +1,8 @@
 #include "anyeditable.h"
 #include "anyeditabledialog.h"
 
+#if QT_CORE_LIB
+
 anyEditable::anyEditable(): next(0), dialog(0) {}
 
 int anyEditable::display_dialog(bool add_new)
@@ -98,7 +100,6 @@ float billion_to_inf(float x)
     return x == 1000000000 ? MAX_float : x;
 }
 
-
 QString float_to_str(float x)
 {
     if (x == MAX_float)
@@ -172,3 +173,4 @@ void anyEditable::update_from_dialog()
     }
 }
 
+#endif

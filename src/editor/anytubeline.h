@@ -7,7 +7,9 @@
 #include "const.h"
 #include "config.h"
 #include "log.h"
+#if QT_CORE_LIB
 #include <QTextBrowser>
+#endif
 
 class anyTubeLine: public anyEditable
 /**
@@ -48,6 +50,8 @@ public:
     virtual void prepare_dialog();
     virtual void update_from_dialog();
     virtual bool validate_properties();
+    virtual void display_properties(QTextBrowser *tb);
+    QString float_to_str(float x);
 #endif
 
     virtual bool validate_removal() { return true; }
@@ -55,10 +59,7 @@ public:
     virtual void remove_itself_from_scene();
     virtual char *get_name();
 
-#ifdef QT_CORE_LIB
-    virtual void display_properties(QTextBrowser *tb);
-#endif
     float billion_to_inf(float x);
-    QString float_to_str(float x);
+
 };
 #endif // ANYTUBELINE_H

@@ -1,69 +1,65 @@
-QT += opengl
+QT -= core gui
 CONFIG   += console
-
-TEMPLATE += app
-
 
 SOURCES += \
     main.cpp \
-    ../Editor/mainwindow.cpp \
-    ../Editor/columnresizer.cpp \
-    ../Editor/glwidget.cpp \
-    ../Editor/glmodel.cpp \
-    ../Editor/glshaderprogram.cpp \
-    ../Editor/scene.cpp \
-    ../Editor/config.cpp \
-    ../Editor/anyvector.cpp \
-    ../Editor/log.cpp \
-    ../Editor/simulation.cpp \
-    ../Editor/timers.cpp \
-    ../Editor/statistics.cpp \
-    ../Editor/color.cpp \
-    ../Editor/parser.cpp \
-    ../Editor/anytube.cpp \
-    ../Editor/anycell.cpp \
-    ../Editor/anyboundingbox.cpp \
-    ../Editor/anyeditabledialog.cpp \
-    ../Editor/anyeditable.cpp \
-    ../Editor/anytissuesettings.cpp \
-    ../Editor/anycellblock.cpp \
-    ../Editor/anybarrier.cpp \
-    ../Editor/anytubebundle.cpp \
-    ../Editor/anytubeline.cpp
+    ../editor/config.cpp \
+    ../editor/anybarrier.cpp \
+    ../editor/anyboundingbox.cpp \
+    ../editor/anycell.cpp \
+    ../editor/anycellblock.cpp \
+    ../editor/anyglobalsettings.cpp \
+    ../editor/anysimulationsettings.cpp \
+    ../editor/anytissuesettings.cpp \
+    ../editor/anytube.cpp \
+    ../editor/anytubebundle.cpp \
+    ../editor/anytubeline.cpp \
+    ../editor/anytubularsystemsettings.cpp \
+    ../editor/anyvector.cpp \
+    ../editor/anyvisualsettings.cpp \
+    ../editor/color.cpp \
+    ../editor/log.cpp \
+    ../editor/parser.cpp \
+    ../editor/scene.cpp \
+    ../editor/simulation.cpp \
+    ../editor/statistics.cpp \
+    ../editor/timers.cpp \
+    ../editor/anyeditable.cpp
 
 INCLUDEPATH += ../Editor
 
-OTHER_FILES +=
+OTHER_FILES += \
+    Makefile
 
 HEADERS += \
-    ../Editor/mainwindow.h \
-    ../Editor/columnresizer.h \
-    ../Editor/glwidget.h \
-    ../Editor/glmodel.h \
-    ../Editor/glshaderprogram.h \
-    ../Editor/config.h \
-    ../Editor/types.h \
-    ../Editor/vector.h \
-    ../Editor/scene.h \
-    ../Editor/log.h \
-    ../Editor/const.h \
-    ../Editor/func.h \
-    ../Editor/simulation.h \
-    ../Editor/timers.h \
-    ../Editor/transform.h \
-    ../Editor/version.h \
-    ../Editor/color.h \
-    ../Editor/statistics.h \
-    ../Editor/model.h \
-    ../Editor/parser.h \
-    ../Editor/anytube.h \
-    ../Editor/anycell.h \
-    ../Editor/anyboundingbox.h \
-    ../Editor/anyeditabledialog.h \
-    ../Editor/anyeditable.h \
-    ../Editor/anytissuesettings.h \
-    ../Editor/anycellblock.h \
-    ../Editor/anybarrier.h \
-    ../Editor/anytubebundle.h \
-    ../Editor/anytubeline.h \
-    ../Editor/anytubebox.h \
+    ../editor/config.h \
+    ../editor/anybarrier.h \
+    ../editor/anyboundingbox.h \
+    ../editor/anycell.h \
+    ../editor/anycellblock.h \
+    ../editor/anyglobalsdialog.h \
+    ../editor/anyglobalsettings.h \
+    ../editor/anysimulationsettings.h \
+    ../editor/anytissuesettings.h \
+    ../editor/anytube.h \
+    ../editor/anytubebox.h \
+    ../editor/anytubebundle.h \
+    ../editor/anytubeline.h \
+    ../editor/anytubemerge.h \
+    ../editor/anytubularsystemsettings.h \
+    ../editor/anyvector.h \
+    ../editor/anyvisualsettings.h \
+    ../editor/color.h \
+    ../editor/const.h \
+    ../editor/func.h \
+    ../editor/log.h \
+    ../editor/parser.h \
+    ../editor/scene.h \
+    ../editor/simulation.h \
+    ../editor/statistics.h \
+    ../editor/timers.h \
+    ../editor/transform.h \
+    ../editor/types.h \
+    ../editor/version.h \
+    ../editor/anyeditable.h \
+    ../editor/anyeditabledialog.h

@@ -8,27 +8,8 @@ float anyBarrier::billion_to_inf(float x)
 }
 
 
-QString anyBarrier::float_to_str(float x)
-{
-    if (x == MAX_float)
-        return QString("inf");
-    else
-        return QString::number(x);
-}
 
-void anyBarrier::display_properties(QTextBrowser *tb)
-{
-    tb->clear();
-    tb->append(QObject::tr("BARRIER"));
-    tb->append("");
-    if (type == sat::btIn)
-        tb->append(QObject::tr("type: ") + "<b>" + QObject::tr("in") + "</b>");
-    else
-        tb->append(QObject::tr("type: ") + "<b>" + QObject::tr("out") + "</b>");
-    tb->append(QObject::tr("width: ") + "<b>" + anyBarrier::float_to_str(to.x - from.x) + "</b>");
-    tb->append(QObject::tr("height: ") + "<b>" + anyBarrier::float_to_str(to.y - from.y) + "</b>");
-    tb->append(QObject::tr("depth: ") + "<b>" + anyBarrier::float_to_str(to.z - from.z) + "</b>");
-}
+
 
 char* anyBarrier::get_name()
 {
@@ -92,6 +73,20 @@ void anyBarrier::read_defaults()
 
 
 #ifdef QT_CORE_LIB
+void anyBarrier::display_properties(QTextBrowser *tb)
+{
+    tb->clear();
+    tb->append(QObject::tr("BARRIER"));
+    tb->append("");
+    if (type == sat::btIn)
+        tb->append(QObject::tr("type: ") + "<b>" + QObject::tr("in") + "</b>");
+    else
+        tb->append(QObject::tr("type: ") + "<b>" + QObject::tr("out") + "</b>");
+    tb->append(QObject::tr("width: ") + "<b>" + anyBarrier::float_to_str(to.x - from.x) + "</b>");
+    tb->append(QObject::tr("height: ") + "<b>" + anyBarrier::float_to_str(to.y - from.y) + "</b>");
+    tb->append(QObject::tr("depth: ") + "<b>" + anyBarrier::float_to_str(to.z - from.z) + "</b>");
+}
+
 void anyBarrier::prepare_dialog()
 {
     dialog->dialog->groupBox_size->setVisible(true);
@@ -105,18 +100,12 @@ void anyBarrier::prepare_dialog()
     else
         dialog->dialog->radioButton_out->setChecked(true);
 }
-#endif
 
-
-#ifdef QT_CORE_LIB
 bool anyBarrier::validate_properties()
 {
     return true;
 }
-#endif
 
-
-#ifdef QT_CORE_LIB
 void anyBarrier::update_from_dialog()
 {
     anyEditable::update_from_dialog();
@@ -128,5 +117,13 @@ void anyBarrier::update_from_dialog()
         type = sat::btOut;
 
     LOG(llDebug, "Barrier updated from dialog");
+}
+
+QString anyBarrier::float_to_str(float x)
+{
+    if (x == MAX_float)
+        return QString("inf");
+    else
+        return QString::number(x);
 }
 #endif
