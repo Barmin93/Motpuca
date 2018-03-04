@@ -13,12 +13,6 @@ for (int i = 0; i < sat::csLast; i++)
 	no_cells[i] = 0;
 }
 
-float anyTissueSettings::billion_to_inf(float x)
-{
-    return x == 1000000000 ? MAX_float : x;
-}
-
-
 void anyTissueSettings::add_itself_to_scene()
 {
     scene::AddTissueSettings(this);
@@ -82,22 +76,22 @@ void anyTissueSettings::display_properties(QTextBrowser *tb)
         tb->append(QObject::tr("type: ") + " <b>" + QObject::tr("TUMOR") + "</b>");
         break;
     }
-    tb->append(QObject::tr("cell radius: ") + " <b>" + anyTissueSettings::float_to_str(cell_r) + "</b>");
-    tb->append(QObject::tr("dead cell radius: ") + " <b>" + anyTissueSettings::float_to_str(dead_r) + "</b>");
-    tb->append(QObject::tr("density: ") + " <b>" + anyTissueSettings::float_to_str(density) + "</b>");
-    tb->append(QObject::tr("growth speed: ") + " <b>" + anyTissueSettings::float_to_str(cell_grow_speed) + "</b>");
-    tb->append(QObject::tr("shinking speed: ") + " <b>" + anyTissueSettings::float_to_str(cell_shrink_speed) + "</b>");
-    tb->append(QObject::tr("minimum interphase time: ") + " <b>" + anyTissueSettings::float_to_str(minimum_interphase_time) + "</b>");
-    tb->append(QObject::tr("time to apoptosis: ") + " <b>" + anyTissueSettings::float_to_str(time_to_apoptosis) + "</b>");
-    tb->append(QObject::tr("time to necrosis: ") + " <b>" + anyTissueSettings::float_to_str(time_to_necrosis) + "</b>");
-    tb->append(QObject::tr("time in necrosis: ") + " <b>" + anyTissueSettings::float_to_str(time_in_necrosis) + "</b>");
-    tb->append(QObject::tr("minimum mitosis radius: ") + " <b>" + anyTissueSettings::float_to_str(minimum_mitosis_r) + "</b>");
-    tb->append(QObject::tr("repulsion factor: ") + " <b>" + anyTissueSettings::float_to_str(force_rep_factor) + "</b>");
-    tb->append(QObject::tr("attraction factor #1: ") + " <b>" + anyTissueSettings::float_to_str(force_atr1_factor) + "</b>");
-    tb->append(QObject::tr("attraction factor #2: ") + " <b>" + anyTissueSettings::float_to_str(force_atr2_factor) + "</b>");
-    tb->append(QObject::tr("maximum pressure: ") + " <b>" + anyTissueSettings::float_to_str(max_pressure) + "</b>");
-    tb->append(QObject::tr("O2 consumption: ") + " <b>" + anyTissueSettings::float_to_str(o2_consumption) + "</b>");
-    tb->append(QObject::tr("Pericytes production: ") + " <b>" + anyTissueSettings::float_to_str(pericyte_production) + "</b>");
+    tb->append(QObject::tr("cell radius: ") + " <b>" + float_to_str(cell_r) + "</b>");
+    tb->append(QObject::tr("dead cell radius: ") + " <b>" + float_to_str(dead_r) + "</b>");
+    tb->append(QObject::tr("density: ") + " <b>" + float_to_str(density) + "</b>");
+    tb->append(QObject::tr("growth speed: ") + " <b>" + float_to_str(cell_grow_speed) + "</b>");
+    tb->append(QObject::tr("shinking speed: ") + " <b>" + float_to_str(cell_shrink_speed) + "</b>");
+    tb->append(QObject::tr("minimum interphase time: ") + " <b>" + float_to_str(minimum_interphase_time) + "</b>");
+    tb->append(QObject::tr("time to apoptosis: ") + " <b>" + float_to_str(time_to_apoptosis) + "</b>");
+    tb->append(QObject::tr("time to necrosis: ") + " <b>" + float_to_str(time_to_necrosis) + "</b>");
+    tb->append(QObject::tr("time in necrosis: ") + " <b>" + float_to_str(time_in_necrosis) + "</b>");
+    tb->append(QObject::tr("minimum mitosis radius: ") + " <b>" + float_to_str(minimum_mitosis_r) + "</b>");
+    tb->append(QObject::tr("repulsion factor: ") + " <b>" + float_to_str(force_rep_factor) + "</b>");
+    tb->append(QObject::tr("attraction factor #1: ") + " <b>" + float_to_str(force_atr1_factor) + "</b>");
+    tb->append(QObject::tr("attraction factor #2: ") + " <b>" + float_to_str(force_atr2_factor) + "</b>");
+    tb->append(QObject::tr("maximum pressure: ") + " <b>" + float_to_str(max_pressure) + "</b>");
+    tb->append(QObject::tr("O2 consumption: ") + " <b>" + float_to_str(o2_consumption) + "</b>");
+    tb->append(QObject::tr("Pericytes production: ") + " <b>" + float_to_str(pericyte_production) + "</b>");
 }
 
 void anyTissueSettings::prepare_dialog()
@@ -213,37 +207,29 @@ void anyTissueSettings::update_from_dialog()
         type = sat::ttTumor;
     strcpy(name, dialog->dialog->lineEdit_name->text().toLatin1());
     color = dialog->color;
-    cell_r = anyTissueSettings::billion_to_inf(dialog->dialog->doubleSpinBox_t_radius->value());
-    density = anyTissueSettings::billion_to_inf(dialog->dialog->doubleSpinBox_t_density->value());
-    cell_grow_speed = anyTissueSettings::billion_to_inf(dialog->dialog->doubleSpinBox_t_growth->value());
-    minimum_interphase_time = anyTissueSettings::billion_to_inf(dialog->dialog->doubleSpinBox_t_mininttime->value());
-    time_to_apoptosis = anyTissueSettings::billion_to_inf(dialog->dialog->doubleSpinBox_t_timetoapop->value());
-    time_to_necrosis = anyTissueSettings::billion_to_inf(dialog->dialog->doubleSpinBox_t_timetonecr->value());
-    time_to_necrosis_var = anyTissueSettings::billion_to_inf(dialog->dialog->doubleSpinBox_t_timetonecrvar->value());
-    time_in_necrosis = anyTissueSettings::billion_to_inf(dialog->dialog->doubleSpinBox_t_timeinnecr->value());
-    dead_r = anyTissueSettings::billion_to_inf(dialog->dialog->doubleSpinBox_t_deadradius->value());
-    cell_shrink_speed = anyTissueSettings::billion_to_inf(dialog->dialog->doubleSpinBox_t_shrink->value());
-    minimum_mitosis_r = anyTissueSettings::billion_to_inf(dialog->dialog->doubleSpinBox_t_minmitradius->value());
-    max_pressure = anyTissueSettings::billion_to_inf(dialog->dialog->lineEdit_t_maxpressure->text().toDouble());
-    force_rep_factor = anyTissueSettings::billion_to_inf(dialog->dialog->lineEdit_t_repfactor->text().toDouble());
-    force_atr1_factor = anyTissueSettings::billion_to_inf(dialog->dialog->lineEdit_t_attrfactor1->text().toDouble());
-    force_atr2_factor = anyTissueSettings::billion_to_inf(dialog->dialog->lineEdit_t_attrfactor2->text().toDouble());
-    force_dpd_factor = anyTissueSettings::billion_to_inf(dialog->dialog->lineEdit_t_dpdfactor->text().toDouble());
-    dpd_temperature= anyTissueSettings::billion_to_inf(dialog->dialog->lineEdit_t_dpdtemp->text().toDouble());
-    o2_consumption = anyTissueSettings::billion_to_inf(dialog->dialog->lineEdit_t_o2cons->text().toDouble());
-    medicine_consumption = anyTissueSettings::billion_to_inf(dialog->dialog->lineEdit_t_medcons->text().toDouble());
+    cell_r = billion_to_inf(dialog->dialog->doubleSpinBox_t_radius->value());
+    density = billion_to_inf(dialog->dialog->doubleSpinBox_t_density->value());
+    cell_grow_speed = billion_to_inf(dialog->dialog->doubleSpinBox_t_growth->value());
+    minimum_interphase_time = billion_to_inf(dialog->dialog->doubleSpinBox_t_mininttime->value());
+    time_to_apoptosis = billion_to_inf(dialog->dialog->doubleSpinBox_t_timetoapop->value());
+    time_to_necrosis = billion_to_inf(dialog->dialog->doubleSpinBox_t_timetonecr->value());
+    time_to_necrosis_var = billion_to_inf(dialog->dialog->doubleSpinBox_t_timetonecrvar->value());
+    time_in_necrosis = billion_to_inf(dialog->dialog->doubleSpinBox_t_timeinnecr->value());
+    dead_r = billion_to_inf(dialog->dialog->doubleSpinBox_t_deadradius->value());
+    cell_shrink_speed = billion_to_inf(dialog->dialog->doubleSpinBox_t_shrink->value());
+    minimum_mitosis_r = billion_to_inf(dialog->dialog->doubleSpinBox_t_minmitradius->value());
+    max_pressure = billion_to_inf(dialog->dialog->lineEdit_t_maxpressure->text().toDouble());
+    force_rep_factor = billion_to_inf(dialog->dialog->lineEdit_t_repfactor->text().toDouble());
+    force_atr1_factor = billion_to_inf(dialog->dialog->lineEdit_t_attrfactor1->text().toDouble());
+    force_atr2_factor = billion_to_inf(dialog->dialog->lineEdit_t_attrfactor2->text().toDouble());
+    force_dpd_factor = billion_to_inf(dialog->dialog->lineEdit_t_dpdfactor->text().toDouble());
+    dpd_temperature= billion_to_inf(dialog->dialog->lineEdit_t_dpdtemp->text().toDouble());
+    o2_consumption = billion_to_inf(dialog->dialog->lineEdit_t_o2cons->text().toDouble());
+    medicine_consumption = billion_to_inf(dialog->dialog->lineEdit_t_medcons->text().toDouble());
     o2_hypoxia = dialog->dialog->doubleSpinBox_t_o2hypoxia->value();
     pericyte_production = dialog->dialog->lineEdit_t_per_prod->text().toDouble();
 
     LOG(llDebug, "Tissue updated from dialog");
-}
-
-QString anyTissueSettings::float_to_str(float x)
-{
-    if (x == MAX_float)
-        return QString("inf");
-    else
-        return QString::number(x);
 }
 
 #endif

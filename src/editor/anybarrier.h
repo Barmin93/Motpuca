@@ -30,7 +30,6 @@ public:
     virtual void prepare_dialog();
     virtual void update_from_dialog();
     virtual bool validate_properties();
-    QString float_to_str(float x);
 #endif
 
     virtual char *get_name();
@@ -47,8 +46,6 @@ public:
     virtual void add_itself_to_scene();
     virtual void remove_itself_from_scene();
     virtual bool is_point_inside(anyVector const &p, float r);
-
-    float billion_to_inf(float x);
 
 };
 

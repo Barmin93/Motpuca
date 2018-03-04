@@ -95,12 +95,12 @@ void anyEditable::rotation_event(anyVector d, bool x_axe, bool y_axe, bool z_axe
         trans.rotateZ(d.z);
 }
 
-float billion_to_inf(float x)
+float anyEditable::billion_to_inf(float x)
 {
     return x == 1000000000 ? MAX_float : x;
 }
 
-QString float_to_str(float x)
+QString anyEditable::float_to_str(float x)
 {
     if (x == MAX_float)
         return QString("inf");

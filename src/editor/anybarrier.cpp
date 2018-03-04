@@ -2,15 +2,6 @@
 
 anyBarrier::anyBarrier(): type(sat::btIn){}
 
-float anyBarrier::billion_to_inf(float x)
-{
-    return x == 1000000000 ? MAX_float : x;
-}
-
-
-
-
-
 char* anyBarrier::get_name()
 {
     static char buff[50];
@@ -82,9 +73,9 @@ void anyBarrier::display_properties(QTextBrowser *tb)
         tb->append(QObject::tr("type: ") + "<b>" + QObject::tr("in") + "</b>");
     else
         tb->append(QObject::tr("type: ") + "<b>" + QObject::tr("out") + "</b>");
-    tb->append(QObject::tr("width: ") + "<b>" + anyBarrier::float_to_str(to.x - from.x) + "</b>");
-    tb->append(QObject::tr("height: ") + "<b>" + anyBarrier::float_to_str(to.y - from.y) + "</b>");
-    tb->append(QObject::tr("depth: ") + "<b>" + anyBarrier::float_to_str(to.z - from.z) + "</b>");
+    tb->append(QObject::tr("width: ") + "<b>" + float_to_str(to.x - from.x) + "</b>");
+    tb->append(QObject::tr("height: ") + "<b>" + float_to_str(to.y - from.y) + "</b>");
+    tb->append(QObject::tr("depth: ") + "<b>" + float_to_str(to.z - from.z) + "</b>");
 }
 
 void anyBarrier::prepare_dialog()
@@ -119,11 +110,4 @@ void anyBarrier::update_from_dialog()
     LOG(llDebug, "Barrier updated from dialog");
 }
 
-QString anyBarrier::float_to_str(float x)
-{
-    if (x == MAX_float)
-        return QString("inf");
-    else
-        return QString::number(x);
-}
 #endif

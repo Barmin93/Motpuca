@@ -34,7 +34,6 @@ public:
     virtual void update_from_dialog();
     virtual bool validate_properties();
     void virtual display_properties(QTextBrowser *tb);
-    QString float_to_str(float x);
 #endif
 
     virtual bool validate_removal() { return true; }
@@ -46,8 +45,6 @@ public:
     virtual void move_down();
 
     bool should_be_generated_next();
-
-    float billion_to_inf(float x);
 
     virtual char *get_name();
 

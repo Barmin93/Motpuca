@@ -51,15 +51,12 @@ public:
     virtual void update_from_dialog();
     virtual bool validate_properties();
     virtual void display_properties(QTextBrowser *tb);
-    QString float_to_str(float x);
 #endif
 
     virtual bool validate_removal() { return true; }
     virtual void add_itself_to_scene();
     virtual void remove_itself_from_scene();
     virtual char *get_name();
-
-    float billion_to_inf(float x);
 
 };
 #endif // ANYTUBELINE_H

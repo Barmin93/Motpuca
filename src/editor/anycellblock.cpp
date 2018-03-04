@@ -6,13 +6,6 @@ anyCellBlock::anyCellBlock(): tissue(0), generated(false)
     concentrations[i] = 0;
 }
 
-float anyCellBlock::billion_to_inf(float x)
-{
-    return x == 1000000000 ? MAX_float : x;
-}
-
-
-
 bool anyCellBlock::should_be_generated_next()
 {
     // kiedy mozemy generowac? kiedy nie ma mniejszych niewygenerowanych...
@@ -141,24 +134,16 @@ void anyCellBlock::display_properties(QTextBrowser *tb)
     tb->append(QObject::tr("CELL BLOCK"));
     tb->append("");
     tb->append(QObject::tr("tissue name: ") + " <b>" + tissue->name + "</b>");
-    tb->append(QObject::tr("width: ") + "<b>" + anyCellBlock::float_to_str(to.x - from.x) + "</b>");
-    tb->append(QObject::tr("height: ") + "<b>" + anyCellBlock::float_to_str(to.y - from.y) + "</b>");
-    tb->append(QObject::tr("depth: ") + "<b>" + anyCellBlock::float_to_str(to.z - from.z) + "</b>");
+    tb->append(QObject::tr("width: ") + "<b>" + float_to_str(to.x - from.x) + "</b>");
+    tb->append(QObject::tr("height: ") + "<b>" + float_to_str(to.y - from.y) + "</b>");
+    tb->append(QObject::tr("depth: ") + "<b>" + float_to_str(to.z - from.z) + "</b>");
     if (!generated)
     {
-        tb->append(QObject::tr("init O2 conc: ") + "<b>" + anyCellBlock::float_to_str(concentrations[sat::dsO2]) + "</b>");
-        tb->append(QObject::tr("init TAF conc: ") + "<b>" + anyCellBlock::float_to_str(concentrations[sat::dsTAF]) + "</b>");
-        tb->append(QObject::tr("init Pericytes conc: ") + "<b>" + anyCellBlock::float_to_str(concentrations[sat::dsPericytes]) + "</b>");
-        tb->append(QObject::tr("init Medicine conc: ") + "<b>" + anyCellBlock::float_to_str(concentrations[sat::dsMedicine]) + "</b>");
+        tb->append(QObject::tr("init O2 conc: ") + "<b>" + float_to_str(concentrations[sat::dsO2]) + "</b>");
+        tb->append(QObject::tr("init TAF conc: ") + "<b>" + float_to_str(concentrations[sat::dsTAF]) + "</b>");
+        tb->append(QObject::tr("init Pericytes conc: ") + "<b>" + float_to_str(concentrations[sat::dsPericytes]) + "</b>");
+        tb->append(QObject::tr("init Medicine conc: ") + "<b>" + float_to_str(concentrations[sat::dsMedicine]) + "</b>");
     }
-}
-
-QString anyCellBlock::float_to_str(float x)
-{
-    if (x == MAX_float)
-        return QString("inf");
-    else
-        return QString::number(x);
 }
 
 #endif

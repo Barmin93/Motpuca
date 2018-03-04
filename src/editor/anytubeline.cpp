@@ -5,13 +5,6 @@ anyTubeLine::anyTubeLine(): tube_length(50), r(0), min_blood_pressure(-100), max
 
 }
 
-float anyTubeLine::billion_to_inf(float x)
-{
-    return x == 1000000000 ? MAX_float : x;
-}
-
-
-
 void anyTubeLine::read_defaults()
 {
     char fname[P_MAX_PATH];
@@ -89,22 +82,14 @@ void anyTubeLine::display_properties(QTextBrowser *tb)
     tb->clear();
     tb->append(MODEL_TUBELINE_NAME.toUpper());
     tb->append("");
-    tb->append(QObject::tr("tube radius: ") + "<b>" + anyTubeLine::float_to_str(r) + "</b>");
-    tb->append(QObject::tr("tube length: ") + "<b>" + anyTubeLine::float_to_str(tube_length) + "</b>");
+    tb->append(QObject::tr("tube radius: ") + "<b>" + float_to_str(r) + "</b>");
+    tb->append(QObject::tr("tube length: ") + "<b>" + float_to_str(tube_length) + "</b>");
     if (fixed_blood_pressure)
     {
         tb->append(QObject::tr("fixed blood pressure:"));
-        tb->append(QObject::tr("- min pressure: ") + "<b>" + anyTubeLine::float_to_str(min_blood_pressure) + "</b>");
-        tb->append(QObject::tr("- max pressure: ") + "<b>" + anyTubeLine::float_to_str(max_blood_pressure) + "</b>");
+        tb->append(QObject::tr("- min pressure: ") + "<b>" + float_to_str(min_blood_pressure) + "</b>");
+        tb->append(QObject::tr("- max pressure: ") + "<b>" + float_to_str(max_blood_pressure) + "</b>");
     }
-}
-
-QString anyTubeLine::float_to_str(float x)
-{
-    if (x == MAX_float)
-        return QString("inf");
-    else
-        return QString::number(x);
 }
 
 #endif
