@@ -44,7 +44,8 @@ public:
     float dpd_temperature;      ///< T in DPD random force
     float max_pressure;         ///< maximum pressure allowing for growth and proliferation
     float o2_consumption;       ///< oxygen consumption ratio in o2 kg/ cell kg /s
-    float medicine_consumption;       ///< oxygen consumption ratio in o2 kg/ cell kg /s
+    float medicine_consumption; ///< medicine consumption ratio in medicine kg/ cell kg /s
+
     float pericyte_production;  ///< pericyte production
     float o2_hypoxia;           ///< o2 concentration that leads to hypoxia
     anyTissueSettings *next;   ///< pointer to next tissue

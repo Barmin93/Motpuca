@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>492</width>
-    <height>522</height>
+    <height>590</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -185,14 +185,31 @@
          </property>
         </widget>
        </item>
-       <item row="7" column="0">
+       <item row="5" column="0">
+        <widget class="QLabel" name="label_proliferative_o2">
+         <property name="text">
+          <string>Proliferative O2:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QDoubleSpinBox" name="doubleSpinBox_proliferative_o2">
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
         <widget class="QLabel" name="label_max_tube_chains">
          <property name="text">
           <string>Max number of chains:</string>
          </property>
         </widget>
        </item>
-       <item row="7" column="1">
+       <item row="6" column="1">
         <widget class="QSpinBox" name="spinBox_max_tube_chains">
          <property name="maximumSize">
           <size>
@@ -208,14 +225,14 @@
          </property>
         </widget>
        </item>
-       <item row="8" column="0">
+       <item row="7" column="0">
         <widget class="QLabel" name="label_diffcoefO2">
          <property name="text">
           <string>O2 diffusion coefficient:</string>
          </property>
         </widget>
        </item>
-       <item row="8" column="1">
+       <item row="7" column="1">
         <widget class="QDoubleSpinBox" name="doubleSpinBox_diffcoefO2">
          <property name="maximumSize">
           <size>
@@ -228,14 +245,14 @@
          </property>
         </widget>
        </item>
-       <item row="9" column="0">
+       <item row="8" column="0">
         <widget class="QLabel" name="label_diffcoefTAF">
          <property name="text">
           <string>TAF diffusion coefficient:</string>
          </property>
         </widget>
        </item>
-       <item row="9" column="1">
+       <item row="8" column="1">
         <widget class="QDoubleSpinBox" name="doubleSpinBox_diffcoefTAF">
          <property name="maximumSize">
           <size>
@@ -248,14 +265,14 @@
          </property>
         </widget>
        </item>
-       <item row="11" column="0">
+       <item row="10" column="0">
         <widget class="QLabel" name="label_diffcoefPeri">
          <property name="text">
           <string>Pericytes diffusion coefficient:</string>
          </property>
         </widget>
        </item>
-       <item row="11" column="1">
+       <item row="10" column="1">
         <widget class="QDoubleSpinBox" name="doubleSpinBox_diffcoefPeri">
          <property name="maximumSize">
           <size>
@@ -265,6 +282,98 @@
          </property>
          <property name="maximum">
           <double>1000000000.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="0">
+        <widget class="QLabel" name="label_diffcoefMedicine">
+         <property name="text">
+          <string>Medicine diffusion coefficient:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="1">
+        <widget class="QDoubleSpinBox" name="doubleSpinBox_diffcoefMedicine">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="maximum">
+          <double>20000.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="0">
+        <widget class="QLabel" name="label_add_medicine">
+         <property name="text">
+          <string>Add medicine:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="1">
+        <widget class="QDoubleSpinBox" name="doubleSpinBox_add_medicine">
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="decimals">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <double>100000.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="0">
+        <widget class="QLabel" name="label_remove_medicine">
+         <property name="text">
+          <string>Remove medicine:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="1">
+        <widget class="QDoubleSpinBox" name="doubleSpinBox_remove_medicine">
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="decimals">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <double>100000.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="14" column="0">
+        <widget class="QLabel" name="label_activation_steps">
+         <property name="text">
+          <string>Activation steps:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="14" column="1">
+        <widget class="QDoubleSpinBox" name="doubleSpinBox_activation_steps">
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>100</height>
+          </size>
+         </property>
+         <property name="maximum">
+          <double>10000.000000000000000</double>
          </property>
         </widget>
        </item>
@@ -358,112 +467,6 @@
          </property>
          <property name="singleStep">
           <double>100.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item row="12" column="0">
-        <widget class="QLabel" name="label_diffcoefMedicine">
-         <property name="text">
-          <string>Medicine diffusion coefficient:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="12" column="1">
-        <widget class="QDoubleSpinBox" name="doubleSpinBox_diffcoefMedicine">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="maximum">
-          <double>20000.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item row="14" column="1">
-        <widget class="QDoubleSpinBox" name="doubleSpinBox_remove_medicine">
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="decimals">
-          <number>0</number>
-         </property>
-         <property name="maximum">
-          <double>100000.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item row="13" column="1">
-        <widget class="QDoubleSpinBox" name="doubleSpinBox_add_medicine">
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="decimals">
-          <number>0</number>
-         </property>
-         <property name="maximum">
-          <double>100000.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item row="13" column="0">
-        <widget class="QLabel" name="label_add_medicine">
-         <property name="text">
-          <string>Add medicine</string>
-         </property>
-        </widget>
-       </item>
-       <item row="14" column="0">
-        <widget class="QLabel" name="label_remove_medicine">
-         <property name="text">
-          <string>Remove medicine</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QDoubleSpinBox" name="doubleSpinBox_quiescent_o2">
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="1">
-        <widget class="QDoubleSpinBox" name="doubleSpinBox_proliferative_o2">
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="label_quiescent_o2">
-         <property name="text">
-          <string>Quiescent O2:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="0">
-        <widget class="QLabel" name="label_proliferative_o2">
-         <property name="text">
-          <string>Proliferative O2:</string>
          </property>
         </widget>
        </item>

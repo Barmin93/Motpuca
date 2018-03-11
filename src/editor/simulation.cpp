@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <iostream>
 #include <cstring>
+#include <random>
 
 #include "types.h"
 #include "parser.h"
@@ -55,6 +56,12 @@ The pattern of resistance and sensitivity correlates with the level of
 sulfhydryl compounds in the cell. Sulfhydryls are natural radioprotectors
 and tend to be at their highest levels in S and at their lowest near mitosis.
 */
+
+
+// random number generator
+std::random_device rd;
+std::mt19937 gen(rd());
+std::uniform_int_distribution<> dis(0, 12);
 
 
 // SPH kernel functions
@@ -350,6 +357,7 @@ void GrowCell(anyCell *c)
 //    if (tissue->type == ttNormal && 2*c->nei_cnt[ttTumor] > c->nei_cnt[ttNormal])
 //        ;
 //    else
+
     c->concentrations[sat::dsO2][conc_step_current()] -= c->tissue->o2_consumption * c->tissue->density
             / 10e18 * SimulationSettings.time_step / SimulationSettings.max_o2_concentration / 10;
     normalize_conc(c->concentrations[sat::dsO2][conc_step_current()]);
@@ -374,6 +382,14 @@ void GrowCell(anyCell *c)
         normalize_conc(c->concentrations[sat::dsMedicine][conc_step_current()]);
     }
 
+    // Check for how long is medicine concentration above threshold (should be SimulationSettings.activation_steps steps to activate)
+    if (strcmp(c->tissue->name, "quiescent_mutated") == 0){
+        if (c->concentrations[sat::dsMedicine][conc_step_current()] > SimulationSettings.proliferative_medicine){
+            ++c->state_age_quiescent_mutated;
+        }else {
+            c->state_age_quiescent_mutated=0;
+        }
+    }
     //mitosis
 
     if (SimulationSettings.sim_phases & sat::spMitosis
@@ -383,7 +399,6 @@ void GrowCell(anyCell *c)
         && c->r >= tissue->minimum_mitosis_r
         && c->pressure_prev < tissue->max_pressure
         && (strcmp(c->tissue->name, "quiescent") != 0)
-        && rand() % 1000==23
         )
     {
         // displacement...
@@ -402,11 +417,6 @@ void GrowCell(anyCell *c)
         anyCell *nc = new anyCell;
         *nc = *c;
 
-//        double time_step = (double)SimulationSettings.step;
-//        auto cos = (time_step*time_step*time_step* 100000) /216000000000 ;
-//        std::cout << c->tissue->name << std::endl;
-//        std::cout << (strcmp(c->tissue->name, "epidermis") == 0) << std::endl;
-
         // move cells...
         c->pos  += d;
         nc->pos -= d;
@@ -415,15 +425,12 @@ void GrowCell(anyCell *c)
         scene::AddCell(nc);
     }
 
-
-
-    //tissue becomes quiescent
-
+    // tissue becomes quiescent -> 02
     if (SimulationSettings.sim_phases & sat::spMitosis
         && SimulationSettings.step > 1  //< pressures are calculated in steps 0 & 1
         && c->state == sat::csAlive
         && (strcmp(c->tissue->name, "proliferative") == 0)
-        && ((c->concentrations[sat::dsO2][conc_step_current()]) < (SimulationSettings.quiescent_o2 + ((rand() % 21 / 100.0f) - 0.1f)))
+        && (c->concentrations[sat::dsO2][conc_step_current()] < SimulationSettings.proliferative_o2)
         )
     {
         c->tissue->no_cells[0]--;
@@ -432,49 +439,56 @@ void GrowCell(anyCell *c)
         c->tissue->no_cells[0]++;
     }
 
+    // quiescent tissue becomes mutated quiescent -> Medicine
     if (SimulationSettings.sim_phases & sat::spMitosis
         && SimulationSettings.step > 1  //< pressures are calculated in steps 0 & 1
         && c->state == sat::csAlive
         && (strcmp(c->tissue->name, "quiescent") == 0)
-        && ((c->concentrations[sat::dsO2][conc_step_current()]) > (SimulationSettings.proliferative_o2 + ((rand() % 21 / 100.0f) - 0.1f)))
+        && (c->concentrations[sat::dsMedicine][conc_step_current()] > SimulationSettings.quiescent_medicine)
         )
     {
         c->tissue->no_cells[0]--;
-        anyTissueSettings *ts = scene::FindTissueSettings("proliferative");
+        anyTissueSettings *ts = scene::FindTissueSettings("quiescent_mutated");
         c->tissue = ts;
         c->tissue->no_cells[0]++;
     }
-    // tissue change...
 
+    // proliferative tissue dies or nothing  -> Medicine
     if (SimulationSettings.sim_phases & sat::spMitosis
         && SimulationSettings.step > 1  //< pressures are calculated in steps 0 & 1
         && c->state == sat::csAlive
-        && (strcmp(c->tissue->name, "quiescent") != 0)
-        && (strcmp(c->tissue->name, "dermis") != 0)
-        && (c->concentrations[sat::dsMedicine][conc_step_current()] > 0.3f)
-        && rand() % 3==1
+        && (strcmp(c->tissue->name, "proliferative") == 0)
+        && (c->concentrations[sat::dsMedicine][conc_step_current()] >= SimulationSettings.proliferative_medicine)
+        && dis(gen) > 6
         )
     {
-        change_cell_state(c, sat::csNecrosis);
+            change_cell_state(c, sat::csNecrosis);
     }
 
+    // mutated quiescent tissue becomes proliferative, dies or stay mutated Q  -> Medicine
     if (SimulationSettings.sim_phases & sat::spMitosis
         && SimulationSettings.step > 1  //< pressures are calculated in steps 0 & 1
         && c->state == sat::csAlive
-        && (strcmp(c->tissue->name, "quiescent") == 0)
-        && (c->concentrations[sat::dsMedicine][conc_step_current()] > 0.3f)
-        && rand() % 3==1
+        && (strcmp(c->tissue->name, "quiescent_mutated") == 0)
+        && (c->concentrations[sat::dsMedicine][conc_step_current()] >= SimulationSettings.proliferative_medicine)
         )
     {
-        if(rand() % 2==1){
-            change_cell_state(c, sat::csNecrosis);}
-        else {
-            c->tissue->no_cells[0]--;
-            anyTissueSettings *ts = scene::FindTissueSettings("proliferative");
-            c->tissue = ts;
-            c->tissue->no_cells[0]++;
-        }
+        if (c->state_age_quiescent_mutated > SimulationSettings.activation_steps){
+            int x = dis(gen);
+            if (x < 4)
+            {
+                change_cell_state(c, sat::csNecrosis);
+            }
+            else if (x>=4 && x <=8)
+            {
+                c->tissue->no_cells[0]--;
+                anyTissueSettings *ts = scene::FindTissueSettings("proliferative");
+                c->tissue = ts;
+                c->tissue->no_cells[0]++;
+            }
 
+            c->state_age_quiescent_mutated=0;
+        }
     }
 
     // state and radius change...

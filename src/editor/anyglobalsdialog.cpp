@@ -103,11 +103,11 @@ void anyGlobalsDialog::prepare_dialog()
     dialog->doubleSpinBox_boxsize->setValue(SimulationSettings.box_size);
     dialog->spinBox_cellsperbox->setValue(SimulationSettings.max_cells_per_box);
     dialog->doubleSpinBox_forcercut->setValue(SimulationSettings.force_r_cut);
-    dialog->doubleSpinBox_quiescent_o2->setValue(SimulationSettings.quiescent_o2);
     dialog->doubleSpinBox_proliferative_o2->setValue(SimulationSettings.proliferative_o2);
     dialog->spinBox_max_tube_chains->setValue(SimulationSettings.max_tube_chains);
     dialog->doubleSpinBox_add_medicine->setValue(SimulationSettings.add_medicine);
     dialog->doubleSpinBox_remove_medicine->setValue(SimulationSettings.remove_medicine);
+    dialog->doubleSpinBox_activation_steps->setValue(SimulationSettings.activation_steps);
     dialog->doubleSpinBox_diffcoefO2->setValue(SimulationSettings.diffusion_coeff[sat::dsO2]);
     dialog->doubleSpinBox_diffcoefTAF->setValue(SimulationSettings.diffusion_coeff[sat::dsTAF]);
     dialog->doubleSpinBox_diffcoefPeri->setValue(SimulationSettings.diffusion_coeff[sat::dsPericytes]);
@@ -185,9 +185,9 @@ void anyGlobalsDialog::update_from_dialog()
     SimulationSettings.box_size = dialog->doubleSpinBox_boxsize->value();
     SimulationSettings.max_cells_per_box = dialog->spinBox_cellsperbox->value();
     SimulationSettings.force_r_cut = dialog->doubleSpinBox_forcercut->value();
-    SimulationSettings.quiescent_o2 = dialog->doubleSpinBox_quiescent_o2->value();
     SimulationSettings.proliferative_o2 = dialog->doubleSpinBox_proliferative_o2->value();
     SimulationSettings.max_tube_chains = dialog->spinBox_max_tube_chains->value();
+    SimulationSettings.activation_steps = dialog->doubleSpinBox_activation_steps->value();
     SimulationSettings.diffusion_coeff[sat::dsO2] = dialog->doubleSpinBox_diffcoefO2->value();
     SimulationSettings.diffusion_coeff[sat::dsTAF] = dialog->doubleSpinBox_diffcoefTAF->value();
     SimulationSettings.diffusion_coeff[sat::dsPericytes] = dialog->doubleSpinBox_diffcoefPeri->value();

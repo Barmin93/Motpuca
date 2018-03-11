@@ -74,7 +74,6 @@ void SaveSimulationSettings_ag(FILE *f, anySimulationSettings const *ss)
     SAVE_float(f, ss, box_size);
     SAVE_INT(f, ss, max_cells_per_box);
     SAVE_float(f, ss, force_r_cut);
-    SAVE_float(f, ss, quiescent_o2);
     SAVE_float(f, ss, proliferative_o2);
 
     SAVE_INT(f, ss, max_tube_chains);
@@ -83,6 +82,10 @@ void SaveSimulationSettings_ag(FILE *f, anySimulationSettings const *ss)
     SAVE_INT(f, ss, save_statistics);
     SAVE_INT(f, ss, save_povray);
     SAVE_INT(f, ss, save_ag);
+
+    SAVE_INT(f, ss, add_medicine);
+    SAVE_INT(f, ss, remove_medicine);
+    SAVE_INT(f, ss, activation_steps);
 
     SAVE_INT(f, ss, graph_sampling);
 
@@ -340,7 +343,6 @@ void ParseSimulationSettingsValue(FILE *f)
     PARSE_VALUE_INT(SimulationSettings, max_cells_per_box)
 
     PARSE_VALUE_float(SimulationSettings, force_r_cut)
-    PARSE_VALUE_float(SimulationSettings, quiescent_o2)
     PARSE_VALUE_float(SimulationSettings, proliferative_o2)
 
     PARSE_VALUE_INT(SimulationSettings, max_tube_chains)
@@ -354,6 +356,7 @@ void ParseSimulationSettingsValue(FILE *f)
 
     PARSE_VALUE_INT(SimulationSettings, add_medicine)
     PARSE_VALUE_INT(SimulationSettings, remove_medicine)
+    PARSE_VALUE_INT(SimulationSettings, activation_steps)
 
     PARSE_VALUE_float_N(SimulationSettings, diffusion_coeff[sat::dsO2], diffusion_coeff_o2)
     PARSE_VALUE_float_N(SimulationSettings, diffusion_coeff[sat::dsTAF], diffusion_coeff_taf)

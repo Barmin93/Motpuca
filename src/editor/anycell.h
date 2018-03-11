@@ -15,11 +15,12 @@ public:
     anyTissueSettings *tissue; ///< tissue
     anyVector pos;             ///< position
     anyVector pos_h1, pos_h2;  ///< historical positions (for displacement drawing)
-                               // every N steps: pos_h2 := pos_h1; pos_h1 := pos;
+                               /// every N steps: pos_h2 := pos_h1; pos_h1 := pos;
     float r;                    ///< current radius
     sat::CellState state;      ///< state
     float age;                  ///< age
     float state_age;            ///< age in current state
+    int state_age_quiescent_mutated; ///< age in quiescent mutated state (needed for entering necrosis -> counter we can reset to 0 if medicine threshold < 0.7)
 
     int no_cells_in_box;       ///< number of cells in box (valid only for first cell in every box)
 
