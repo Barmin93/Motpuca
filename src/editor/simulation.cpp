@@ -384,7 +384,7 @@ void GrowCell(anyCell *c)
 
     // Check for how long is medicine concentration above threshold (should be SimulationSettings.activation_steps steps to activate)
     if (strcmp(c->tissue->name, "quiescent_mutated") == 0){
-        if (c->concentrations[sat::dsMedicine][conc_step_current()] > SimulationSettings.proliferative_medicine){
+        if (c->concentrations[sat::dsMedicine][conc_step_current()] > SimulationSettings.proliferative_o2){
             ++c->state_age_quiescent_mutated;
         }else {
             c->state_age_quiescent_mutated=0;
@@ -399,6 +399,8 @@ void GrowCell(anyCell *c)
         && c->r >= tissue->minimum_mitosis_r
         && c->pressure_prev < tissue->max_pressure
         && (strcmp(c->tissue->name, "quiescent") != 0)
+        && (strcmp(c->tissue->name, "quiescent_mutated") != 0)
+        && rand() % 1000 == 23
         )
     {
         // displacement...
@@ -430,7 +432,7 @@ void GrowCell(anyCell *c)
         && SimulationSettings.step > 1  //< pressures are calculated in steps 0 & 1
         && c->state == sat::csAlive
         && (strcmp(c->tissue->name, "proliferative") == 0)
-        && (c->concentrations[sat::dsO2][conc_step_current()] < SimulationSettings.proliferative_o2)
+        && (c->concentrations[sat::dsO2][conc_step_current()] < 0.25)
         )
     {
         c->tissue->no_cells[0]--;
@@ -444,7 +446,7 @@ void GrowCell(anyCell *c)
         && SimulationSettings.step > 1  //< pressures are calculated in steps 0 & 1
         && c->state == sat::csAlive
         && (strcmp(c->tissue->name, "quiescent") == 0)
-        && (c->concentrations[sat::dsMedicine][conc_step_current()] > SimulationSettings.quiescent_medicine)
+        && (c->concentrations[sat::dsMedicine][conc_step_current()] > 0.7)
         )
     {
         c->tissue->no_cells[0]--;
@@ -458,7 +460,7 @@ void GrowCell(anyCell *c)
         && SimulationSettings.step > 1  //< pressures are calculated in steps 0 & 1
         && c->state == sat::csAlive
         && (strcmp(c->tissue->name, "proliferative") == 0)
-        && (c->concentrations[sat::dsMedicine][conc_step_current()] >= SimulationSettings.proliferative_medicine)
+        && (c->concentrations[sat::dsMedicine][conc_step_current()] >= 0.7)
         && dis(gen) > 6
         )
     {
@@ -470,7 +472,7 @@ void GrowCell(anyCell *c)
         && SimulationSettings.step > 1  //< pressures are calculated in steps 0 & 1
         && c->state == sat::csAlive
         && (strcmp(c->tissue->name, "quiescent_mutated") == 0)
-        && (c->concentrations[sat::dsMedicine][conc_step_current()] >= SimulationSettings.proliferative_medicine)
+        && (c->concentrations[sat::dsMedicine][conc_step_current()] >= 0.7)
         )
     {
         if (c->state_age_quiescent_mutated > SimulationSettings.activation_steps){

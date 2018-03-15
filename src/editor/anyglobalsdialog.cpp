@@ -104,6 +104,7 @@ void anyGlobalsDialog::prepare_dialog()
     dialog->spinBox_cellsperbox->setValue(SimulationSettings.max_cells_per_box);
     dialog->doubleSpinBox_forcercut->setValue(SimulationSettings.force_r_cut);
     dialog->doubleSpinBox_proliferative_o2->setValue(SimulationSettings.proliferative_o2);
+    dialog->doubleSpinBox_medicine_threshold->setValue(SimulationSettings.medicine_threshold);
     dialog->spinBox_max_tube_chains->setValue(SimulationSettings.max_tube_chains);
     dialog->doubleSpinBox_add_medicine->setValue(SimulationSettings.add_medicine);
     dialog->doubleSpinBox_remove_medicine->setValue(SimulationSettings.remove_medicine);
@@ -186,6 +187,7 @@ void anyGlobalsDialog::update_from_dialog()
     SimulationSettings.max_cells_per_box = dialog->spinBox_cellsperbox->value();
     SimulationSettings.force_r_cut = dialog->doubleSpinBox_forcercut->value();
     SimulationSettings.proliferative_o2 = dialog->doubleSpinBox_proliferative_o2->value();
+    SimulationSettings.medicine_threshold = dialog->doubleSpinBox_medicine_threshold->value();
     SimulationSettings.max_tube_chains = dialog->spinBox_max_tube_chains->value();
     SimulationSettings.activation_steps = dialog->doubleSpinBox_activation_steps->value();
     SimulationSettings.diffusion_coeff[sat::dsO2] = dialog->doubleSpinBox_diffcoefO2->value();

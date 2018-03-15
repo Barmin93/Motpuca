@@ -62,7 +62,8 @@ public:
 
     float proliferative_o2;         ///< threshold of O2, when tumor cell becomes Q (from P)
     float quiescent_medicine;   ///< threshold of medicine, when it will affect Q tumor cell (becomes Qp)
-    float proliferative_medicine;   ///< threshold of medicine, when it will affect P tumor cell
+    float medicine_threshold;   ///< threshold of medicine, when it will affect tumor cell
+
     int add_medicine;          ///< step when medicine is added to blood vessels
     int remove_medicine;       ///< step when medicine is remove from blood vessels
     int activation_steps;         ///< number of steps, when medicine will activate
